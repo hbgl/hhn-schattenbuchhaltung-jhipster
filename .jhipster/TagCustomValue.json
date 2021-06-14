@@ -1,0 +1,35 @@
+{
+  "name": "TagCustomValue",
+  "fields": [
+    {
+      "fieldName": "value",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "tag",
+      "otherEntityRelationshipName": "customValue",
+      "relationshipName": "tag"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "tagCustomType",
+      "otherEntityRelationshipName": "values",
+      "relationshipValidateRules": "required",
+      "relationshipName": "type"
+    }
+  ],
+  "entityTableName": "tag_custom_value",
+  "dto": "no",
+  "pagination": "pagination",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": "*",
+  "changelogDate": "20210614205643"
+}

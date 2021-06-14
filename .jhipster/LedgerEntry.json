@@ -1,0 +1,90 @@
+{
+  "name": "LedgerEntry",
+  "fields": [
+    {
+      "fieldName": "no",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "aNo",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "bookingDate",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "income",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "expenditure",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "liability",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "comment",
+      "otherEntityRelationshipName": "ledgerEntry",
+      "relationshipName": "comments"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "costCenter",
+      "otherEntityRelationshipName": "ledgerEntries1",
+      "relationshipName": "costCenter1"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "costCenter",
+      "otherEntityRelationshipName": "ledgerEntries2",
+      "relationshipName": "costCenter2"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "costCenter",
+      "otherEntityRelationshipName": "ledgerEntries3",
+      "relationshipName": "costCenter3"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "division",
+      "otherEntityRelationshipName": "ledgerEntries",
+      "relationshipName": "division"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "costType",
+      "otherEntityRelationshipName": "ledgerEntries",
+      "relationshipName": "costType"
+    }
+  ],
+  "entityTableName": "ledger_entry",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": "*",
+  "skipClient": true,
+  "searchEngine": "elasticsearch",
+  "changelogDate": "20210614205637"
+}

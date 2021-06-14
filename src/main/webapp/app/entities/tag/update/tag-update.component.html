@@ -1,0 +1,119 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-tag-heading" data-cy="TagCreateUpdateHeading" jhiTranslate="schattenbuchhaltungApp.tag.home.createOrEditLabel">
+        Create or edit a Tag
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="form-group" [hidden]="editForm.get('id')!.value == null">
+          <label class="form-control-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="schattenbuchhaltungApp.tag.type" for="field_type">Type</label>
+          <select class="form-control" name="type" formControlName="type" id="field_type" data-cy="type">
+            <option [ngValue]="null">{{ 'schattenbuchhaltungApp.TagKind.null' | translate }}</option>
+            <option value="TEXT">{{ 'schattenbuchhaltungApp.TagKind.TEXT' | translate }}</option>
+            <option value="CUSTOM">{{ 'schattenbuchhaltungApp.TagKind.CUSTOM' | translate }}</option>
+            <option value="PERSON">{{ 'schattenbuchhaltungApp.TagKind.PERSON' | translate }}</option>
+          </select>
+          <div *ngIf="editForm.get('type')!.invalid && (editForm.get('type')!.dirty || editForm.get('type')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('type')?.errors?.required" jhiTranslate="entity.validation.required">
+              This field is required.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="schattenbuchhaltungApp.tag.text" for="field_text">Text</label>
+          <input type="text" class="form-control" name="text" id="field_text" data-cy="text" formControlName="text" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="schattenbuchhaltungApp.tag.author" for="field_author">Author</label>
+          <select class="form-control" id="field_author" data-cy="author" name="author" formControlName="author">
+            <option *ngIf="!editForm.get('author')!.value" [ngValue]="null" selected></option>
+            <option
+              [ngValue]="userOption.id === editForm.get('author')!.value?.id ? editForm.get('author')!.value : userOption"
+              *ngFor="let userOption of usersSharedCollection; trackBy: trackUserById"
+            >
+              {{ userOption.id }}
+            </option>
+          </select>
+        </div>
+        <div *ngIf="editForm.get(['author'])!.invalid && (editForm.get(['author'])!.dirty || editForm.get(['author'])!.touched)">
+          <small class="form-text text-danger" *ngIf="editForm.get(['author'])?.errors?.required" jhiTranslate="entity.validation.required">
+            This field is required.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="schattenbuchhaltungApp.tag.person" for="field_person">Person</label>
+          <select class="form-control" id="field_person" data-cy="person" name="person" formControlName="person">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="userOption.id === editForm.get('person')!.value?.id ? editForm.get('person')!.value : userOption"
+              *ngFor="let userOption of usersSharedCollection; trackBy: trackUserById"
+            >
+              {{ userOption.id }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="schattenbuchhaltungApp.tag.customType" for="field_customType">Custom Type</label>
+          <select class="form-control" id="field_customType" data-cy="customType" name="customType" formControlName="customType">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="
+                tagCustomTypeOption.id === editForm.get('customType')!.value?.id ? editForm.get('customType')!.value : tagCustomTypeOption
+              "
+              *ngFor="let tagCustomTypeOption of tagCustomTypesSharedCollection; trackBy: trackTagCustomTypeById"
+            >
+              {{ tagCustomTypeOption.id }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="schattenbuchhaltungApp.tag.customValue" for="field_customValue"
+            >Custom Value</label
+          >
+          <select class="form-control" id="field_customValue" data-cy="customValue" name="customValue" formControlName="customValue">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="
+                tagCustomValueOption.id === editForm.get('customValue')!.value?.id
+                  ? editForm.get('customValue')!.value
+                  : tagCustomValueOption
+              "
+              *ngFor="let tagCustomValueOption of tagCustomValuesSharedCollection; trackBy: trackTagCustomValueById"
+            >
+              {{ tagCustomValueOption.id }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

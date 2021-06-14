@@ -48,6 +48,27 @@ public class CacheConfiguration {
             createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.User.class.getName());
             createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.Authority.class.getName());
             createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.User.class.getName() + ".authorities");
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.LedgerEntry.class.getName());
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.LedgerEntry.class.getName() + ".comments");
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.CostCenter.class.getName());
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.CostCenter.class.getName() + ".children");
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.CostCenter.class.getName() + ".ledgerEntries1s");
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.CostCenter.class.getName() + ".ledgerEntries2s");
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.CostCenter.class.getName() + ".ledgerEntries3s");
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.Division.class.getName());
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.Division.class.getName() + ".ledgerEntries");
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.CostType.class.getName());
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.CostType.class.getName() + ".ledgerEntries");
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.Comment.class.getName());
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.TagCustomType.class.getName());
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.TagCustomType.class.getName() + ".values");
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.TagCustomType.class.getName() + ".tags");
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.TagCustomValue.class.getName());
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.TagCustomValue.class.getName() + ".tags");
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.Tag.class.getName());
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.HistoryEntry.class.getName());
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.HistoryEntry.class.getName() + ".fields");
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.HistoryEntryField.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

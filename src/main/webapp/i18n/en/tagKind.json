@@ -1,0 +1,10 @@
+{
+  "schattenbuchhaltungApp": {
+    "TagKind": {
+      "null": "",
+      "TEXT": "TEXT",
+      "CUSTOM": "CUSTOM",
+      "PERSON": "PERSON"
+    }
+  }
+}

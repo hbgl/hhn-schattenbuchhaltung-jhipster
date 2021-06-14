@@ -1,0 +1,52 @@
+{
+  "name": "Tag",
+  "fields": [
+    {
+      "fieldName": "type",
+      "fieldType": "TagKind",
+      "fieldValues": "TEXT,CUSTOM,PERSON",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "text",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "tag",
+      "relationshipValidateRules": "required",
+      "relationshipName": "author"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "tag",
+      "relationshipName": "person"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "tagCustomType",
+      "otherEntityRelationshipName": "tag",
+      "relationshipName": "customType"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "tagCustomValue",
+      "otherEntityRelationshipName": "tag",
+      "relationshipName": "customValue"
+    }
+  ],
+  "entityTableName": "tag",
+  "dto": "no",
+  "pagination": "pagination",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": "*",
+  "changelogDate": "20210614205644"
+}

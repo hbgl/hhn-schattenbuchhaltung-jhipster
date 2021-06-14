@@ -15,7 +15,25 @@
     <property name="datetimeType" value="datetime" dbms="oracle, mssql, postgresql, h2"/>
 
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210614205637_added_entity_LedgerEntry.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210614205638_added_entity_CostCenter.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210614205639_added_entity_Division.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210614205640_added_entity_CostType.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210614205641_added_entity_Comment.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210614205642_added_entity_TagCustomType.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210614205643_added_entity_TagCustomValue.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210614205644_added_entity_Tag.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210614205645_added_entity_HistoryEntry.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210614205646_added_entity_HistoryEntryField.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
+    <include file="config/liquibase/changelog/20210614205637_added_entity_constraints_LedgerEntry.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210614205638_added_entity_constraints_CostCenter.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210614205639_added_entity_constraints_Division.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210614205640_added_entity_constraints_CostType.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210614205641_added_entity_constraints_Comment.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210614205643_added_entity_constraints_TagCustomValue.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210614205644_added_entity_constraints_Tag.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210614205646_added_entity_constraints_HistoryEntryField.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>

@@ -40,6 +40,19 @@
     "packageFolder": "dev/hbgl/hhn/schattenbuchhaltung",
     "clientPackageManager": "npm",
     "clientThemeVariant": "",
-    "languages": ["de", "en"]
+    "languages": ["de", "en"],
+    "entities": [
+      "LedgerEntry",
+      "CostCenter",
+      "Division",
+      "CostType",
+      "Comment",
+      "TagCustomType",
+      "TagCustomValue",
+      "Tag",
+      "HistoryEntry",
+      "HistoryEntryField"
+    ],
+    "lastLiquibaseTimestamp": 1623704206000
   }
 }

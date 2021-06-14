@@ -1,0 +1,63 @@
+{
+  "name": "CostCenter",
+  "fields": [
+    {
+      "fieldName": "no",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "rank",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "costCenter",
+      "otherEntityRelationshipName": "parent",
+      "relationshipName": "children"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "ledgerEntry",
+      "otherEntityRelationshipName": "costCenter1",
+      "relationshipName": "ledgerEntries1"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "ledgerEntry",
+      "otherEntityRelationshipName": "costCenter2",
+      "relationshipName": "ledgerEntries2"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "ledgerEntry",
+      "otherEntityRelationshipName": "costCenter3",
+      "relationshipName": "ledgerEntries3"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "costCenter",
+      "otherEntityRelationshipName": "children",
+      "relationshipName": "parent"
+    }
+  ],
+  "entityTableName": "cost_center",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": "*",
+  "skipClient": true,
+  "changelogDate": "20210614205638"
+}

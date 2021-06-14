@@ -1,0 +1,34 @@
+{
+  "name": "CostType",
+  "fields": [
+    {
+      "fieldName": "no",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "ledgerEntry",
+      "otherEntityRelationshipName": "costType",
+      "relationshipName": "ledgerEntries"
+    }
+  ],
+  "entityTableName": "cost_type",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": "*",
+  "skipClient": true,
+  "changelogDate": "20210614205640"
+}

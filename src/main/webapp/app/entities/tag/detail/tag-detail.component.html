@@ -1,0 +1,56 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <div *ngIf="tag">
+      <h2 data-cy="tagDetailsHeading"><span jhiTranslate="schattenbuchhaltungApp.tag.detail.title">Tag</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ tag.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="schattenbuchhaltungApp.tag.type">Type</span></dt>
+        <dd>
+          <span jhiTranslate="{{ 'schattenbuchhaltungApp.TagKind.' + tag.type }}">{{ tag.type }}</span>
+        </dd>
+        <dt><span jhiTranslate="schattenbuchhaltungApp.tag.text">Text</span></dt>
+        <dd>
+          <span>{{ tag.text }}</span>
+        </dd>
+        <dt><span jhiTranslate="schattenbuchhaltungApp.tag.author">Author</span></dt>
+        <dd>
+          <span>{{ tag.author?.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="schattenbuchhaltungApp.tag.person">Person</span></dt>
+        <dd>
+          <span>{{ tag.person?.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="schattenbuchhaltungApp.tag.customType">Custom Type</span></dt>
+        <dd>
+          <div *ngIf="tag.customType">
+            <a [routerLink]="['/tag-custom-type', tag.customType?.id, 'view']">{{ tag.customType?.id }}</a>
+          </div>
+        </dd>
+        <dt><span jhiTranslate="schattenbuchhaltungApp.tag.customValue">Custom Value</span></dt>
+        <dd>
+          <div *ngIf="tag.customValue">
+            <a [routerLink]="['/tag-custom-value', tag.customValue?.id, 'view']">{{ tag.customValue?.id }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/tag', tag.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

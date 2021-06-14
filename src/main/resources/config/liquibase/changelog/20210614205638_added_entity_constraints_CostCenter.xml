@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <!--
+        Added the constraints for entity CostCenter.
+    -->
+    <changeSet id="20210614205638-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="parent_id"
+                                 baseTableName="cost_center"
+                                 constraintName="fk_cost_center__parent_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cost_center"/>
+
+        <addUniqueConstraint tableName="cost_center"
+                             columnNames="no"
+                             constraintName="uc_cost_center__no"/>
+    </changeSet>
+</databaseChangeLog>

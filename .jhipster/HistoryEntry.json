@@ -1,0 +1,50 @@
+{
+  "name": "HistoryEntry",
+  "fields": [
+    {
+      "fieldName": "instant",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "action",
+      "fieldType": "HistoryAction",
+      "fieldValues": "CREATE,MODIFY,DELETE",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "patch",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "any"
+    },
+    {
+      "fieldName": "entityType",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "entityId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "historyEntryField",
+      "otherEntityRelationshipName": "entry",
+      "relationshipName": "fields"
+    }
+  ],
+  "entityTableName": "history_entry",
+  "dto": "no",
+  "pagination": "pagination",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": true,
+  "embedded": false,
+  "applications": "*",
+  "skipClient": true,
+  "changelogDate": "20210614205645"
+}

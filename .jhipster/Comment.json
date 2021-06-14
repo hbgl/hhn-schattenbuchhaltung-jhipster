@@ -1,0 +1,42 @@
+{
+  "name": "Comment",
+  "fields": [
+    {
+      "fieldName": "contentHtml",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "comment",
+      "relationshipValidateRules": "required",
+      "relationshipName": "author"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "ledgerEntry",
+      "otherEntityRelationshipName": "comments",
+      "relationshipName": "ledgerEntry"
+    }
+  ],
+  "entityTableName": "comment",
+  "dto": "no",
+  "pagination": "pagination",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": "*",
+  "skipClient": true,
+  "searchEngine": "elasticsearch",
+  "changelogDate": "20210614205641"
+}

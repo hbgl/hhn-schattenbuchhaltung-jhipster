@@ -1,0 +1,40 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <div *ngIf="tagCustomValue">
+      <h2 data-cy="tagCustomValueDetailsHeading">
+        <span jhiTranslate="schattenbuchhaltungApp.tagCustomValue.detail.title">Tag Custom Value</span>
+      </h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ tagCustomValue.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="schattenbuchhaltungApp.tagCustomValue.value">Value</span></dt>
+        <dd>
+          <span>{{ tagCustomValue.value }}</span>
+        </dd>
+        <dt><span jhiTranslate="schattenbuchhaltungApp.tagCustomValue.type">Type</span></dt>
+        <dd>
+          <div *ngIf="tagCustomValue.type">
+            <a [routerLink]="['/tag-custom-type', tagCustomValue.type?.id, 'view']">{{ tagCustomValue.type?.id }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/tag-custom-value', tagCustomValue.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>
