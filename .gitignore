@@ -156,3 +156,8 @@ Desktop.ini
 # Keycloak
 ######################
 /src/main/docker/keycloak-db
+
+######################
+# Elastic
+######################
+/src/main/docker/elastic-db

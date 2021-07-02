@@ -1,15 +1,29 @@
 # This configuration is intended for development purpose, it's **your** responsibility to harden it for production
 version: '3.8'
 services:
-  schattenbuchhaltung-elasticsearch:
+  es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
-    # volumes:
-    #   - ~/volumes/jhipster/schattenbuchhaltung/elasticsearch/:/usr/share/elasticsearch/data/
-    # If you want to expose these ports outside your dev PC,
-    # remove the "127.0.0.1:" prefix
+    container_name: schattenbuchhaltung-elasticsearch
+    volumes:
+      - ./elastic-db/es01:/usr/share/elasticsearch/data/
     ports:
       - 127.0.0.1:9200:9200
       - 127.0.0.1:9300:9300
+    networks:
+      - elastic
     environment:
       - 'ES_JAVA_OPTS=-Xms1024m -Xmx1024m'
       - 'discovery.type=single-node'
+  kib01:
+    image: docker.elastic.co/kibana/kibana:7.9.3
+    container_name: schattenbuchhaltung-kibana
+    ports:
+      - 127.0.0.1:5601:5601
+    networks:
+      - elastic
+    environment:
+      ELASTICSEARCH_URL: http://es01:9200
+      ELASTICSEARCH_HOSTS: '["http://es01:9200"]'
+networks:
+  elastic:
+    driver: bridge
