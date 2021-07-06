@@ -2,6 +2,15 @@
 
 This application was generated using JHipster 7.0.1, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v7.0.1](https://www.jhipster.tech/documentation-archive/v7.0.1).
 
+## How to run this project
+
+- install Node.js, NPM (LTS, 64-bit)
+- install Docker and Docker Compose
+- add `127.0.0.1 keycloak` to your hosts file
+- `cd` into project root
+- run `docker-compose -f src/main/docker/app.yml up`
+- app is now running at http://localhost:8080
+
 ## Development
 
 Before you can build this project, you must install and configure the following dependencies on your machine:
