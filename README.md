@@ -4,11 +4,19 @@ This application was generated using JHipster 7.0.1, you can find documentation 
 
 ## How to run this project
 
-- install Node.js, NPM (LTS, 64-bit)
-- install Docker and Docker Compose
-- add `127.0.0.1 keycloak` to your hosts file
+### Prerequesites
+
+- Node.js, NPM (LTS, 64-bit)
+- Java 11
+- Docker and Docker Compose
+
+### Steps
+
 - `cd` into project root
-- run `docker-compose -f src/main/docker/app.yml up`
+- start PostgreSQL `docker-compose -f src/main/docker/postgresql.yml up -d`
+- start Elasticsearch `docker-compose -f src/main/docker/elasticsearch.yml up -d`
+- start Keycloak `docker-compose -f src/main/docker/keycloak.yml up -d`
+- start app `./mvnw`
 - app is now running at http://localhost:8080
 
 ## Development
