@@ -32,7 +32,7 @@ export class AlertService {
   constructor(private sanitizer: DomSanitizer, private ngZone: NgZone, private translateService: TranslateService) {}
 
   clear(): void {
-    this.alerts = [];
+    this.alerts.splice(0);
   }
 
   get(): Alert[] {
