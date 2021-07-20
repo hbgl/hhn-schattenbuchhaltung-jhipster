@@ -35,9 +35,50 @@
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
       >
+        <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="ledger-menu" data-cy="ledger">
+          <span>
+            <fa-icon icon="align-justify"></fa-icon>
+            <span jhiTranslate="global.menu.ledger.main">Ledger</span>
+          </span>
+        </a>
+        <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="ledger-menu">
+          <li>
+            <a
+              class="dropdown-item"
+              routerLink="ledger"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="collapseNavbar()"
+            >
+              <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+              <span jhiTranslate="global.menu.ledger.view">View</span>
+            </a>
+          </li>
+          <li>
+            <a
+              class="dropdown-item"
+              routerLink="ledger/import"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="collapseNavbar()"
+            >
+              <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+              <span jhiTranslate="global.menu.ledger.import">Import</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li
+        *ngSwitchCase="true"
+        ngbDropdown
+        class="nav-item dropdown pointer"
+        display="dynamic"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
         <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu" data-cy="entity">
           <span>
-            <fa-icon icon="th-list"></fa-icon>
+            <fa-icon icon="landmark"></fa-icon>
             <span jhiTranslate="global.menu.entities.main">Entities</span>
           </span>
         </a>

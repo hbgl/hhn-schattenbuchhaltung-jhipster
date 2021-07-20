@@ -97,3 +97,8 @@ jhipster:
 # ===================================================================
 
 # application:
+app:
+  ledger:
+    datetime:
+      pattern: 'yyyy-MM-dd HH:mm:ss'
+      timeZone: 'Europe/Berlin'

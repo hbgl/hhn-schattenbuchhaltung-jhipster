@@ -95,7 +95,7 @@ spring:
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: false
       # modify batch size as necessary
-      hibernate.jdbc.batch_size: 25
+      hibernate.jdbc.batch_size: 250
       hibernate.order_inserts: true
       hibernate.order_updates: true
       hibernate.query.fail_on_pagination_over_collection_fetch: true
@@ -195,3 +195,8 @@ jhipster:
 # ===================================================================
 
 # application:
+app:
+  ledger:
+    datetime:
+      pattern: 'yyyy-MM-dd HH:mm:ss'
+      timeZone: 'Europe/Berlin'

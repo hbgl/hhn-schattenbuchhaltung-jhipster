@@ -1,0 +1,95 @@
+<div>
+  <h2 id="page-heading" data-cy="LederImportHeading">
+    <span jhiTranslate="schattenbuchhaltungApp.ledger.import.title">Ledger import</span>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div>
+    <div class="form-group">
+      <label for="field_file" jhiTranslate="global.form.csvFile.label">CSV file</label>
+      <input #file type="file" id="field_file" class="form-control-file w-auto" name="file" [disabled]="!canOpen" (change)="open()" />
+    </div>
+    <div class="form-group">
+      <button class="btn btn-secondary mr-2" (click)="reset()" [disabled]="!canRefresh">
+        <fa-icon icon="times"></fa-icon>
+        <span jhiTranslate="entity.action.reset">Reset</span>
+      </button>
+      <button type="button" [disabled]="!canImport" class="btn btn-primary" (click)="import()">
+        <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.import">Import</span>
+      </button>
+    </div>
+  </div>
+
+  <hr />
+
+  <ng-container *ngIf="canShowTable">
+    <div>
+      <dl>
+        <dt jhiTranslate="global.field.rowCount">Row count:</dt>
+        <dd>{{ entries.length }}</dd>
+      </dl>
+    </div>
+
+    <div class="table-responsive" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.year">Year</span></th>
+            <th scope="col" class="text-nowrap">
+              <span>{{ 'global.field.costCenter' | translate }}&#160;1</span>
+            </th>
+            <th scope="col" class="text-nowrap">
+              <span>{{ 'global.field.costCenter' | translate }}&#160;2</span>
+            </th>
+            <th scope="col" class="text-nowrap">
+              <span>{{ 'global.field.costCenter' | translate }}&#160;3</span>
+            </th>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.no">No.</span></th>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.bookingDate">Booking date</span></th>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.description">Description</span></th>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.aNo">A-No.</span></th>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.division">Division</span></th>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.costType">Cost type</span></th>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.income">Income</span></th>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.expenditure">Expenditure</span></th>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.liability">Liability</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let entry of entries; trackBy: trackId" data-cy="entityTable">
+            <td>{{ entry.year }}</td>
+            <td>{{ entry.costCenter1.displayText }}</td>
+            <td>{{ entry.costCenter2.displayText }}</td>
+            <td>{{ entry.costCenter3.displayText }}</td>
+            <td>{{ entry.no }}</td>
+            <td>{{ entry.bookingDate }}</td>
+            <td>{{ entry.description }}</td>
+            <td>{{ entry.aNo }}</td>
+            <td>
+              <ng-template [ngIf]="entry.divisionNo">{{ entry.divisionNo }} ({{ entry.divisionName }})</ng-template>
+            </td>
+
+            <td>
+              <ng-template [ngIf]="entry.costTypeNo" [ngIfElse]="noCostType">{{ entry.costTypeNo }} ({{ entry.costTypeName }})</ng-template>
+              <ng-template #noCostType>{{ entry.costTypeName }}</ng-template>
+            </td>
+            <td>{{ entry.income }}</td>
+            <td>{{ entry.expenditure }}</td>
+            <td>{{ entry.liability }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mb-3"></div>
+
+    <div class="form-group">
+      <button type="button" [disabled]="!canImport" class="btn btn-primary" (click)="import()">
+        <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.import">Import</span>
+      </button>
+    </div>
+  </ng-container>
+</div>

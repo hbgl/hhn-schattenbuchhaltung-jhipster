@@ -1,4 +1,5 @@
 import {
+  faAlignJustify,
   faArrowLeft,
   faAsterisk,
   faBan,
@@ -14,6 +15,7 @@ import {
   faFlag,
   faHeart,
   faHome,
+  faLandmark,
   faList,
   faLock,
   faPencilAlt,
@@ -29,7 +31,6 @@ import {
   faSync,
   faTachometerAlt,
   faTasks,
-  faThList,
   faTimes,
   faTrashAlt,
   faUser,
@@ -41,6 +42,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 export const fontAwesomeIcons = [
+  faAlignJustify,
   faArrowLeft,
   faAsterisk,
   faBan,
@@ -56,6 +58,7 @@ export const fontAwesomeIcons = [
   faFlag,
   faHeart,
   faHome,
+  faLandmark,
   faList,
   faLock,
   faPencilAlt,
@@ -71,7 +74,6 @@ export const fontAwesomeIcons = [
   faSync,
   faTachometerAlt,
   faTasks,
-  faThList,
   faTimes,
   faTrashAlt,
   faUser,

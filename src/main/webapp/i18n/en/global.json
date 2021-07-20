@@ -12,6 +12,11 @@
         "tag": "Tag",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
+      "ledger": {
+        "main": "Ledger",
+        "view": "View",
+        "import": "Import"
+      },
       "account": {
         "main": "Account",
         "settings": "Settings",
@@ -45,7 +50,8 @@
       "confirmpassword.label": "New password confirmation",
       "confirmpassword.placeholder": "Confirm the new password",
       "email.label": "Email",
-      "email.placeholder": "Your email"
+      "email.placeholder": "Your email",
+      "csvFile.label": "CSV file"
     },
     "messages": {
       "info": {
@@ -83,7 +89,20 @@
       }
     },
     "field": {
-      "id": "ID"
+      "id": "ID",
+      "year": "Year",
+      "costCenter": "Cost center",
+      "no": "No.",
+      "bookingDate": "Booking date",
+      "description": "Description",
+      "aNo": "A-No.",
+      "division": "Division",
+      "costType": "Cost type",
+      "income": "Income",
+      "expenditure": "Expenditure",
+      "liability": "Liability",
+      "rowCount": "Row count",
+      "fileName": "File name"
     },
     "ribbon": {
       "dev": "Development"
@@ -100,7 +119,9 @@
       "edit": "Edit",
       "open": "Open",
       "save": "Save",
-      "view": "View"
+      "view": "View",
+      "import": "Import",
+      "reset": "Reset"
     },
     "detail": {
       "field": "Field",
@@ -124,6 +145,7 @@
     }
   },
   "error": {
+    "unknown": "An unknown error occurred.",
     "internalServerError": "Internal server error",
     "server.not.reachable": "Server not reachable",
     "url.not.found": "Not found",

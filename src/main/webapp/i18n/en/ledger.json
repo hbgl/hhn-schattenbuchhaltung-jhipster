@@ -1,0 +1,13 @@
+{
+  "schattenbuchhaltungApp": {
+    "ledger": {
+      "home": {
+        "title": "Ledger",
+        "notFound": "No ledger entries found"
+      },
+      "import": {
+        "title": "Ledger import"
+      }
+    }
+  }
+}

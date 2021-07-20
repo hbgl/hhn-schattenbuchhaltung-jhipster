@@ -1,0 +1,13 @@
+{
+  "schattenbuchhaltungApp": {
+    "ledger": {
+      "home": {
+        "title": "Konto",
+        "notFound": "Keine Kontoeinträge gefunden"
+      },
+      "import": {
+        "title": "Kontoimport"
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@
 entity LedgerEntry {
     no String required
 	description String required
-    aNo String required
+    aNo String
     bookingDate Instant required
     income BigDecimal required
     expenditure BigDecimal required

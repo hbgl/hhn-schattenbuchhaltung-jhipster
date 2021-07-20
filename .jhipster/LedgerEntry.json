@@ -13,8 +13,7 @@
     },
     {
       "fieldName": "aNo",
-      "fieldType": "String",
-      "fieldValidateRules": ["required"]
+      "fieldType": "String"
     },
     {
       "fieldName": "bookingDate",

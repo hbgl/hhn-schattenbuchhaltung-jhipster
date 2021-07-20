@@ -36,8 +36,7 @@ public class LedgerEntry implements Serializable {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @NotNull
-    @Column(name = "a_no", nullable = false)
+    @Column(name = "a_no", nullable = true)
     private String aNo;
 
     @NotNull

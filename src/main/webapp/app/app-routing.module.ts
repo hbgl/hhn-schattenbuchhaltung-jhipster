@@ -21,6 +21,11 @@ const LAYOUT_ROUTES = [navbarRoute, ...errorRoute];
           canActivate: [UserRouteAccessService],
           loadChildren: () => import('./admin/admin-routing.module').then(m => m.AdminRoutingModule),
         },
+        {
+          path: 'ledger',
+          canActivate: [UserRouteAccessService],
+          loadChildren: () => import('./ledger/ledger-routing.module').then(m => m.LedgerRoutingModule),
+        },
         ...LAYOUT_ROUTES,
       ],
       { enableTracing: DEBUG_INFO_ENABLED }

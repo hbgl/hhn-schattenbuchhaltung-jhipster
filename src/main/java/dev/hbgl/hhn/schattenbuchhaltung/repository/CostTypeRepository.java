@@ -1,6 +1,7 @@
 package dev.hbgl.hhn.schattenbuchhaltung.repository;
 
 import dev.hbgl.hhn.schattenbuchhaltung.domain.CostType;
+import java.util.List;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +10,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface CostTypeRepository extends JpaRepository<CostType, Long> {}
+public interface CostTypeRepository extends JpaRepository<CostType, Long> {
+    @Query("SELECT ct FROM CostType ct WHERE ct.no IN ?1")
+    List<CostType> findByNos(Iterable<String> nos);
+}

@@ -232,28 +232,6 @@ class LedgerEntryResourceIT {
 
     @Test
     @Transactional
-    void checkaNoIsRequired() throws Exception {
-        int databaseSizeBeforeTest = ledgerEntryRepository.findAll().size();
-        // set the field null
-        ledgerEntry.setaNo(null);
-
-        // Create the LedgerEntry, which fails.
-
-        restLedgerEntryMockMvc
-            .perform(
-                post(ENTITY_API_URL)
-                    .with(csrf())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(ledgerEntry))
-            )
-            .andExpect(status().isBadRequest());
-
-        List<LedgerEntry> ledgerEntryList = ledgerEntryRepository.findAll();
-        assertThat(ledgerEntryList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     void checkBookingDateIsRequired() throws Exception {
         int databaseSizeBeforeTest = ledgerEntryRepository.findAll().size();
         // set the field null

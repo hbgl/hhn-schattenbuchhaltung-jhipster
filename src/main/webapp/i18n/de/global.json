@@ -12,6 +12,11 @@
         "tag": "Tag",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
+      "ledger": {
+        "main": "Konto",
+        "view": "Übersicht",
+        "import": "Import"
+      },
       "account": {
         "main": "Zugang",
         "settings": "Einstellungen",
@@ -45,7 +50,8 @@
       "confirmpassword.label": "Neues Passwort bestätigen",
       "confirmpassword.placeholder": "Bestätigen Sie Ihr neues Passwort",
       "email.label": "Email Adresse",
-      "email.placeholder": "Ihre Email Adresse"
+      "email.placeholder": "Ihre Email Adresse",
+      "csvFile.label": "CSV-Datei"
     },
     "messages": {
       "info": {
@@ -83,7 +89,20 @@
       }
     },
     "field": {
-      "id": "ID"
+      "id": "ID",
+      "year": "Jahr",
+      "costCenter": "Kostenstelle",
+      "no": "Nr.",
+      "bookingDate": "Buchungsdatum",
+      "description": "Beschreibung",
+      "aNo": "A-Nr.",
+      "division": "Fachbereich",
+      "costType": "Kostenart",
+      "income": "Einnahmen",
+      "expenditure": "Ausgaben",
+      "liability": "Verpflichtungen",
+      "rowCount": "Anzahl Zeilen",
+      "fileName": "Dateiname"
     },
     "ribbon": {
       "dev": "Entwicklung"
@@ -100,7 +119,9 @@
       "edit": "Bearbeiten",
       "open": "Öffnen",
       "save": "Speichern",
-      "view": "Details"
+      "view": "Details",
+      "import": "Importieren",
+      "reset": "Zurücksetzen"
     },
     "detail": {
       "field": "Feld",
@@ -123,6 +144,7 @@
     }
   },
   "error": {
+    "unknown": "Es ist ein unbekannter Fehler aufgetreten.",
     "internalServerError": "Interner Serverfehler",
     "server.not.reachable": "Server ist nicht erreichbar",
     "url.not.found": "Nicht gefunden",
