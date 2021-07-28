@@ -14,6 +14,10 @@ relationship OneToMany {
 	LedgerEntry{comments} to Comment{ledgerEntry}
 }
 
+relationship ManyToMany {
+	LedgerEntry{tags} to Tag{ledgerEntries}
+}
+
 @skipClient
 entity CostCenter {
 	no String required
@@ -89,7 +93,6 @@ entity Tag {
 }
 
 relationship OneToMany {
-	User to Tag{author required}
     User to Tag{person}
 	TagCustomType to Tag{customType}
     TagCustomValue to Tag{customValue}
@@ -107,10 +110,15 @@ entity HistoryEntry {
 	instant Instant required
     action HistoryAction required
     patch Blob
-    entityType String required
-    entityId Long required
+    recType String required
+    recId Long required
+    recId2 Long // For use with ManyToMany relations
 }
 paginate HistoryEntry with pagination
+
+relationship OneToMany {
+    User to HistoryEntry{author}
+}
 
 @readOnly
 @skipClient

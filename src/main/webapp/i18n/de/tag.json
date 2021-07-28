@@ -21,10 +21,10 @@
       "id": "ID",
       "type": "Type",
       "text": "Text",
-      "author": "Author",
       "person": "Person",
       "customType": "Custom Type",
-      "customValue": "Custom Value"
+      "customValue": "Custom Value",
+      "ledgerEntries": "Ledger Entries"
     }
   }
 }

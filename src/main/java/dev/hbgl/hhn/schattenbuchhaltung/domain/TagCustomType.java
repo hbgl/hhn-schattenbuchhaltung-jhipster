@@ -41,7 +41,7 @@ public class TagCustomType implements Serializable {
 
     @OneToMany(mappedBy = "customType")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "author", "person", "customType", "customValue" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "person", "customType", "customValue", "ledgerEntries" }, allowSetters = true)
     private Set<Tag> tags = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

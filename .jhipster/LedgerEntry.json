@@ -44,6 +44,13 @@
       "relationshipName": "comments"
     },
     {
+      "relationshipType": "many-to-many",
+      "otherEntityName": "tag",
+      "otherEntityRelationshipName": "ledgerEntries",
+      "relationshipName": "tags",
+      "ownerSide": true
+    },
+    {
       "relationshipType": "many-to-one",
       "otherEntityName": "costCenter",
       "otherEntityRelationshipName": "ledgerEntries1",
@@ -85,5 +92,5 @@
   "applications": "*",
   "skipClient": true,
   "searchEngine": "elasticsearch",
-  "changelogDate": "20210614205637"
+  "changelogDate": "20210722115800"
 }

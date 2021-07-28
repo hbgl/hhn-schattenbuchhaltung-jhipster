@@ -41,5 +41,49 @@ $body-bg: #e4e5e6;
 
 $font-size-base: 1rem;
 
+$badge-font-size: 95%; // 89% is also okay
+
 $dropdown-link-hover-color: white;
 $dropdown-link-hover-bg: #343a40;
+
+// Custom max widths:
+$max-widths: (
+  xxxs: 250px,
+  xxs: 350px,
+  xs: 450px,
+  sm: 540px,
+  smd: 620px,
+  md: 720px,
+  lm: 800px,
+  lg: 960px,
+  xl: 1140px,
+  xxl: 1360px,
+  xxxl: 1600px,
+) !default;
+
+$spacer: 1rem;
+$spacers: (
+  0: 0,
+  1: (
+    $spacer * 0.25,
+  ),
+  2: (
+    $spacer * 0.5,
+  ),
+  3: $spacer,
+  4: (
+    $spacer * 1.5,
+  ),
+  5: (
+    $spacer * 2,
+  ),
+  6: (
+    $spacer * 3,
+  ),
+  7: (
+    $spacer * 4,
+  ),
+  8: (
+    $spacer * 5,
+  ),
+);

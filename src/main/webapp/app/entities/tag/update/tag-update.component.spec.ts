@@ -51,14 +51,12 @@ describe('Component Tests', () => {
     describe('ngOnInit', () => {
       it('Should call User query and add missing value', () => {
         const tag: ITag = { id: 456 };
-        const author: IUser = { id: 'RSS' };
-        tag.author = author;
-        const person: IUser = { id: 'Investment' };
+        const person: IUser = { id: 'RSS' };
         tag.person = person;
 
-        const userCollection: IUser[] = [{ id: 'Jordanien initiatives SSL' }];
+        const userCollection: IUser[] = [{ id: 'Investment' }];
         spyOn(userService, 'query').and.returnValue(of(new HttpResponse({ body: userCollection })));
-        const additionalUsers = [author, person];
+        const additionalUsers = [person];
         const expectedCollection: IUser[] = [...additionalUsers, ...userCollection];
         spyOn(userService, 'addUserToCollectionIfMissing').and.returnValue(expectedCollection);
 
@@ -116,9 +114,7 @@ describe('Component Tests', () => {
 
       it('Should update editForm', () => {
         const tag: ITag = { id: 456 };
-        const author: IUser = { id: 'Table Shirt' };
-        tag.author = author;
-        const person: IUser = { id: 'Saarland Facilitator Rwanda' };
+        const person: IUser = { id: 'Jordanien initiatives SSL' };
         tag.person = person;
         const customType: ITagCustomType = { id: 55844 };
         tag.customType = customType;
@@ -129,7 +125,6 @@ describe('Component Tests', () => {
         comp.ngOnInit();
 
         expect(comp.editForm.value).toEqual(expect.objectContaining(tag));
-        expect(comp.usersSharedCollection).toContain(author);
         expect(comp.usersSharedCollection).toContain(person);
         expect(comp.tagCustomTypesSharedCollection).toContain(customType);
         expect(comp.tagCustomValuesSharedCollection).toContain(customValue);

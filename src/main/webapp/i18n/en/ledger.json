@@ -7,6 +7,12 @@
       },
       "import": {
         "title": "Ledger import"
+      },
+      "entry": {
+        "title": "Ledger entry",
+        "noTags": "No tags",
+        "comments": "Comments",
+        "comment": "Comment"
       }
     }
   }

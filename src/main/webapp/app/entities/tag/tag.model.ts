@@ -7,7 +7,6 @@ export interface ITag {
   id?: number;
   type?: TagKind;
   text?: string | null;
-  author?: IUser;
   person?: IUser | null;
   customType?: ITagCustomType | null;
   customValue?: ITagCustomValue | null;
@@ -18,7 +17,6 @@ export class Tag implements ITag {
     public id?: number,
     public type?: TagKind,
     public text?: string | null,
-    public author?: IUser,
     public person?: IUser | null,
     public customType?: ITagCustomType | null,
     public customValue?: ITagCustomValue | null

@@ -16,6 +16,7 @@ import dev.hbgl.hhn.schattenbuchhaltung.repository.search.LedgerEntrySearchRepos
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -28,6 +29,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -72,6 +75,9 @@ class LedgerEntryResourceIT {
 
     @Autowired
     private LedgerEntryRepository ledgerEntryRepository;
+
+    @Mock
+    private LedgerEntryRepository ledgerEntryRepositoryMock;
 
     /**
      * This repository is mocked in the dev.hbgl.hhn.schattenbuchhaltung.repository.search test package.
@@ -337,6 +343,24 @@ class LedgerEntryResourceIT {
             .andExpect(jsonPath("$.[*].income").value(hasItem(sameNumber(DEFAULT_INCOME))))
             .andExpect(jsonPath("$.[*].expenditure").value(hasItem(sameNumber(DEFAULT_EXPENDITURE))))
             .andExpect(jsonPath("$.[*].liability").value(hasItem(sameNumber(DEFAULT_LIABILITY))));
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllLedgerEntriesWithEagerRelationshipsIsEnabled() throws Exception {
+        when(ledgerEntryRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restLedgerEntryMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
+
+        verify(ledgerEntryRepositoryMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllLedgerEntriesWithEagerRelationshipsIsNotEnabled() throws Exception {
+        when(ledgerEntryRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restLedgerEntryMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
+
+        verify(ledgerEntryRepositoryMock, times(1)).findAllWithEagerRelationships(any());
     }
 
     @Test

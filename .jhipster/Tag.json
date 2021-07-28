@@ -17,13 +17,6 @@
       "relationshipType": "many-to-one",
       "otherEntityName": "user",
       "otherEntityRelationshipName": "tag",
-      "relationshipValidateRules": "required",
-      "relationshipName": "author"
-    },
-    {
-      "relationshipType": "many-to-one",
-      "otherEntityName": "user",
-      "otherEntityRelationshipName": "tag",
       "relationshipName": "person"
     },
     {
@@ -37,6 +30,13 @@
       "otherEntityName": "tagCustomValue",
       "otherEntityRelationshipName": "tag",
       "relationshipName": "customValue"
+    },
+    {
+      "relationshipType": "many-to-many",
+      "otherEntityName": "ledgerEntry",
+      "otherEntityRelationshipName": "tags",
+      "relationshipName": "ledgerEntries",
+      "ownerSide": false
     }
   ],
   "entityTableName": "tag",
@@ -48,5 +48,5 @@
   "readOnly": false,
   "embedded": false,
   "applications": "*",
-  "changelogDate": "20210614205644"
+  "changelogDate": "20210722115807"
 }

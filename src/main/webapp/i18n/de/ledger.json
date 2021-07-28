@@ -7,6 +7,12 @@
       },
       "import": {
         "title": "Kontoimport"
+      },
+      "entry": {
+        "title": "Posten",
+        "noTags": "Keine Tags",
+        "comments": "Kommentare",
+        "comment": "Kommentar"
       }
     }
   }

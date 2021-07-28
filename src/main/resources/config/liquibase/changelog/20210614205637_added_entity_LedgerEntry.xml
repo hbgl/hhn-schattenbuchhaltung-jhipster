@@ -55,5 +55,19 @@
         <dropDefaultValue tableName="ledger_entry" columnName="booking_date" columnDataType="${datetimeType}"/>
     </changeSet>
 
+    <changeSet id="20210614205637-1-relations" author="jhipster">
+
+        <createTable tableName="rel_ledger_entry__tags">
+            <column name="tags_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ledger_entry_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="ledger_entry_id, tags_id" tableName="rel_ledger_entry__tags"/>
+    </changeSet>
+
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
 </databaseChangeLog>

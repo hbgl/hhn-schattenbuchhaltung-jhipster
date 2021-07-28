@@ -11,9 +11,6 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
-    @Query("select tag from Tag tag where tag.author.login = ?#{principal.preferredUsername}")
-    List<Tag> findByAuthorIsCurrentUser();
-
     @Query("select tag from Tag tag where tag.person.login = ?#{principal.preferredUsername}")
     List<Tag> findByPersonIsCurrentUser();
 }

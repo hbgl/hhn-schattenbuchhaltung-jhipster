@@ -55,11 +55,14 @@ class HistoryEntryResourceIT {
     private static final String DEFAULT_PATCH_CONTENT_TYPE = "image/jpg";
     private static final String UPDATED_PATCH_CONTENT_TYPE = "image/png";
 
-    private static final String DEFAULT_ENTITY_TYPE = "AAAAAAAAAA";
-    private static final String UPDATED_ENTITY_TYPE = "BBBBBBBBBB";
+    private static final String DEFAULT_REC_TYPE = "AAAAAAAAAA";
+    private static final String UPDATED_REC_TYPE = "BBBBBBBBBB";
 
-    private static final Long DEFAULT_ENTITY_ID = 1L;
-    private static final Long UPDATED_ENTITY_ID = 2L;
+    private static final Long DEFAULT_REC_ID = 1L;
+    private static final Long UPDATED_REC_ID = 2L;
+
+    private static final Long DEFAULT_REC_ID_2 = 1L;
+    private static final Long UPDATED_REC_ID_2 = 2L;
 
     private static final String ENTITY_API_URL = "/api/history-entries";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -99,8 +102,9 @@ class HistoryEntryResourceIT {
             .action(DEFAULT_ACTION)
             .patch(DEFAULT_PATCH)
             .patchContentType(DEFAULT_PATCH_CONTENT_TYPE)
-            .entityType(DEFAULT_ENTITY_TYPE)
-            .entityId(DEFAULT_ENTITY_ID);
+            .recType(DEFAULT_REC_TYPE)
+            .recId(DEFAULT_REC_ID)
+            .recId2(DEFAULT_REC_ID_2);
         return historyEntry;
     }
 
@@ -116,8 +120,9 @@ class HistoryEntryResourceIT {
             .action(UPDATED_ACTION)
             .patch(UPDATED_PATCH)
             .patchContentType(UPDATED_PATCH_CONTENT_TYPE)
-            .entityType(UPDATED_ENTITY_TYPE)
-            .entityId(UPDATED_ENTITY_ID);
+            .recType(UPDATED_REC_TYPE)
+            .recId(UPDATED_REC_ID)
+            .recId2(UPDATED_REC_ID_2);
         return historyEntry;
     }
 
@@ -142,8 +147,9 @@ class HistoryEntryResourceIT {
             .andExpect(jsonPath("$.[*].action").value(hasItem(DEFAULT_ACTION.toString())))
             .andExpect(jsonPath("$.[*].patchContentType").value(hasItem(DEFAULT_PATCH_CONTENT_TYPE)))
             .andExpect(jsonPath("$.[*].patch").value(hasItem(Base64Utils.encodeToString(DEFAULT_PATCH))))
-            .andExpect(jsonPath("$.[*].entityType").value(hasItem(DEFAULT_ENTITY_TYPE)))
-            .andExpect(jsonPath("$.[*].entityId").value(hasItem(DEFAULT_ENTITY_ID.intValue())));
+            .andExpect(jsonPath("$.[*].recType").value(hasItem(DEFAULT_REC_TYPE)))
+            .andExpect(jsonPath("$.[*].recId").value(hasItem(DEFAULT_REC_ID.intValue())))
+            .andExpect(jsonPath("$.[*].recId2").value(hasItem(DEFAULT_REC_ID_2.intValue())));
     }
 
     @Test
@@ -162,8 +168,9 @@ class HistoryEntryResourceIT {
             .andExpect(jsonPath("$.action").value(DEFAULT_ACTION.toString()))
             .andExpect(jsonPath("$.patchContentType").value(DEFAULT_PATCH_CONTENT_TYPE))
             .andExpect(jsonPath("$.patch").value(Base64Utils.encodeToString(DEFAULT_PATCH)))
-            .andExpect(jsonPath("$.entityType").value(DEFAULT_ENTITY_TYPE))
-            .andExpect(jsonPath("$.entityId").value(DEFAULT_ENTITY_ID.intValue()));
+            .andExpect(jsonPath("$.recType").value(DEFAULT_REC_TYPE))
+            .andExpect(jsonPath("$.recId").value(DEFAULT_REC_ID.intValue()))
+            .andExpect(jsonPath("$.recId2").value(DEFAULT_REC_ID_2.intValue()));
     }
 
     @Test
@@ -192,7 +199,8 @@ class HistoryEntryResourceIT {
             .andExpect(jsonPath("$.[*].action").value(hasItem(DEFAULT_ACTION.toString())))
             .andExpect(jsonPath("$.[*].patchContentType").value(hasItem(DEFAULT_PATCH_CONTENT_TYPE)))
             .andExpect(jsonPath("$.[*].patch").value(hasItem(Base64Utils.encodeToString(DEFAULT_PATCH))))
-            .andExpect(jsonPath("$.[*].entityType").value(hasItem(DEFAULT_ENTITY_TYPE)))
-            .andExpect(jsonPath("$.[*].entityId").value(hasItem(DEFAULT_ENTITY_ID.intValue())));
+            .andExpect(jsonPath("$.[*].recType").value(hasItem(DEFAULT_REC_TYPE)))
+            .andExpect(jsonPath("$.[*].recId").value(hasItem(DEFAULT_REC_ID.intValue())))
+            .andExpect(jsonPath("$.[*].recId2").value(hasItem(DEFAULT_REC_ID_2.intValue())));
     }
 }

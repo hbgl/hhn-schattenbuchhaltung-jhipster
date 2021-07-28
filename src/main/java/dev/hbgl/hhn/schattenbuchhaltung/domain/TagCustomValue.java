@@ -32,7 +32,7 @@ public class TagCustomValue implements Serializable {
 
     @OneToMany(mappedBy = "customValue")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "author", "person", "customType", "customValue" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "person", "customType", "customValue", "ledgerEntries" }, allowSetters = true)
     private Set<Tag> tags = new HashSet<>();
 
     @ManyToOne(optional = false)

@@ -45,17 +45,23 @@ public class HistoryEntry implements Serializable {
     private String patchContentType;
 
     @NotNull
-    @Column(name = "entity_type", nullable = false)
-    private String entityType;
+    @Column(name = "rec_type", nullable = false)
+    private String recType;
 
     @NotNull
-    @Column(name = "entity_id", nullable = false)
-    private Long entityId;
+    @Column(name = "rec_id", nullable = false)
+    private Long recId;
+
+    @Column(name = "rec_id_2")
+    private Long recId2;
 
     @OneToMany(mappedBy = "entry")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "entry" }, allowSetters = true)
     private Set<HistoryEntryField> fields = new HashSet<>();
+
+    @ManyToOne
+    private User author;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -123,30 +129,43 @@ public class HistoryEntry implements Serializable {
         this.patchContentType = patchContentType;
     }
 
-    public String getEntityType() {
-        return this.entityType;
+    public String getRecType() {
+        return this.recType;
     }
 
-    public HistoryEntry entityType(String entityType) {
-        this.entityType = entityType;
+    public HistoryEntry recType(String recType) {
+        this.recType = recType;
         return this;
     }
 
-    public void setEntityType(String entityType) {
-        this.entityType = entityType;
+    public void setRecType(String recType) {
+        this.recType = recType;
     }
 
-    public Long getEntityId() {
-        return this.entityId;
+    public Long getRecId() {
+        return this.recId;
     }
 
-    public HistoryEntry entityId(Long entityId) {
-        this.entityId = entityId;
+    public HistoryEntry recId(Long recId) {
+        this.recId = recId;
         return this;
     }
 
-    public void setEntityId(Long entityId) {
-        this.entityId = entityId;
+    public void setRecId(Long recId) {
+        this.recId = recId;
+    }
+
+    public Long getRecId2() {
+        return this.recId2;
+    }
+
+    public HistoryEntry recId2(Long recId2) {
+        this.recId2 = recId2;
+        return this;
+    }
+
+    public void setRecId2(Long recId2) {
+        this.recId2 = recId2;
     }
 
     public Set<HistoryEntryField> getFields() {
@@ -180,6 +199,19 @@ public class HistoryEntry implements Serializable {
         this.fields = historyEntryFields;
     }
 
+    public User getAuthor() {
+        return this.author;
+    }
+
+    public HistoryEntry author(User user) {
+        this.setAuthor(user);
+        return this;
+    }
+
+    public void setAuthor(User user) {
+        this.author = user;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -208,8 +240,9 @@ public class HistoryEntry implements Serializable {
             ", action='" + getAction() + "'" +
             ", patch='" + getPatch() + "'" +
             ", patchContentType='" + getPatchContentType() + "'" +
-            ", entityType='" + getEntityType() + "'" +
-            ", entityId=" + getEntityId() +
+            ", recType='" + getRecType() + "'" +
+            ", recId=" + getRecId() +
+            ", recId2=" + getRecId2() +
             "}";
     }
 }

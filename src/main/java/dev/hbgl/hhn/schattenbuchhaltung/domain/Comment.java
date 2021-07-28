@@ -38,7 +38,10 @@ public class Comment implements Serializable {
     private User author;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "comments", "costCenter1", "costCenter2", "costCenter3", "division", "costType" }, allowSetters = true)
+    @JsonIgnoreProperties(
+        value = { "comments", "tags", "costCenter1", "costCenter2", "costCenter3", "division", "costType" },
+        allowSetters = true
+    )
     private LedgerEntry ledgerEntry;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

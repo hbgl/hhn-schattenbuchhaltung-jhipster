@@ -8,6 +8,18 @@
     -->
     <changeSet id="20210614205637-2" author="jhipster">
 
+        <addForeignKeyConstraint baseColumnNames="ledger_entry_id"
+                                 baseTableName="rel_ledger_entry__tags"
+                                 constraintName="fk_rel_ledger_entry__tags__ledger_entry_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="ledger_entry"/>
+
+        <addForeignKeyConstraint baseColumnNames="tags_id"
+                                 baseTableName="rel_ledger_entry__tags"
+                                 constraintName="fk_rel_ledger_entry__tags__tags_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tag"/>
+
         <addForeignKeyConstraint baseColumnNames="cost_center1_id"
                                  baseTableName="ledger_entry"
                                  constraintName="fk_ledger_entry__cost_center1_id"

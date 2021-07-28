@@ -11,7 +11,7 @@ import { NgxWebstorageModule } from 'ngx-webstorage';
 import * as dayjs from 'dayjs';
 import { NgbDateAdapter, NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 
-import { SERVER_API_URL } from './app.constants';
+import * as Constants from './app.constants';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import './config/dayjs';
 import { SharedModule } from 'app/shared/shared.module';
@@ -70,7 +70,8 @@ export class AppModule {
     dpConfig: NgbDatepickerConfig,
     translateService: TranslateService
   ) {
-    applicationConfigService.setEndpointPrefix(SERVER_API_URL);
+    applicationConfigService.endpointPrefix = Constants.SERVER_API_URL;
+    applicationConfigService.indexedDbName = Constants.INDEXED_DB_NAME;
     registerLocaleData(locale);
     iconLibrary.addIcons(...fontAwesomeIcons);
     dpConfig.minDate = { year: dayjs().subtract(100, 'year').year(), month: 1, day: 1 };

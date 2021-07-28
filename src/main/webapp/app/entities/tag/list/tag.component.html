@@ -64,9 +64,6 @@
           <th scope="col" jhiSortBy="text">
             <span jhiTranslate="schattenbuchhaltungApp.tag.text">Text</span> <fa-icon icon="sort"></fa-icon>
           </th>
-          <th scope="col" jhiSortBy="author.id">
-            <span jhiTranslate="schattenbuchhaltungApp.tag.author">Author</span> <fa-icon icon="sort"></fa-icon>
-          </th>
           <th scope="col" jhiSortBy="person.id">
             <span jhiTranslate="schattenbuchhaltungApp.tag.person">Person</span> <fa-icon icon="sort"></fa-icon>
           </th>
@@ -86,9 +83,6 @@
           </td>
           <td jhiTranslate="{{ 'schattenbuchhaltungApp.TagKind.' + tag.type }}">{{ tag.type }}</td>
           <td>{{ tag.text }}</td>
-          <td>
-            {{ tag.author?.id }}
-          </td>
           <td>
             {{ tag.person?.id }}
           </td>

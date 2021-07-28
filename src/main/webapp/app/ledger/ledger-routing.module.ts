@@ -12,6 +12,10 @@ import { RouterModule } from '@angular/router';
         path: '',
         loadChildren: () => import('./list/ledger-list.module').then(m => m.LedgerListModule),
       },
+      {
+        path: 'entry/:no',
+        loadChildren: () => import('./entry/ledger-entry.module').then(m => m.LedgerEntryModule),
+      },
     ]),
   ],
 })

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { LedgerEntry } from '../ledger-entry.model';
-import { LedgerListService } from './ledger-list.service';
+import { LedgerListEntry } from '../ledger-entry.model';
+import { LedgerService } from '../ledger.service';
 
 @Component({
   selector: 'jhi-ledger-list',
@@ -8,19 +8,19 @@ import { LedgerListService } from './ledger-list.service';
   styleUrls: ['./ledger-list.component.scss'],
 })
 export class LedgerListComponent implements OnInit {
-  entries: LedgerEntry[] = [];
+  entries?: LedgerListEntry[];
 
-  constructor(protected ledgerListService: LedgerListService) {}
+  constructor(protected ledgerService: LedgerService) {}
 
   ngOnInit(): Promise<void> {
     return this.handleNavigation();
   }
 
-  trackId(index: number, entry: LedgerEntry): string {
+  trackId(index: number, entry: LedgerListEntry): string {
     return entry.no;
   }
 
   protected async handleNavigation(): Promise<void> {
-    this.entries = await this.ledgerListService.ledger().toPromise();
+    this.entries = await this.ledgerService.list().toPromise();
   }
 }

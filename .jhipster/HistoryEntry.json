@@ -18,14 +18,18 @@
       "fieldTypeBlobContent": "any"
     },
     {
-      "fieldName": "entityType",
+      "fieldName": "recType",
       "fieldType": "String",
       "fieldValidateRules": ["required"]
     },
     {
-      "fieldName": "entityId",
+      "fieldName": "recId",
       "fieldType": "Long",
       "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "recId2",
+      "fieldType": "Long"
     }
   ],
   "relationships": [
@@ -34,6 +38,12 @@
       "otherEntityName": "historyEntryField",
       "otherEntityRelationshipName": "entry",
       "relationshipName": "fields"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "historyEntry",
+      "relationshipName": "author"
     }
   ],
   "entityTableName": "history_entry",

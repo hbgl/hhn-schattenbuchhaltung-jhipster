@@ -29,7 +29,6 @@ export class TagUpdateComponent implements OnInit {
     id: [],
     type: [null, [Validators.required]],
     text: [],
-    author: [null, Validators.required],
     person: [],
     customType: [],
     customValue: [],
@@ -102,13 +101,12 @@ export class TagUpdateComponent implements OnInit {
       id: tag.id,
       type: tag.type,
       text: tag.text,
-      author: tag.author,
       person: tag.person,
       customType: tag.customType,
       customValue: tag.customValue,
     });
 
-    this.usersSharedCollection = this.userService.addUserToCollectionIfMissing(this.usersSharedCollection, tag.author, tag.person);
+    this.usersSharedCollection = this.userService.addUserToCollectionIfMissing(this.usersSharedCollection, tag.person);
     this.tagCustomTypesSharedCollection = this.tagCustomTypeService.addTagCustomTypeToCollectionIfMissing(
       this.tagCustomTypesSharedCollection,
       tag.customType
@@ -123,11 +121,7 @@ export class TagUpdateComponent implements OnInit {
     this.userService
       .query()
       .pipe(map((res: HttpResponse<IUser[]>) => res.body ?? []))
-      .pipe(
-        map((users: IUser[]) =>
-          this.userService.addUserToCollectionIfMissing(users, this.editForm.get('author')!.value, this.editForm.get('person')!.value)
-        )
-      )
+      .pipe(map((users: IUser[]) => this.userService.addUserToCollectionIfMissing(users, this.editForm.get('person')!.value)))
       .subscribe((users: IUser[]) => (this.usersSharedCollection = users));
 
     this.tagCustomTypeService
@@ -157,7 +151,6 @@ export class TagUpdateComponent implements OnInit {
       id: this.editForm.get(['id'])!.value,
       type: this.editForm.get(['type'])!.value,
       text: this.editForm.get(['text'])!.value,
-      author: this.editForm.get(['author'])!.value,
       person: this.editForm.get(['person'])!.value,
       customType: this.editForm.get(['customType'])!.value,
       customValue: this.editForm.get(['customValue'])!.value,

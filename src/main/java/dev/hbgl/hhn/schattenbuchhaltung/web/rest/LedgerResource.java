@@ -1,14 +1,18 @@
 package dev.hbgl.hhn.schattenbuchhaltung.web.rest;
 
+import dev.hbgl.hhn.schattenbuchhaltung.domain.Comment;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.CostCenter;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.CostType;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.Division;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.LedgerEntry;
+import dev.hbgl.hhn.schattenbuchhaltung.domain.Tag;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.CostCenterRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.CostTypeRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.DivisionRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.LedgerEntryRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.CostCenterDTO;
+import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.CommentVM;
+import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.LedgerEntryVM;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.LedgerImportEntryDTO;
 import dev.hbgl.hhn.schattenbuchhaltung.service.parser.LedgerEntryInstantParser;
 import dev.hbgl.hhn.schattenbuchhaltung.web.rest.errors.BadRequestAlertException;
@@ -16,12 +20,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,6 +36,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing {@link dev.hbgl.hhn.schattenbuchhaltung.domain.LedgerEntry}.
@@ -58,34 +61,68 @@ public class LedgerResource {
 
     private final LedgerEntryInstantParser ledgerEntryInstantParser;
 
+    private final EntityManager entityManager;
+
     public LedgerResource(
         LedgerEntryRepository ledgerEntryRepository,
         CostCenterRepository costCenterRepository,
         DivisionRepository divisionRepository,
         CostTypeRepository costTypeRepository,
-        LedgerEntryInstantParser ledgerEntryInstantParser
+        LedgerEntryInstantParser ledgerEntryInstantParser,
+        EntityManager entityManager
     ) {
         this.ledgerEntryRepository = ledgerEntryRepository;
         this.costCenterRepository = costCenterRepository;
         this.divisionRepository = divisionRepository;
         this.costTypeRepository = costTypeRepository;
         this.ledgerEntryInstantParser = ledgerEntryInstantParser;
+        this.entityManager = entityManager;
     }
 
-    /**
-     * {@code GET  /ledger-entries} : get all the ledgerEntries.
-     *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of ledgerEntries in body.
-     */
     @GetMapping("/ledger")
-    public List<LedgerEntry> getAllLedgerEntries() {
+    public List<LedgerEntryVM> listLedger() {
         log.debug("REST request to get all LedgerEntries");
-        return ledgerEntryRepository.findAll();
+        return ledgerEntryRepository.findAll().stream().map(LedgerEntryVM::fromEntity).collect(Collectors.toList());
+    }
+
+    @GetMapping("/ledger/entry/{no}")
+    public ResponseEntity<LedgerEntryVM> getLedgerDetails(@PathVariable String no) {
+        log.debug("REST request to get LedgerEntry by no : {}", no);
+
+        var ledgerEntryGraph = entityManager.createEntityGraph(LedgerEntry.class);
+        ledgerEntryGraph.addAttributeNodes("costCenter1", "costCenter2", "costCenter3");
+        ledgerEntryGraph.addSubgraph("tags").addAttributeNodes("customType", "customValue");
+
+        var ledgerEntryMaybe = entityManager
+            .createQuery("SELECT le FROM LedgerEntry le WHERE le.no = :no", LedgerEntry.class)
+            .setParameter("no", no)
+            .setHint("javax.persistence.loadgraph", ledgerEntryGraph)
+            .getResultStream()
+            .findFirst();
+
+        if (ledgerEntryMaybe.isEmpty()) {
+            return ResponseUtil.wrapOrNotFound(Optional.empty());
+        }
+
+        var ledgerEntry = ledgerEntryMaybe.get();
+
+        var commentGraph = entityManager.createEntityGraph(Comment.class);
+        commentGraph.addAttributeNodes("author");
+        var comments = entityManager
+            .createQuery("SELECT cm FROM Comment cm WHERE cm.ledgerEntry = :ledgerEntry ORDER BY cm.id", Comment.class)
+            .setParameter("ledgerEntry", ledgerEntry)
+            .setHint("javax.persistence.loadgraph", commentGraph)
+            .getResultList();
+
+        var vm = LedgerEntryVM.fromEntity(ledgerEntry);
+        vm.comments = comments.stream().map(CommentVM::fromEntity).collect(Collectors.toList());
+
+        return ResponseUtil.wrapOrNotFound(Optional.of(vm));
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     @PostMapping("/ledger/import")
-    public ResponseEntity<Void> createLedgerEntry(@Valid @RequestBody LedgerImportEntryDTO[] inputEntries)
+    public ResponseEntity<Void> importLedger(@Valid @RequestBody LedgerImportEntryDTO[] inputEntries)
         throws URISyntaxException, IOException {
         // TODO Add history entries
         // TODO Tests (also frontend)

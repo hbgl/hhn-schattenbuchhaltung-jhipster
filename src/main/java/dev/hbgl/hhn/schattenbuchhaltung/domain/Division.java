@@ -36,7 +36,10 @@ public class Division implements Serializable {
 
     @OneToMany(mappedBy = "division")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "comments", "costCenter1", "costCenter2", "costCenter3", "division", "costType" }, allowSetters = true)
+    @JsonIgnoreProperties(
+        value = { "comments", "tags", "costCenter1", "costCenter2", "costCenter3", "division", "costType" },
+        allowSetters = true
+    )
     private Set<LedgerEntry> ledgerEntries = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

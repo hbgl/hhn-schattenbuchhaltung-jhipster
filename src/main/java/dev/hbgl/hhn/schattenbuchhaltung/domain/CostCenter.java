@@ -45,17 +45,26 @@ public class CostCenter implements Serializable {
 
     @OneToMany(mappedBy = "costCenter1")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "comments", "costCenter1", "costCenter2", "costCenter3", "division", "costType" }, allowSetters = true)
+    @JsonIgnoreProperties(
+        value = { "comments", "tags", "costCenter1", "costCenter2", "costCenter3", "division", "costType" },
+        allowSetters = true
+    )
     private Set<LedgerEntry> ledgerEntries1s = new HashSet<>();
 
     @OneToMany(mappedBy = "costCenter2")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "comments", "costCenter1", "costCenter2", "costCenter3", "division", "costType" }, allowSetters = true)
+    @JsonIgnoreProperties(
+        value = { "comments", "tags", "costCenter1", "costCenter2", "costCenter3", "division", "costType" },
+        allowSetters = true
+    )
     private Set<LedgerEntry> ledgerEntries2s = new HashSet<>();
 
     @OneToMany(mappedBy = "costCenter3")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "comments", "costCenter1", "costCenter2", "costCenter3", "division", "costType" }, allowSetters = true)
+    @JsonIgnoreProperties(
+        value = { "comments", "tags", "costCenter1", "costCenter2", "costCenter3", "division", "costType" },
+        allowSetters = true
+    )
     private Set<LedgerEntry> ledgerEntries3s = new HashSet<>();
 
     @ManyToOne

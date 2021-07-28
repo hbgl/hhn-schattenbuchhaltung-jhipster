@@ -36,7 +36,7 @@ public class LedgerEntry implements Serializable {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "a_no", nullable = true)
+    @Column(name = "a_no")
     private String aNo;
 
     @NotNull
@@ -56,9 +56,21 @@ public class LedgerEntry implements Serializable {
     private BigDecimal liability;
 
     @OneToMany(mappedBy = "ledgerEntry")
+    @OrderBy("id")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "author", "ledgerEntry" }, allowSetters = true)
     private Set<Comment> comments = new HashSet<>();
+
+    @ManyToMany
+    @OrderBy("id")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JoinTable(
+        name = "rel_ledger_entry__tags",
+        joinColumns = @JoinColumn(name = "ledger_entry_id"),
+        inverseJoinColumns = @JoinColumn(name = "tags_id")
+    )
+    @JsonIgnoreProperties(value = { "person", "customType", "customValue", "ledgerEntries" }, allowSetters = true)
+    private Set<Tag> tags = new HashSet<>();
 
     @ManyToOne
     @JsonIgnoreProperties(value = { "children", "ledgerEntries1s", "ledgerEntries2s", "ledgerEntries3s", "parent" }, allowSetters = true)
@@ -214,6 +226,31 @@ public class LedgerEntry implements Serializable {
             comments.forEach(i -> i.setLedgerEntry(this));
         }
         this.comments = comments;
+    }
+
+    public Set<Tag> getTags() {
+        return this.tags;
+    }
+
+    public LedgerEntry tags(Set<Tag> tags) {
+        this.setTags(tags);
+        return this;
+    }
+
+    public LedgerEntry addTags(Tag tag) {
+        this.tags.add(tag);
+        tag.getLedgerEntries().add(this);
+        return this;
+    }
+
+    public LedgerEntry removeTags(Tag tag) {
+        this.tags.remove(tag);
+        tag.getLedgerEntries().remove(this);
+        return this;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
 
     public CostCenter getCostCenter1() {

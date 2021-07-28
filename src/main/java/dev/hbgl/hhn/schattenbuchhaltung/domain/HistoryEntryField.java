@@ -40,7 +40,7 @@ public class HistoryEntryField implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnoreProperties(value = { "fields" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "fields", "author" }, allowSetters = true)
     private HistoryEntry entry;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

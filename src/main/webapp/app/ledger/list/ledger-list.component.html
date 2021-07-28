@@ -8,52 +8,54 @@
 
   <jhi-alert></jhi-alert>
 
-  <div class="alert alert-warning" id="no-result" *ngIf="entries?.length === 0">
-    <span jhiTranslate="schattenbuchhaltungApp.ledger.list.notFound">No ledger entries found</span>
-  </div>
+  <ng-container *ngIf="entries">
+    <div class="alert alert-warning" id="no-result" *ngIf="entries.length === 0">
+      <span jhiTranslate="schattenbuchhaltungApp.ledger.home.notFound">No ledger entries found</span>
+    </div>
 
-  <div class="table-responsive" id="entities" *ngIf="entries && entries.length > 0">
-    <table class="table table-striped" aria-describedby="page-heading">
-      <thead>
-        <tr>
-          <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.year">Year</span></th>
-          <th scope="col" class="text-nowrap">
-            <span>{{ 'global.field.costCenter' | translate }}&#160;1</span>
-          </th>
-          <th scope="col" class="text-nowrap">
-            <span>{{ 'global.field.costCenter' | translate }}&#160;2</span>
-          </th>
-          <th scope="col" class="text-nowrap">
-            <span>{{ 'global.field.costCenter' | translate }}&#160;3</span>
-          </th>
-          <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.no">No.</span></th>
-          <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.bookingDate">Booking date</span></th>
-          <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.description">Description</span></th>
-          <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.aNo">A-No.</span></th>
-          <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.division">Division</span></th>
-          <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.costType">Cost type</span></th>
-          <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.income">Income</span></th>
-          <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.expenditure">Expenditure</span></th>
-          <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.liability">Liability</span></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let entry of entries; trackBy: trackId" data-cy="entityTable">
-          <td>{{ entry.year }}</td>
-          <td>{{ entry.costCenter1?.displayText }}</td>
-          <td>{{ entry.costCenter2?.displayText }}</td>
-          <td>{{ entry.costCenter3?.displayText }}</td>
-          <td class="text-nowrap">{{ entry.no }}</td>
-          <td class="text-nowrap">{{ entry.bookingDate }}</td>
-          <td style="min-width: 18rem">{{ entry.description }}</td>
-          <td>{{ entry.aNo }}</td>
-          <td>{{ entry.division?.displayText }}</td>
-          <td>{{ entry.costType?.displayText }}</td>
-          <td>{{ entry.income }}</td>
-          <td>{{ entry.expenditure }}</td>
-          <td>{{ entry.liability }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <div class="table-responsive" id="entities" *ngIf="entries && entries.length > 0">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.no">No.</span></th>
+            <th scope="col" class="text-nowrap">
+              <span>{{ 'global.field.costCenter' | translate }}&#160;1</span>
+            </th>
+            <th scope="col" class="text-nowrap">
+              <span>{{ 'global.field.costCenter' | translate }}&#160;2</span>
+            </th>
+            <th scope="col" class="text-nowrap">
+              <span>{{ 'global.field.costCenter' | translate }}&#160;3</span>
+            </th>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.bookingDate">Booking date</span></th>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.description">Description</span></th>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.aNo">A-No.</span></th>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.division">Division</span></th>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.costType">Cost type</span></th>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.income">Income</span></th>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.expenditure">Expenditure</span></th>
+            <th scope="col" class="text-nowrap"><span jhiTranslate="global.field.liability">Liability</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let entry of entries; trackBy: trackId" data-cy="entityTable">
+            <td class="text-nowrap">
+              <a [routerLink]="['/ledger/entry', entry.no]">{{ entry.no }}</a>
+            </td>
+            <td>{{ entry.costCenter1?.displayText }}</td>
+            <td>{{ entry.costCenter2?.displayText }}</td>
+            <td>{{ entry.costCenter3?.displayText }}</td>
+            <td class="text-nowrap">{{ entry.bookingDate }}</td>
+            <td style="min-width: 18rem">{{ entry.description }}</td>
+            <td>{{ entry.aNo }}</td>
+            <td>{{ entry.division?.displayText }}</td>
+            <td>{{ entry.costType?.displayText }}</td>
+            <td>{{ entry.income }}</td>
+            <td>{{ entry.expenditure }}</td>
+            <td>{{ entry.liability }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
 </div>

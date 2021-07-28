@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import dev.hbgl.hhn.schattenbuchhaltung.IntegrationTest;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.Tag;
-import dev.hbgl.hhn.schattenbuchhaltung.domain.User;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.enumeration.TagKind;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.TagRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.search.TagSearchRepository;
@@ -82,11 +81,6 @@ class TagResourceIT {
      */
     public static Tag createEntity(EntityManager em) {
         Tag tag = new Tag().type(DEFAULT_TYPE).text(DEFAULT_TEXT);
-        // Add required entity
-        User user = UserResourceIT.createEntity(em);
-        em.persist(user);
-        em.flush();
-        tag.setAuthor(user);
         return tag;
     }
 
@@ -98,11 +92,6 @@ class TagResourceIT {
      */
     public static Tag createUpdatedEntity(EntityManager em) {
         Tag tag = new Tag().type(UPDATED_TYPE).text(UPDATED_TEXT);
-        // Add required entity
-        User user = UserResourceIT.createEntity(em);
-        em.persist(user);
-        em.flush();
-        tag.setAuthor(user);
         return tag;
     }
 

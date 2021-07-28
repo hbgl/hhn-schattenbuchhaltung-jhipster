@@ -1,0 +1,73 @@
+<!-- TODO Date formatting -->
+<div>
+  <h2 id="page-heading" data-cy="LederImportHeading">
+    <span jhiTranslate="schattenbuchhaltungApp.ledger.entry.title">Ledger</span>
+  </h2>
+
+  <div *ngIf="entry">
+    <ng-container *ngIf="entry.tags && entry.tags.length > 0; else noTags">
+      <span class="badge badge-info mr-2" *ngFor="let tag of entry.tags; trackBy: trackTag">{{ tag.text }}</span>
+    </ng-container>
+    <ng-template #noTags>
+      <span class="badge badge-light" jhiTranslate="schattenbuchhaltungApp.ledger.entry.noTags">No tags</span>
+    </ng-template>
+  </div>
+
+  <hr />
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <ng-container *ngIf="entry">
+    <dl class="row-md jh-entity-details dl-tabbed-2 mx-md-3">
+      <dt class="dl-tab-1" jhiTranslate="global.field.no">No.</dt>
+      <dd class="dl-tab-1">{{ entry.no }}</dd>
+      <dt class="dl-tab-1">{{ 'global.field.costCenter' | translate }}&#160;1</dt>
+      <dd class="dl-tab-1">{{ entry.costCenter1?.displayText }}</dd>
+      <dt class="dl-tab-1">{{ 'global.field.costCenter' | translate }}&#160;2</dt>
+      <dd class="dl-tab-1">{{ entry.costCenter2?.displayText }}</dd>
+      <dt class="dl-tab-1">{{ 'global.field.costCenter' | translate }}&#160;2</dt>
+      <dd class="dl-tab-1">{{ entry.costCenter3?.displayText }}</dd>
+      <dt class="dl-tab-1" jhiTranslate="global.field.bookingDate">Booking date</dt>
+      <dd class="dl-tab-1">{{ entry.bookingDate }}</dd>
+      <dt class="dl-tab-1" jhiTranslate="global.field.description">Description</dt>
+      <dd class="dl-tab-1">{{ entry.description }}</dd>
+      <dt class="dl-tab-1" class="dl-tab-2" jhiTranslate="global.field.aNo">A-No.</dt>
+      <dd class="dl-tab-2">{{ entry.aNo }}</dd>
+      <dt class="dl-tab-2" jhiTranslate="global.field.division">Division</dt>
+      <dd class="dl-tab-2">{{ entry.division?.displayText }}</dd>
+      <dt class="dl-tab-2" jhiTranslate="global.field.costType">Cost type</dt>
+      <dd class="dl-tab-2">{{ entry.costType?.displayText }}</dd>
+      <dt class="dl-tab-2" jhiTranslate="global.field.income">Income</dt>
+      <dd class="dl-tab-2">{{ entry.income }}</dd>
+      <dt class="dl-tab-2" jhiTranslate="global.field.expenditure">Expenditure</dt>
+      <dd class="dl-tab-2">{{ entry.expenditure }}</dd>
+      <dt class="dl-tab-2" jhiTranslate="global.field.liability">Liability</dt>
+      <dd class="dl-tab-2">{{ entry.liability }}</dd>
+    </dl>
+
+    <div class="mw-lg mt-6 ml-md-8 mr-auto">
+      <h3>
+        {{ entry.comments.length }}&#160;{{
+          (entry.comments.length === 1 ? 'schattenbuchhaltungApp.ledger.entry.comment' : 'schattenbuchhaltungApp.ledger.entry.comments')
+            | translate
+        }}
+      </h3>
+      <hr />
+      <div>
+        <div class="form-group mb-1">
+          <textarea class="w-100" placeholder="Write a comment"></textarea>
+        </div>
+        <div class="form-group d-flex justify-content-end">
+          <button class="btn btn-secondary mr-2" type="button">Cancel</button>
+          <button class="btn btn-primary" type="button">Comment</button>
+        </div>
+      </div>
+      <!-- <jhi-ledger-entry-comment [comment]="entry!.comments[0]"></jhi-ledger-entry-comment> -->
+      <div *ngFor="let comment of entry.comments; trackBy: trackComment">
+        <jhi-ledger-entry-comment [comment]="comment"></jhi-ledger-entry-comment>
+      </div>
+    </div>
+  </ng-container>
+</div>

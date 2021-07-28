@@ -5,7 +5,7 @@ import { AlertService } from 'app/core/util/alert.service';
 import { UserService } from 'app/entities/user/user.service';
 import * as Papa from 'papaparse';
 import { LedgerImportEntry, CostCenterImport } from '../ledger-import-entry.model';
-import { LedgerImportService } from './ledger-import.service';
+import { LedgerService } from '../ledger.service';
 
 type ImportState = 'initial' | 'opening' | 'opened' | 'importing' | 'imported';
 
@@ -25,7 +25,7 @@ export class LedgerImportComponent {
     protected alertService: AlertService,
     protected userService: UserService,
     protected activatedRoute: ActivatedRoute,
-    protected importService: LedgerImportService
+    protected ledgerService: LedgerService
   ) {}
 
   trackId(index: number, entry: LedgerImportEntry): string {
@@ -80,7 +80,7 @@ export class LedgerImportComponent {
     this.state = 'importing';
     try {
       const entries = this.entries.slice();
-      await this.importService.import(entries).toPromise();
+      await this.ledgerService.import(entries).toPromise();
     } finally {
       this.state = 'opened';
     }
