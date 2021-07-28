@@ -13,6 +13,7 @@ import dev.hbgl.hhn.schattenbuchhaltung.repository.LedgerEntryRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.CostCenterDTO;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.CommentVM;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.LedgerEntryVM;
+import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.LedgerListEntryVM;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.LedgerImportEntryDTO;
 import dev.hbgl.hhn.schattenbuchhaltung.service.parser.LedgerEntryInstantParser;
 import dev.hbgl.hhn.schattenbuchhaltung.web.rest.errors.BadRequestAlertException;
@@ -82,7 +83,18 @@ public class LedgerResource {
     @GetMapping("/ledger")
     public List<LedgerEntryVM> listLedger() {
         log.debug("REST request to get all LedgerEntries");
-        return ledgerEntryRepository.findAll().stream().map(LedgerEntryVM::fromEntity).collect(Collectors.toList());
+
+        var ledgerEntryGraph = entityManager.createEntityGraph(LedgerEntry.class);
+        ledgerEntryGraph.addAttributeNodes("costCenter1", "costCenter2", "costCenter3", "costType", "division");
+
+        var result = entityManager
+            .createQuery("SELECT le FROM LedgerEntry le ORDER BY bookingDate", LedgerEntry.class)
+            .setHint("javax.persistence.loadgraph", ledgerEntryGraph)
+            .getResultStream()
+            .map(e -> LedgerEntryVM.fromEntity(e, this.entityManager))
+            .collect(Collectors.toList());
+
+        return result;
     }
 
     @GetMapping("/ledger/entry/{no}")
@@ -90,7 +102,7 @@ public class LedgerResource {
         log.debug("REST request to get LedgerEntry by no : {}", no);
 
         var ledgerEntryGraph = entityManager.createEntityGraph(LedgerEntry.class);
-        ledgerEntryGraph.addAttributeNodes("costCenter1", "costCenter2", "costCenter3");
+        ledgerEntryGraph.addAttributeNodes("costCenter1", "costCenter2", "costCenter3", "costType", "division");
         ledgerEntryGraph.addSubgraph("tags").addAttributeNodes("customType", "customValue");
 
         var ledgerEntryMaybe = entityManager
@@ -114,7 +126,7 @@ public class LedgerResource {
             .setHint("javax.persistence.loadgraph", commentGraph)
             .getResultList();
 
-        var vm = LedgerEntryVM.fromEntity(ledgerEntry);
+        var vm = LedgerEntryVM.fromEntity(ledgerEntry, this.entityManager);
         vm.comments = comments.stream().map(CommentVM::fromEntity).collect(Collectors.toList());
 
         return ResponseUtil.wrapOrNotFound(Optional.of(vm));

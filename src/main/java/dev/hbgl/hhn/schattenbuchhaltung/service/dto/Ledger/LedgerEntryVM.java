@@ -6,6 +6,7 @@ import dev.hbgl.hhn.schattenbuchhaltung.domain.LedgerEntry;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY)
 public class LedgerEntryVM {
@@ -40,7 +41,7 @@ public class LedgerEntryVM {
 
     public CostTypeVM costType;
 
-    public static LedgerEntryVM fromEntity(LedgerEntry entity) {
+    public static LedgerEntryVM fromEntity(LedgerEntry entity, EntityManager entityManager) {
         if (entity == null) {
             return null;
         }
@@ -53,8 +54,13 @@ public class LedgerEntryVM {
         vm.income = entity.getIncome();
         vm.expenditure = entity.getExpenditure();
         vm.liability = entity.getLiability();
-        vm.comments = entity.getComments().stream().map(CommentVM::fromEntity).collect(Collectors.toList());
-        vm.tags = entity.getTags().stream().map(TagVM::fromEntity).collect(Collectors.toList());
+        var util = entityManager.getEntityManagerFactory().getPersistenceUnitUtil();
+        if (util.isLoaded(entity, "comments")) {
+            vm.comments = entity.getComments().stream().map(CommentVM::fromEntity).collect(Collectors.toList());
+        }
+        if (util.isLoaded(entity, "tags")) {
+            vm.tags = entity.getTags().stream().map(TagVM::fromEntity).collect(Collectors.toList());
+        }
         vm.costCenter1 = CostCenterVM.fromEntity(entity.getCostCenter1());
         vm.costCenter2 = CostCenterVM.fromEntity(entity.getCostCenter2());
         vm.costCenter3 = CostCenterVM.fromEntity(entity.getCostCenter3());
