@@ -11,7 +11,6 @@ import dev.hbgl.hhn.schattenbuchhaltung.IntegrationTest;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.Authority;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.User;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.UserRepository;
-import dev.hbgl.hhn.schattenbuchhaltung.repository.search.UserSearchRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.security.AuthoritiesConstants;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.AdminUserDTO;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.UserDTO;
@@ -55,14 +54,6 @@ class UserResourceIT {
 
     @Autowired
     private UserRepository userRepository;
-
-    /**
-     * This repository is mocked in the dev.hbgl.hhn.schattenbuchhaltung.repository.search test package.
-     *
-     * @see dev.hbgl.hhn.schattenbuchhaltung.repository.search.UserSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private UserSearchRepository mockUserSearchRepository;
 
     @Autowired
     private UserMapper userMapper;
@@ -142,8 +133,6 @@ class UserResourceIT {
     void getUser() throws Exception {
         // Initialize the database
         userRepository.saveAndFlush(user);
-
-        mockUserSearchRepository.save(user);
 
         assertThat(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).get(user.getLogin())).isNull();
 

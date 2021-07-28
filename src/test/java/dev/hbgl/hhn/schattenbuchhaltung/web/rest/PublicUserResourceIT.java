@@ -9,7 +9,6 @@ import dev.hbgl.hhn.schattenbuchhaltung.IntegrationTest;
 import dev.hbgl.hhn.schattenbuchhaltung.config.TestSecurityConfiguration;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.User;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.UserRepository;
-import dev.hbgl.hhn.schattenbuchhaltung.repository.search.UserSearchRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.security.AuthoritiesConstants;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,14 +33,6 @@ class PublicUserResourceIT {
 
     @Autowired
     private UserRepository userRepository;
-
-    /**
-     * This repository is mocked in the dev.hbgl.hhn.schattenbuchhaltung.repository.search test package.
-     *
-     * @see dev.hbgl.hhn.schattenbuchhaltung.repository.search.UserSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private UserSearchRepository mockUserSearchRepository;
 
     @Autowired
     private EntityManager em;

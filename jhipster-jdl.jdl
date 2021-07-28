@@ -1,5 +1,4 @@
 @skipClient
-@search(elasticsearch)
 entity LedgerEntry {
     no String required
 	description String required
@@ -53,7 +52,6 @@ relationship OneToMany {
 }
 
 @skipClient
-@search(elasticsearch)
 @paginate(pagination)
 entity Comment {
 	contentHtml String required
@@ -64,7 +62,6 @@ relationship ManyToOne {
 	Comment{author required} to User
 }
 
-@search(elasticsearch)
 @paginate(pagination)
 entity TagCustomType {
 	name String required

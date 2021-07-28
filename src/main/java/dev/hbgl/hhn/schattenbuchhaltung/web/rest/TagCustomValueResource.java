@@ -1,18 +1,13 @@
 package dev.hbgl.hhn.schattenbuchhaltung.web.rest;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
-
 import dev.hbgl.hhn.schattenbuchhaltung.domain.TagCustomValue;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.TagCustomValueRepository;
-import dev.hbgl.hhn.schattenbuchhaltung.repository.search.TagCustomValueSearchRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -47,14 +42,8 @@ public class TagCustomValueResource {
 
     private final TagCustomValueRepository tagCustomValueRepository;
 
-    private final TagCustomValueSearchRepository tagCustomValueSearchRepository;
-
-    public TagCustomValueResource(
-        TagCustomValueRepository tagCustomValueRepository,
-        TagCustomValueSearchRepository tagCustomValueSearchRepository
-    ) {
+    public TagCustomValueResource(TagCustomValueRepository tagCustomValueRepository) {
         this.tagCustomValueRepository = tagCustomValueRepository;
-        this.tagCustomValueSearchRepository = tagCustomValueSearchRepository;
     }
 
     /**
@@ -72,7 +61,6 @@ public class TagCustomValueResource {
             throw new BadRequestAlertException("A new tagCustomValue cannot already have an ID", ENTITY_NAME, "idexists");
         }
         TagCustomValue result = tagCustomValueRepository.save(tagCustomValue);
-        tagCustomValueSearchRepository.save(result);
         return ResponseEntity
             .created(new URI("/api/tag-custom-values/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -107,7 +95,6 @@ public class TagCustomValueResource {
         }
 
         TagCustomValue result = tagCustomValueRepository.save(tagCustomValue);
-        tagCustomValueSearchRepository.save(result);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, tagCustomValue.getId().toString()))
@@ -153,14 +140,7 @@ public class TagCustomValueResource {
                     return existingTagCustomValue;
                 }
             )
-            .map(tagCustomValueRepository::save)
-            .map(
-                savedTagCustomValue -> {
-                    tagCustomValueSearchRepository.save(savedTagCustomValue);
-
-                    return savedTagCustomValue;
-                }
-            );
+            .map(tagCustomValueRepository::save);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -205,26 +185,9 @@ public class TagCustomValueResource {
     public ResponseEntity<Void> deleteTagCustomValue(@PathVariable Long id) {
         log.debug("REST request to delete TagCustomValue : {}", id);
         tagCustomValueRepository.deleteById(id);
-        tagCustomValueSearchRepository.deleteById(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
-    }
-
-    /**
-     * {@code SEARCH  /_search/tag-custom-values?query=:query} : search for the tagCustomValue corresponding
-     * to the query.
-     *
-     * @param query the query of the tagCustomValue search.
-     * @param pageable the pagination information.
-     * @return the result of the search.
-     */
-    @GetMapping("/_search/tag-custom-values")
-    public ResponseEntity<List<TagCustomValue>> searchTagCustomValues(@RequestParam String query, Pageable pageable) {
-        log.debug("REST request to search for a page of TagCustomValues for query {}", query);
-        Page<TagCustomValue> page = tagCustomValueSearchRepository.search(queryStringQuery(query), pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 }

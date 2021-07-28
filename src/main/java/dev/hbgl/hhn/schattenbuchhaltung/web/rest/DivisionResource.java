@@ -1,18 +1,13 @@
 package dev.hbgl.hhn.schattenbuchhaltung.web.rest;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
-
 import dev.hbgl.hhn.schattenbuchhaltung.domain.Division;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.DivisionRepository;
-import dev.hbgl.hhn.schattenbuchhaltung.repository.search.DivisionSearchRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -41,11 +36,8 @@ public class DivisionResource {
 
     private final DivisionRepository divisionRepository;
 
-    private final DivisionSearchRepository divisionSearchRepository;
-
-    public DivisionResource(DivisionRepository divisionRepository, DivisionSearchRepository divisionSearchRepository) {
+    public DivisionResource(DivisionRepository divisionRepository) {
         this.divisionRepository = divisionRepository;
-        this.divisionSearchRepository = divisionSearchRepository;
     }
 
     /**
@@ -62,7 +54,6 @@ public class DivisionResource {
             throw new BadRequestAlertException("A new division cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Division result = divisionRepository.save(division);
-        divisionSearchRepository.save(result);
         return ResponseEntity
             .created(new URI("/api/divisions/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -97,7 +88,6 @@ public class DivisionResource {
         }
 
         Division result = divisionRepository.save(division);
-        divisionSearchRepository.save(result);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, division.getId().toString()))
@@ -146,14 +136,7 @@ public class DivisionResource {
                     return existingDivision;
                 }
             )
-            .map(divisionRepository::save)
-            .map(
-                savedDivision -> {
-                    divisionSearchRepository.save(savedDivision);
-
-                    return savedDivision;
-                }
-            );
+            .map(divisionRepository::save);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -195,25 +178,9 @@ public class DivisionResource {
     public ResponseEntity<Void> deleteDivision(@PathVariable Long id) {
         log.debug("REST request to delete Division : {}", id);
         divisionRepository.deleteById(id);
-        divisionSearchRepository.deleteById(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
-    }
-
-    /**
-     * {@code SEARCH  /_search/divisions?query=:query} : search for the division corresponding
-     * to the query.
-     *
-     * @param query the query of the division search.
-     * @return the result of the search.
-     */
-    @GetMapping("/_search/divisions")
-    public List<Division> searchDivisions(@RequestParam String query) {
-        log.debug("REST request to search Divisions for query {}", query);
-        return StreamSupport
-            .stream(divisionSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
     }
 }

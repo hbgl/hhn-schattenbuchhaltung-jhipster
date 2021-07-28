@@ -37,6 +37,5 @@
   "embedded": false,
   "applications": "*",
   "skipClient": true,
-  "searchEngine": "elasticsearch",
   "changelogDate": "20210614205641"
 }

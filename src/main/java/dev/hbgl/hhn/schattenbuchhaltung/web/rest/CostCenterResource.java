@@ -1,18 +1,13 @@
 package dev.hbgl.hhn.schattenbuchhaltung.web.rest;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
-
 import dev.hbgl.hhn.schattenbuchhaltung.domain.CostCenter;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.CostCenterRepository;
-import dev.hbgl.hhn.schattenbuchhaltung.repository.search.CostCenterSearchRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -41,11 +36,8 @@ public class CostCenterResource {
 
     private final CostCenterRepository costCenterRepository;
 
-    private final CostCenterSearchRepository costCenterSearchRepository;
-
-    public CostCenterResource(CostCenterRepository costCenterRepository, CostCenterSearchRepository costCenterSearchRepository) {
+    public CostCenterResource(CostCenterRepository costCenterRepository) {
         this.costCenterRepository = costCenterRepository;
-        this.costCenterSearchRepository = costCenterSearchRepository;
     }
 
     /**
@@ -62,7 +54,6 @@ public class CostCenterResource {
             throw new BadRequestAlertException("A new costCenter cannot already have an ID", ENTITY_NAME, "idexists");
         }
         CostCenter result = costCenterRepository.save(costCenter);
-        costCenterSearchRepository.save(result);
         return ResponseEntity
             .created(new URI("/api/cost-centers/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -97,7 +88,6 @@ public class CostCenterResource {
         }
 
         CostCenter result = costCenterRepository.save(costCenter);
-        costCenterSearchRepository.save(result);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, costCenter.getId().toString()))
@@ -149,14 +139,7 @@ public class CostCenterResource {
                     return existingCostCenter;
                 }
             )
-            .map(costCenterRepository::save)
-            .map(
-                savedCostCenter -> {
-                    costCenterSearchRepository.save(savedCostCenter);
-
-                    return savedCostCenter;
-                }
-            );
+            .map(costCenterRepository::save);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -198,25 +181,9 @@ public class CostCenterResource {
     public ResponseEntity<Void> deleteCostCenter(@PathVariable Long id) {
         log.debug("REST request to delete CostCenter : {}", id);
         costCenterRepository.deleteById(id);
-        costCenterSearchRepository.deleteById(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
-    }
-
-    /**
-     * {@code SEARCH  /_search/cost-centers?query=:query} : search for the costCenter corresponding
-     * to the query.
-     *
-     * @param query the query of the costCenter search.
-     * @return the result of the search.
-     */
-    @GetMapping("/_search/cost-centers")
-    public List<CostCenter> searchCostCenters(@RequestParam String query) {
-        log.debug("REST request to search CostCenters for query {}", query);
-        return StreamSupport
-            .stream(costCenterSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
     }
 }

@@ -1,18 +1,13 @@
 package dev.hbgl.hhn.schattenbuchhaltung.web.rest;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
-
 import dev.hbgl.hhn.schattenbuchhaltung.domain.Comment;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.CommentRepository;
-import dev.hbgl.hhn.schattenbuchhaltung.repository.search.CommentSearchRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -47,11 +42,8 @@ public class CommentResource {
 
     private final CommentRepository commentRepository;
 
-    private final CommentSearchRepository commentSearchRepository;
-
-    public CommentResource(CommentRepository commentRepository, CommentSearchRepository commentSearchRepository) {
+    public CommentResource(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;
-        this.commentSearchRepository = commentSearchRepository;
     }
 
     /**
@@ -68,7 +60,6 @@ public class CommentResource {
             throw new BadRequestAlertException("A new comment cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Comment result = commentRepository.save(comment);
-        commentSearchRepository.save(result);
         return ResponseEntity
             .created(new URI("/api/comments/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -103,7 +94,6 @@ public class CommentResource {
         }
 
         Comment result = commentRepository.save(comment);
-        commentSearchRepository.save(result);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, comment.getId().toString()))
@@ -152,14 +142,7 @@ public class CommentResource {
                     return existingComment;
                 }
             )
-            .map(commentRepository::save)
-            .map(
-                savedComment -> {
-                    commentSearchRepository.save(savedComment);
-
-                    return savedComment;
-                }
-            );
+            .map(commentRepository::save);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -204,26 +187,9 @@ public class CommentResource {
     public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
         log.debug("REST request to delete Comment : {}", id);
         commentRepository.deleteById(id);
-        commentSearchRepository.deleteById(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
-    }
-
-    /**
-     * {@code SEARCH  /_search/comments?query=:query} : search for the comment corresponding
-     * to the query.
-     *
-     * @param query the query of the comment search.
-     * @param pageable the pagination information.
-     * @return the result of the search.
-     */
-    @GetMapping("/_search/comments")
-    public ResponseEntity<List<Comment>> searchComments(@RequestParam String query, Pageable pageable) {
-        log.debug("REST request to search for a page of Comments for query {}", query);
-        Page<Comment> page = commentSearchRepository.search(queryStringQuery(query), pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 }

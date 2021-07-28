@@ -1,18 +1,13 @@
 package dev.hbgl.hhn.schattenbuchhaltung.web.rest;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
-
 import dev.hbgl.hhn.schattenbuchhaltung.domain.LedgerEntry;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.LedgerEntryRepository;
-import dev.hbgl.hhn.schattenbuchhaltung.repository.search.LedgerEntrySearchRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -41,11 +36,8 @@ public class LedgerEntryResource {
 
     private final LedgerEntryRepository ledgerEntryRepository;
 
-    private final LedgerEntrySearchRepository ledgerEntrySearchRepository;
-
-    public LedgerEntryResource(LedgerEntryRepository ledgerEntryRepository, LedgerEntrySearchRepository ledgerEntrySearchRepository) {
+    public LedgerEntryResource(LedgerEntryRepository ledgerEntryRepository) {
         this.ledgerEntryRepository = ledgerEntryRepository;
-        this.ledgerEntrySearchRepository = ledgerEntrySearchRepository;
     }
 
     /**
@@ -62,7 +54,6 @@ public class LedgerEntryResource {
             throw new BadRequestAlertException("A new ledgerEntry cannot already have an ID", ENTITY_NAME, "idexists");
         }
         LedgerEntry result = ledgerEntryRepository.save(ledgerEntry);
-        ledgerEntrySearchRepository.save(result);
         return ResponseEntity
             .created(new URI("/api/ledger-entries/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -97,7 +88,6 @@ public class LedgerEntryResource {
         }
 
         LedgerEntry result = ledgerEntryRepository.save(ledgerEntry);
-        ledgerEntrySearchRepository.save(result);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, ledgerEntry.getId().toString()))
@@ -161,14 +151,7 @@ public class LedgerEntryResource {
                     return existingLedgerEntry;
                 }
             )
-            .map(ledgerEntryRepository::save)
-            .map(
-                savedLedgerEntry -> {
-                    ledgerEntrySearchRepository.save(savedLedgerEntry);
-
-                    return savedLedgerEntry;
-                }
-            );
+            .map(ledgerEntryRepository::save);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -211,25 +194,9 @@ public class LedgerEntryResource {
     public ResponseEntity<Void> deleteLedgerEntry(@PathVariable Long id) {
         log.debug("REST request to delete LedgerEntry : {}", id);
         ledgerEntryRepository.deleteById(id);
-        ledgerEntrySearchRepository.deleteById(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
-    }
-
-    /**
-     * {@code SEARCH  /_search/ledger-entries?query=:query} : search for the ledgerEntry corresponding
-     * to the query.
-     *
-     * @param query the query of the ledgerEntry search.
-     * @return the result of the search.
-     */
-    @GetMapping("/_search/ledger-entries")
-    public List<LedgerEntry> searchLedgerEntries(@RequestParam String query) {
-        log.debug("REST request to search LedgerEntries for query {}", query);
-        return StreamSupport
-            .stream(ledgerEntrySearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
     }
 }

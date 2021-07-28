@@ -1,9 +1,7 @@
 package dev.hbgl.hhn.schattenbuchhaltung.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -11,17 +9,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import dev.hbgl.hhn.schattenbuchhaltung.IntegrationTest;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.Division;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.DivisionRepository;
-import dev.hbgl.hhn.schattenbuchhaltung.repository.search.DivisionSearchRepository;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -33,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link DivisionResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class DivisionResourceIT {
@@ -46,21 +38,12 @@ class DivisionResourceIT {
 
     private static final String ENTITY_API_URL = "/api/divisions";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-    private static final String ENTITY_SEARCH_API_URL = "/api/_search/divisions";
 
     private static Random random = new Random();
     private static AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private DivisionRepository divisionRepository;
-
-    /**
-     * This repository is mocked in the dev.hbgl.hhn.schattenbuchhaltung.repository.search test package.
-     *
-     * @see dev.hbgl.hhn.schattenbuchhaltung.repository.search.DivisionSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private DivisionSearchRepository mockDivisionSearchRepository;
 
     @Autowired
     private EntityManager em;
@@ -117,9 +100,6 @@ class DivisionResourceIT {
         Division testDivision = divisionList.get(divisionList.size() - 1);
         assertThat(testDivision.getNo()).isEqualTo(DEFAULT_NO);
         assertThat(testDivision.getName()).isEqualTo(DEFAULT_NAME);
-
-        // Validate the Division in Elasticsearch
-        verify(mockDivisionSearchRepository, times(1)).save(testDivision);
     }
 
     @Test
@@ -143,9 +123,6 @@ class DivisionResourceIT {
         // Validate the Division in the database
         List<Division> divisionList = divisionRepository.findAll();
         assertThat(divisionList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the Division in Elasticsearch
-        verify(mockDivisionSearchRepository, times(0)).save(division);
     }
 
     @Test
@@ -260,9 +237,6 @@ class DivisionResourceIT {
         Division testDivision = divisionList.get(divisionList.size() - 1);
         assertThat(testDivision.getNo()).isEqualTo(UPDATED_NO);
         assertThat(testDivision.getName()).isEqualTo(UPDATED_NAME);
-
-        // Validate the Division in Elasticsearch
-        verify(mockDivisionSearchRepository).save(testDivision);
     }
 
     @Test
@@ -284,9 +258,6 @@ class DivisionResourceIT {
         // Validate the Division in the database
         List<Division> divisionList = divisionRepository.findAll();
         assertThat(divisionList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the Division in Elasticsearch
-        verify(mockDivisionSearchRepository, times(0)).save(division);
     }
 
     @Test
@@ -308,9 +279,6 @@ class DivisionResourceIT {
         // Validate the Division in the database
         List<Division> divisionList = divisionRepository.findAll();
         assertThat(divisionList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the Division in Elasticsearch
-        verify(mockDivisionSearchRepository, times(0)).save(division);
     }
 
     @Test
@@ -332,9 +300,6 @@ class DivisionResourceIT {
         // Validate the Division in the database
         List<Division> divisionList = divisionRepository.findAll();
         assertThat(divisionList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the Division in Elasticsearch
-        verify(mockDivisionSearchRepository, times(0)).save(division);
     }
 
     @Test
@@ -416,9 +381,6 @@ class DivisionResourceIT {
         // Validate the Division in the database
         List<Division> divisionList = divisionRepository.findAll();
         assertThat(divisionList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the Division in Elasticsearch
-        verify(mockDivisionSearchRepository, times(0)).save(division);
     }
 
     @Test
@@ -440,9 +402,6 @@ class DivisionResourceIT {
         // Validate the Division in the database
         List<Division> divisionList = divisionRepository.findAll();
         assertThat(divisionList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the Division in Elasticsearch
-        verify(mockDivisionSearchRepository, times(0)).save(division);
     }
 
     @Test
@@ -464,9 +423,6 @@ class DivisionResourceIT {
         // Validate the Division in the database
         List<Division> divisionList = divisionRepository.findAll();
         assertThat(divisionList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the Division in Elasticsearch
-        verify(mockDivisionSearchRepository, times(0)).save(division);
     }
 
     @Test
@@ -485,27 +441,5 @@ class DivisionResourceIT {
         // Validate the database contains one less item
         List<Division> divisionList = divisionRepository.findAll();
         assertThat(divisionList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the Division in Elasticsearch
-        verify(mockDivisionSearchRepository, times(1)).deleteById(division.getId());
-    }
-
-    @Test
-    @Transactional
-    void searchDivision() throws Exception {
-        // Configure the mock search repository
-        // Initialize the database
-        divisionRepository.saveAndFlush(division);
-        when(mockDivisionSearchRepository.search(queryStringQuery("id:" + division.getId())))
-            .thenReturn(Collections.singletonList(division));
-
-        // Search the division
-        restDivisionMockMvc
-            .perform(get(ENTITY_SEARCH_API_URL + "?query=id:" + division.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(division.getId().intValue())))
-            .andExpect(jsonPath("$.[*].no").value(hasItem(DEFAULT_NO)))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)));
     }
 }

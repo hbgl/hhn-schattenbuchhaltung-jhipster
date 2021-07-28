@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { SearchWithPagination } from 'app/core/request/request.model';
 import { ITagCustomType, getTagCustomTypeIdentifier } from '../tag-custom-type.model';
 
 export type EntityResponseType = HttpResponse<ITagCustomType>;
@@ -14,7 +13,6 @@ export type EntityArrayResponseType = HttpResponse<ITagCustomType[]>;
 @Injectable({ providedIn: 'root' })
 export class TagCustomTypeService {
   public resourceUrl = this.applicationConfigService.getEndpointFor('api/tag-custom-types');
-  public resourceSearchUrl = this.applicationConfigService.getEndpointFor('api/_search/tag-custom-types');
 
   constructor(protected http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
@@ -45,11 +43,6 @@ export class TagCustomTypeService {
 
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
-  }
-
-  search(req: SearchWithPagination): Observable<EntityArrayResponseType> {
-    const options = createRequestOption(req);
-    return this.http.get<ITagCustomType[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
   }
 
   addTagCustomTypeToCollectionIfMissing(

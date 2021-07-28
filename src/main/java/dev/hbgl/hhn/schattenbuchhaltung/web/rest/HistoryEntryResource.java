@@ -1,18 +1,13 @@
 package dev.hbgl.hhn.schattenbuchhaltung.web.rest;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
-
 import dev.hbgl.hhn.schattenbuchhaltung.domain.HistoryEntry;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.HistoryEntryRepository;
-import dev.hbgl.hhn.schattenbuchhaltung.repository.search.HistoryEntrySearchRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,11 +36,8 @@ public class HistoryEntryResource {
 
     private final HistoryEntryRepository historyEntryRepository;
 
-    private final HistoryEntrySearchRepository historyEntrySearchRepository;
-
-    public HistoryEntryResource(HistoryEntryRepository historyEntryRepository, HistoryEntrySearchRepository historyEntrySearchRepository) {
+    public HistoryEntryResource(HistoryEntryRepository historyEntryRepository) {
         this.historyEntryRepository = historyEntryRepository;
-        this.historyEntrySearchRepository = historyEntrySearchRepository;
     }
 
     /**
@@ -73,21 +65,5 @@ public class HistoryEntryResource {
         log.debug("REST request to get HistoryEntry : {}", id);
         Optional<HistoryEntry> historyEntry = historyEntryRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(historyEntry);
-    }
-
-    /**
-     * {@code SEARCH  /_search/history-entries?query=:query} : search for the historyEntry corresponding
-     * to the query.
-     *
-     * @param query the query of the historyEntry search.
-     * @param pageable the pagination information.
-     * @return the result of the search.
-     */
-    @GetMapping("/_search/history-entries")
-    public ResponseEntity<List<HistoryEntry>> searchHistoryEntries(@RequestParam String query, Pageable pageable) {
-        log.debug("REST request to search for a page of HistoryEntries for query {}", query);
-        Page<HistoryEntry> page = historyEntrySearchRepository.search(queryStringQuery(query), pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 }

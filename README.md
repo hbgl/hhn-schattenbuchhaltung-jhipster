@@ -14,7 +14,6 @@ This application was generated using JHipster 7.0.1, you can find documentation 
 
 - `cd` into project root
 - start PostgreSQL `docker-compose -f src/main/docker/postgresql.yml up -d`
-- start Elasticsearch `docker-compose -f src/main/docker/elasticsearch.yml up -d`
 - start Keycloak `docker-compose -f src/main/docker/keycloak.yml up -d`
 - start app `./mvnw`
 - app is now running at http://localhost:8080

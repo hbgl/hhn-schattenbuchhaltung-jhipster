@@ -5,7 +5,6 @@ import dev.hbgl.hhn.schattenbuchhaltung.domain.Authority;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.User;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.AuthorityRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.UserRepository;
-import dev.hbgl.hhn.schattenbuchhaltung.repository.search.UserSearchRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.security.SecurityUtils;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.AdminUserDTO;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.UserDTO;
@@ -35,20 +34,12 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    private final UserSearchRepository userSearchRepository;
-
     private final AuthorityRepository authorityRepository;
 
     private final CacheManager cacheManager;
 
-    public UserService(
-        UserRepository userRepository,
-        UserSearchRepository userSearchRepository,
-        AuthorityRepository authorityRepository,
-        CacheManager cacheManager
-    ) {
+    public UserService(UserRepository userRepository, AuthorityRepository authorityRepository, CacheManager cacheManager) {
         this.userRepository = userRepository;
-        this.userSearchRepository = userSearchRepository;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
     }
@@ -75,7 +66,6 @@ public class UserService {
                     }
                     user.setLangKey(langKey);
                     user.setImageUrl(imageUrl);
-                    userSearchRepository.save(user);
                     this.clearUserCaches(user);
                     log.debug("Changed Information for User: {}", user);
                 }

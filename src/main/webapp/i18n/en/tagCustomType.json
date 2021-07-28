@@ -6,7 +6,6 @@
         "refreshListLabel": "Refresh list",
         "createLabel": "Create a new Tag Custom Type",
         "createOrEditLabel": "Create or edit a Tag Custom Type",
-        "search": "Search for Tag Custom Type",
         "notFound": "No Tag Custom Types found"
       },
       "created": "A new Tag Custom Type is created with identifier {{ param }}",

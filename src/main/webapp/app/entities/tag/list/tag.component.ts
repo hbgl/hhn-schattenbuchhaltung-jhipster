@@ -16,7 +16,6 @@ import { TagDeleteDialogComponent } from '../delete/tag-delete-dialog.component'
 })
 export class TagComponent implements OnInit {
   tags?: ITag[];
-  currentSearch: string;
   isLoading = false;
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
@@ -30,34 +29,11 @@ export class TagComponent implements OnInit {
     protected activatedRoute: ActivatedRoute,
     protected router: Router,
     protected modalService: NgbModal
-  ) {
-    this.currentSearch = this.activatedRoute.snapshot.queryParams['search'] ?? '';
-  }
+  ) {}
 
   loadPage(page?: number, dontNavigate?: boolean): void {
     this.isLoading = true;
     const pageToLoad: number = page ?? this.page ?? 1;
-
-    if (this.currentSearch) {
-      this.tagService
-        .search({
-          page: pageToLoad - 1,
-          query: this.currentSearch,
-          size: this.itemsPerPage,
-          sort: this.sort(),
-        })
-        .subscribe(
-          (res: HttpResponse<ITag[]>) => {
-            this.isLoading = false;
-            this.onSuccess(res.body, res.headers, pageToLoad, !dontNavigate);
-          },
-          () => {
-            this.isLoading = false;
-            this.onError();
-          }
-        );
-      return;
-    }
 
     this.tagService
       .query({
@@ -75,11 +51,6 @@ export class TagComponent implements OnInit {
           this.onError();
         }
       );
-  }
-
-  search(query: string): void {
-    this.currentSearch = query;
-    this.loadPage(1);
   }
 
   ngOnInit(): void {
@@ -127,13 +98,11 @@ export class TagComponent implements OnInit {
   protected onSuccess(data: ITag[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
     this.totalItems = Number(headers.get('X-Total-Count'));
     this.page = page;
-    this.ngbPaginationPage = this.page;
     if (navigate) {
       this.router.navigate(['/tag'], {
         queryParams: {
           page: this.page,
           size: this.itemsPerPage,
-          search: this.currentSearch,
           sort: this.predicate + ',' + (this.ascending ? 'asc' : 'desc'),
         },
       });

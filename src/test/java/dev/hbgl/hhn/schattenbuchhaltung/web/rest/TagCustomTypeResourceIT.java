@@ -1,9 +1,7 @@
 package dev.hbgl.hhn.schattenbuchhaltung.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -11,21 +9,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import dev.hbgl.hhn.schattenbuchhaltung.IntegrationTest;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.TagCustomType;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.TagCustomTypeRepository;
-import dev.hbgl.hhn.schattenbuchhaltung.repository.search.TagCustomTypeSearchRepository;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link TagCustomTypeResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class TagCustomTypeResourceIT {
@@ -48,21 +38,12 @@ class TagCustomTypeResourceIT {
 
     private static final String ENTITY_API_URL = "/api/tag-custom-types";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-    private static final String ENTITY_SEARCH_API_URL = "/api/_search/tag-custom-types";
 
     private static Random random = new Random();
     private static AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private TagCustomTypeRepository tagCustomTypeRepository;
-
-    /**
-     * This repository is mocked in the dev.hbgl.hhn.schattenbuchhaltung.repository.search test package.
-     *
-     * @see dev.hbgl.hhn.schattenbuchhaltung.repository.search.TagCustomTypeSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private TagCustomTypeSearchRepository mockTagCustomTypeSearchRepository;
 
     @Autowired
     private EntityManager em;
@@ -119,9 +100,6 @@ class TagCustomTypeResourceIT {
         TagCustomType testTagCustomType = tagCustomTypeList.get(tagCustomTypeList.size() - 1);
         assertThat(testTagCustomType.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testTagCustomType.getEnabled()).isEqualTo(DEFAULT_ENABLED);
-
-        // Validate the TagCustomType in Elasticsearch
-        verify(mockTagCustomTypeSearchRepository, times(1)).save(testTagCustomType);
     }
 
     @Test
@@ -145,9 +123,6 @@ class TagCustomTypeResourceIT {
         // Validate the TagCustomType in the database
         List<TagCustomType> tagCustomTypeList = tagCustomTypeRepository.findAll();
         assertThat(tagCustomTypeList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the TagCustomType in Elasticsearch
-        verify(mockTagCustomTypeSearchRepository, times(0)).save(tagCustomType);
     }
 
     @Test
@@ -262,9 +237,6 @@ class TagCustomTypeResourceIT {
         TagCustomType testTagCustomType = tagCustomTypeList.get(tagCustomTypeList.size() - 1);
         assertThat(testTagCustomType.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testTagCustomType.getEnabled()).isEqualTo(UPDATED_ENABLED);
-
-        // Validate the TagCustomType in Elasticsearch
-        verify(mockTagCustomTypeSearchRepository).save(testTagCustomType);
     }
 
     @Test
@@ -286,9 +258,6 @@ class TagCustomTypeResourceIT {
         // Validate the TagCustomType in the database
         List<TagCustomType> tagCustomTypeList = tagCustomTypeRepository.findAll();
         assertThat(tagCustomTypeList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the TagCustomType in Elasticsearch
-        verify(mockTagCustomTypeSearchRepository, times(0)).save(tagCustomType);
     }
 
     @Test
@@ -310,9 +279,6 @@ class TagCustomTypeResourceIT {
         // Validate the TagCustomType in the database
         List<TagCustomType> tagCustomTypeList = tagCustomTypeRepository.findAll();
         assertThat(tagCustomTypeList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the TagCustomType in Elasticsearch
-        verify(mockTagCustomTypeSearchRepository, times(0)).save(tagCustomType);
     }
 
     @Test
@@ -334,9 +300,6 @@ class TagCustomTypeResourceIT {
         // Validate the TagCustomType in the database
         List<TagCustomType> tagCustomTypeList = tagCustomTypeRepository.findAll();
         assertThat(tagCustomTypeList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the TagCustomType in Elasticsearch
-        verify(mockTagCustomTypeSearchRepository, times(0)).save(tagCustomType);
     }
 
     @Test
@@ -420,9 +383,6 @@ class TagCustomTypeResourceIT {
         // Validate the TagCustomType in the database
         List<TagCustomType> tagCustomTypeList = tagCustomTypeRepository.findAll();
         assertThat(tagCustomTypeList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the TagCustomType in Elasticsearch
-        verify(mockTagCustomTypeSearchRepository, times(0)).save(tagCustomType);
     }
 
     @Test
@@ -444,9 +404,6 @@ class TagCustomTypeResourceIT {
         // Validate the TagCustomType in the database
         List<TagCustomType> tagCustomTypeList = tagCustomTypeRepository.findAll();
         assertThat(tagCustomTypeList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the TagCustomType in Elasticsearch
-        verify(mockTagCustomTypeSearchRepository, times(0)).save(tagCustomType);
     }
 
     @Test
@@ -468,9 +425,6 @@ class TagCustomTypeResourceIT {
         // Validate the TagCustomType in the database
         List<TagCustomType> tagCustomTypeList = tagCustomTypeRepository.findAll();
         assertThat(tagCustomTypeList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the TagCustomType in Elasticsearch
-        verify(mockTagCustomTypeSearchRepository, times(0)).save(tagCustomType);
     }
 
     @Test
@@ -489,27 +443,5 @@ class TagCustomTypeResourceIT {
         // Validate the database contains one less item
         List<TagCustomType> tagCustomTypeList = tagCustomTypeRepository.findAll();
         assertThat(tagCustomTypeList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the TagCustomType in Elasticsearch
-        verify(mockTagCustomTypeSearchRepository, times(1)).deleteById(tagCustomType.getId());
-    }
-
-    @Test
-    @Transactional
-    void searchTagCustomType() throws Exception {
-        // Configure the mock search repository
-        // Initialize the database
-        tagCustomTypeRepository.saveAndFlush(tagCustomType);
-        when(mockTagCustomTypeSearchRepository.search(queryStringQuery("id:" + tagCustomType.getId()), PageRequest.of(0, 20)))
-            .thenReturn(new PageImpl<>(Collections.singletonList(tagCustomType), PageRequest.of(0, 1), 1));
-
-        // Search the tagCustomType
-        restTagCustomTypeMockMvc
-            .perform(get(ENTITY_SEARCH_API_URL + "?query=id:" + tagCustomType.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(tagCustomType.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
-            .andExpect(jsonPath("$.[*].enabled").value(hasItem(DEFAULT_ENABLED.booleanValue())));
     }
 }

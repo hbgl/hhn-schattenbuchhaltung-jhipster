@@ -6,7 +6,6 @@
         "refreshListLabel": "Refresh list",
         "createLabel": "Create a new Tag Custom Value",
         "createOrEditLabel": "Create or edit a Tag Custom Value",
-        "search": "Search for Tag Custom Value",
         "notFound": "No Tag Custom Values found"
       },
       "created": "A new Tag Custom Value is created with identifier {{ param }}",

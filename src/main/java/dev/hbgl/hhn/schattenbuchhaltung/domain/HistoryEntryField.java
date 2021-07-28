@@ -6,7 +6,6 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  * A HistoryEntryField.
@@ -14,7 +13,6 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @Entity
 @Table(name = "history_entry_field")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@org.springframework.data.elasticsearch.annotations.Document(indexName = "historyentryfield")
 public class HistoryEntryField implements Serializable {
 
     private static final long serialVersionUID = 1L;

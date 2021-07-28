@@ -1,9 +1,7 @@
 package dev.hbgl.hhn.schattenbuchhaltung.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -12,23 +10,16 @@ import dev.hbgl.hhn.schattenbuchhaltung.IntegrationTest;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.HistoryEntry;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.enumeration.HistoryAction;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.HistoryEntryRepository;
-import dev.hbgl.hhn.schattenbuchhaltung.repository.search.HistoryEntrySearchRepository;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,7 +30,6 @@ import org.springframework.util.Base64Utils;
  * Integration tests for the {@link HistoryEntryResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class HistoryEntryResourceIT {
@@ -66,21 +56,12 @@ class HistoryEntryResourceIT {
 
     private static final String ENTITY_API_URL = "/api/history-entries";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-    private static final String ENTITY_SEARCH_API_URL = "/api/_search/history-entries";
 
     private static Random random = new Random();
     private static AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private HistoryEntryRepository historyEntryRepository;
-
-    /**
-     * This repository is mocked in the dev.hbgl.hhn.schattenbuchhaltung.repository.search test package.
-     *
-     * @see dev.hbgl.hhn.schattenbuchhaltung.repository.search.HistoryEntrySearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private HistoryEntrySearchRepository mockHistoryEntrySearchRepository;
 
     @Autowired
     private EntityManager em;
@@ -178,29 +159,5 @@ class HistoryEntryResourceIT {
     void getNonExistingHistoryEntry() throws Exception {
         // Get the historyEntry
         restHistoryEntryMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
-    }
-
-    @Test
-    @Transactional
-    void searchHistoryEntry() throws Exception {
-        // Configure the mock search repository
-        // Initialize the database
-        historyEntryRepository.saveAndFlush(historyEntry);
-        when(mockHistoryEntrySearchRepository.search(queryStringQuery("id:" + historyEntry.getId()), PageRequest.of(0, 20)))
-            .thenReturn(new PageImpl<>(Collections.singletonList(historyEntry), PageRequest.of(0, 1), 1));
-
-        // Search the historyEntry
-        restHistoryEntryMockMvc
-            .perform(get(ENTITY_SEARCH_API_URL + "?query=id:" + historyEntry.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(historyEntry.getId().intValue())))
-            .andExpect(jsonPath("$.[*].instant").value(hasItem(DEFAULT_INSTANT.toString())))
-            .andExpect(jsonPath("$.[*].action").value(hasItem(DEFAULT_ACTION.toString())))
-            .andExpect(jsonPath("$.[*].patchContentType").value(hasItem(DEFAULT_PATCH_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].patch").value(hasItem(Base64Utils.encodeToString(DEFAULT_PATCH))))
-            .andExpect(jsonPath("$.[*].recType").value(hasItem(DEFAULT_REC_TYPE)))
-            .andExpect(jsonPath("$.[*].recId").value(hasItem(DEFAULT_REC_ID.intValue())))
-            .andExpect(jsonPath("$.[*].recId2").value(hasItem(DEFAULT_REC_ID_2.intValue())));
     }
 }

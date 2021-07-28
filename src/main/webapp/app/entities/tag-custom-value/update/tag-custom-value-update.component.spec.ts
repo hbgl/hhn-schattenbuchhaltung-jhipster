@@ -42,10 +42,10 @@ describe('Component Tests', () => {
     describe('ngOnInit', () => {
       it('Should call TagCustomType query and add missing value', () => {
         const tagCustomValue: ITagCustomValue = { id: 456 };
-        const type: ITagCustomType = { id: 11136 };
+        const type: ITagCustomType = { id: 14233 };
         tagCustomValue.type = type;
 
-        const tagCustomTypeCollection: ITagCustomType[] = [{ id: 2186 }];
+        const tagCustomTypeCollection: ITagCustomType[] = [{ id: 71052 }];
         spyOn(tagCustomTypeService, 'query').and.returnValue(of(new HttpResponse({ body: tagCustomTypeCollection })));
         const additionalTagCustomTypes = [type];
         const expectedCollection: ITagCustomType[] = [...additionalTagCustomTypes, ...tagCustomTypeCollection];
@@ -64,7 +64,7 @@ describe('Component Tests', () => {
 
       it('Should update editForm', () => {
         const tagCustomValue: ITagCustomValue = { id: 456 };
-        const type: ITagCustomType = { id: 75865 };
+        const type: ITagCustomType = { id: 89765 };
         tagCustomValue.type = type;
 
         activatedRoute.data = of({ tagCustomValue });

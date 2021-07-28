@@ -6,7 +6,6 @@
         "refreshListLabel": "Liste aktualisieren",
         "createLabel": "Tag erstellen",
         "createOrEditLabel": "Tag erstellen oder bearbeiten",
-        "search": "Suche nach Tag",
         "notFound": "Keine Tags gefunden"
       },
       "created": "Tag erstellt mit ID {{ param }}",

@@ -1,18 +1,13 @@
 package dev.hbgl.hhn.schattenbuchhaltung.web.rest;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
-
 import dev.hbgl.hhn.schattenbuchhaltung.domain.CostType;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.CostTypeRepository;
-import dev.hbgl.hhn.schattenbuchhaltung.repository.search.CostTypeSearchRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -41,11 +36,8 @@ public class CostTypeResource {
 
     private final CostTypeRepository costTypeRepository;
 
-    private final CostTypeSearchRepository costTypeSearchRepository;
-
-    public CostTypeResource(CostTypeRepository costTypeRepository, CostTypeSearchRepository costTypeSearchRepository) {
+    public CostTypeResource(CostTypeRepository costTypeRepository) {
         this.costTypeRepository = costTypeRepository;
-        this.costTypeSearchRepository = costTypeSearchRepository;
     }
 
     /**
@@ -62,7 +54,6 @@ public class CostTypeResource {
             throw new BadRequestAlertException("A new costType cannot already have an ID", ENTITY_NAME, "idexists");
         }
         CostType result = costTypeRepository.save(costType);
-        costTypeSearchRepository.save(result);
         return ResponseEntity
             .created(new URI("/api/cost-types/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -97,7 +88,6 @@ public class CostTypeResource {
         }
 
         CostType result = costTypeRepository.save(costType);
-        costTypeSearchRepository.save(result);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, costType.getId().toString()))
@@ -146,14 +136,7 @@ public class CostTypeResource {
                     return existingCostType;
                 }
             )
-            .map(costTypeRepository::save)
-            .map(
-                savedCostType -> {
-                    costTypeSearchRepository.save(savedCostType);
-
-                    return savedCostType;
-                }
-            );
+            .map(costTypeRepository::save);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -195,25 +178,9 @@ public class CostTypeResource {
     public ResponseEntity<Void> deleteCostType(@PathVariable Long id) {
         log.debug("REST request to delete CostType : {}", id);
         costTypeRepository.deleteById(id);
-        costTypeSearchRepository.deleteById(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
-    }
-
-    /**
-     * {@code SEARCH  /_search/cost-types?query=:query} : search for the costType corresponding
-     * to the query.
-     *
-     * @param query the query of the costType search.
-     * @return the result of the search.
-     */
-    @GetMapping("/_search/cost-types")
-    public List<CostType> searchCostTypes(@RequestParam String query) {
-        log.debug("REST request to search CostTypes for query {}", query);
-        return StreamSupport
-            .stream(costTypeSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
     }
 }

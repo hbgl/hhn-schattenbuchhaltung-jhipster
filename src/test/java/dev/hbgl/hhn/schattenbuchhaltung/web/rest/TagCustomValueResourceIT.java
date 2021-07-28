@@ -1,9 +1,7 @@
 package dev.hbgl.hhn.schattenbuchhaltung.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -12,21 +10,14 @@ import dev.hbgl.hhn.schattenbuchhaltung.IntegrationTest;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.TagCustomType;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.TagCustomValue;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.TagCustomValueRepository;
-import dev.hbgl.hhn.schattenbuchhaltung.repository.search.TagCustomValueSearchRepository;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link TagCustomValueResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class TagCustomValueResourceIT {
@@ -46,21 +36,12 @@ class TagCustomValueResourceIT {
 
     private static final String ENTITY_API_URL = "/api/tag-custom-values";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-    private static final String ENTITY_SEARCH_API_URL = "/api/_search/tag-custom-values";
 
     private static Random random = new Random();
     private static AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private TagCustomValueRepository tagCustomValueRepository;
-
-    /**
-     * This repository is mocked in the dev.hbgl.hhn.schattenbuchhaltung.repository.search test package.
-     *
-     * @see dev.hbgl.hhn.schattenbuchhaltung.repository.search.TagCustomValueSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private TagCustomValueSearchRepository mockTagCustomValueSearchRepository;
 
     @Autowired
     private EntityManager em;
@@ -136,9 +117,6 @@ class TagCustomValueResourceIT {
         assertThat(tagCustomValueList).hasSize(databaseSizeBeforeCreate + 1);
         TagCustomValue testTagCustomValue = tagCustomValueList.get(tagCustomValueList.size() - 1);
         assertThat(testTagCustomValue.getValue()).isEqualTo(DEFAULT_VALUE);
-
-        // Validate the TagCustomValue in Elasticsearch
-        verify(mockTagCustomValueSearchRepository, times(1)).save(testTagCustomValue);
     }
 
     @Test
@@ -162,9 +140,6 @@ class TagCustomValueResourceIT {
         // Validate the TagCustomValue in the database
         List<TagCustomValue> tagCustomValueList = tagCustomValueRepository.findAll();
         assertThat(tagCustomValueList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the TagCustomValue in Elasticsearch
-        verify(mockTagCustomValueSearchRepository, times(0)).save(tagCustomValue);
     }
 
     @Test
@@ -254,9 +229,6 @@ class TagCustomValueResourceIT {
         assertThat(tagCustomValueList).hasSize(databaseSizeBeforeUpdate);
         TagCustomValue testTagCustomValue = tagCustomValueList.get(tagCustomValueList.size() - 1);
         assertThat(testTagCustomValue.getValue()).isEqualTo(UPDATED_VALUE);
-
-        // Validate the TagCustomValue in Elasticsearch
-        verify(mockTagCustomValueSearchRepository).save(testTagCustomValue);
     }
 
     @Test
@@ -278,9 +250,6 @@ class TagCustomValueResourceIT {
         // Validate the TagCustomValue in the database
         List<TagCustomValue> tagCustomValueList = tagCustomValueRepository.findAll();
         assertThat(tagCustomValueList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the TagCustomValue in Elasticsearch
-        verify(mockTagCustomValueSearchRepository, times(0)).save(tagCustomValue);
     }
 
     @Test
@@ -302,9 +271,6 @@ class TagCustomValueResourceIT {
         // Validate the TagCustomValue in the database
         List<TagCustomValue> tagCustomValueList = tagCustomValueRepository.findAll();
         assertThat(tagCustomValueList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the TagCustomValue in Elasticsearch
-        verify(mockTagCustomValueSearchRepository, times(0)).save(tagCustomValue);
     }
 
     @Test
@@ -326,9 +292,6 @@ class TagCustomValueResourceIT {
         // Validate the TagCustomValue in the database
         List<TagCustomValue> tagCustomValueList = tagCustomValueRepository.findAll();
         assertThat(tagCustomValueList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the TagCustomValue in Elasticsearch
-        verify(mockTagCustomValueSearchRepository, times(0)).save(tagCustomValue);
     }
 
     @Test
@@ -408,9 +371,6 @@ class TagCustomValueResourceIT {
         // Validate the TagCustomValue in the database
         List<TagCustomValue> tagCustomValueList = tagCustomValueRepository.findAll();
         assertThat(tagCustomValueList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the TagCustomValue in Elasticsearch
-        verify(mockTagCustomValueSearchRepository, times(0)).save(tagCustomValue);
     }
 
     @Test
@@ -432,9 +392,6 @@ class TagCustomValueResourceIT {
         // Validate the TagCustomValue in the database
         List<TagCustomValue> tagCustomValueList = tagCustomValueRepository.findAll();
         assertThat(tagCustomValueList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the TagCustomValue in Elasticsearch
-        verify(mockTagCustomValueSearchRepository, times(0)).save(tagCustomValue);
     }
 
     @Test
@@ -456,9 +413,6 @@ class TagCustomValueResourceIT {
         // Validate the TagCustomValue in the database
         List<TagCustomValue> tagCustomValueList = tagCustomValueRepository.findAll();
         assertThat(tagCustomValueList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the TagCustomValue in Elasticsearch
-        verify(mockTagCustomValueSearchRepository, times(0)).save(tagCustomValue);
     }
 
     @Test
@@ -477,26 +431,5 @@ class TagCustomValueResourceIT {
         // Validate the database contains one less item
         List<TagCustomValue> tagCustomValueList = tagCustomValueRepository.findAll();
         assertThat(tagCustomValueList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the TagCustomValue in Elasticsearch
-        verify(mockTagCustomValueSearchRepository, times(1)).deleteById(tagCustomValue.getId());
-    }
-
-    @Test
-    @Transactional
-    void searchTagCustomValue() throws Exception {
-        // Configure the mock search repository
-        // Initialize the database
-        tagCustomValueRepository.saveAndFlush(tagCustomValue);
-        when(mockTagCustomValueSearchRepository.search(queryStringQuery("id:" + tagCustomValue.getId()), PageRequest.of(0, 20)))
-            .thenReturn(new PageImpl<>(Collections.singletonList(tagCustomValue), PageRequest.of(0, 1), 1));
-
-        // Search the tagCustomValue
-        restTagCustomValueMockMvc
-            .perform(get(ENTITY_SEARCH_API_URL + "?query=id:" + tagCustomValue.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(tagCustomValue.getId().intValue())))
-            .andExpect(jsonPath("$.[*].value").value(hasItem(DEFAULT_VALUE)));
     }
 }

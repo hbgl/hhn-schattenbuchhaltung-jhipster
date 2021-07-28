@@ -1,9 +1,7 @@
 package dev.hbgl.hhn.schattenbuchhaltung.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -11,17 +9,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import dev.hbgl.hhn.schattenbuchhaltung.IntegrationTest;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.CostType;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.CostTypeRepository;
-import dev.hbgl.hhn.schattenbuchhaltung.repository.search.CostTypeSearchRepository;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -33,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link CostTypeResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class CostTypeResourceIT {
@@ -46,21 +38,12 @@ class CostTypeResourceIT {
 
     private static final String ENTITY_API_URL = "/api/cost-types";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-    private static final String ENTITY_SEARCH_API_URL = "/api/_search/cost-types";
 
     private static Random random = new Random();
     private static AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private CostTypeRepository costTypeRepository;
-
-    /**
-     * This repository is mocked in the dev.hbgl.hhn.schattenbuchhaltung.repository.search test package.
-     *
-     * @see dev.hbgl.hhn.schattenbuchhaltung.repository.search.CostTypeSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private CostTypeSearchRepository mockCostTypeSearchRepository;
 
     @Autowired
     private EntityManager em;
@@ -117,9 +100,6 @@ class CostTypeResourceIT {
         CostType testCostType = costTypeList.get(costTypeList.size() - 1);
         assertThat(testCostType.getNo()).isEqualTo(DEFAULT_NO);
         assertThat(testCostType.getName()).isEqualTo(DEFAULT_NAME);
-
-        // Validate the CostType in Elasticsearch
-        verify(mockCostTypeSearchRepository, times(1)).save(testCostType);
     }
 
     @Test
@@ -143,9 +123,6 @@ class CostTypeResourceIT {
         // Validate the CostType in the database
         List<CostType> costTypeList = costTypeRepository.findAll();
         assertThat(costTypeList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the CostType in Elasticsearch
-        verify(mockCostTypeSearchRepository, times(0)).save(costType);
     }
 
     @Test
@@ -260,9 +237,6 @@ class CostTypeResourceIT {
         CostType testCostType = costTypeList.get(costTypeList.size() - 1);
         assertThat(testCostType.getNo()).isEqualTo(UPDATED_NO);
         assertThat(testCostType.getName()).isEqualTo(UPDATED_NAME);
-
-        // Validate the CostType in Elasticsearch
-        verify(mockCostTypeSearchRepository).save(testCostType);
     }
 
     @Test
@@ -284,9 +258,6 @@ class CostTypeResourceIT {
         // Validate the CostType in the database
         List<CostType> costTypeList = costTypeRepository.findAll();
         assertThat(costTypeList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the CostType in Elasticsearch
-        verify(mockCostTypeSearchRepository, times(0)).save(costType);
     }
 
     @Test
@@ -308,9 +279,6 @@ class CostTypeResourceIT {
         // Validate the CostType in the database
         List<CostType> costTypeList = costTypeRepository.findAll();
         assertThat(costTypeList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the CostType in Elasticsearch
-        verify(mockCostTypeSearchRepository, times(0)).save(costType);
     }
 
     @Test
@@ -332,9 +300,6 @@ class CostTypeResourceIT {
         // Validate the CostType in the database
         List<CostType> costTypeList = costTypeRepository.findAll();
         assertThat(costTypeList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the CostType in Elasticsearch
-        verify(mockCostTypeSearchRepository, times(0)).save(costType);
     }
 
     @Test
@@ -418,9 +383,6 @@ class CostTypeResourceIT {
         // Validate the CostType in the database
         List<CostType> costTypeList = costTypeRepository.findAll();
         assertThat(costTypeList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the CostType in Elasticsearch
-        verify(mockCostTypeSearchRepository, times(0)).save(costType);
     }
 
     @Test
@@ -442,9 +404,6 @@ class CostTypeResourceIT {
         // Validate the CostType in the database
         List<CostType> costTypeList = costTypeRepository.findAll();
         assertThat(costTypeList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the CostType in Elasticsearch
-        verify(mockCostTypeSearchRepository, times(0)).save(costType);
     }
 
     @Test
@@ -466,9 +425,6 @@ class CostTypeResourceIT {
         // Validate the CostType in the database
         List<CostType> costTypeList = costTypeRepository.findAll();
         assertThat(costTypeList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the CostType in Elasticsearch
-        verify(mockCostTypeSearchRepository, times(0)).save(costType);
     }
 
     @Test
@@ -487,27 +443,5 @@ class CostTypeResourceIT {
         // Validate the database contains one less item
         List<CostType> costTypeList = costTypeRepository.findAll();
         assertThat(costTypeList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the CostType in Elasticsearch
-        verify(mockCostTypeSearchRepository, times(1)).deleteById(costType.getId());
-    }
-
-    @Test
-    @Transactional
-    void searchCostType() throws Exception {
-        // Configure the mock search repository
-        // Initialize the database
-        costTypeRepository.saveAndFlush(costType);
-        when(mockCostTypeSearchRepository.search(queryStringQuery("id:" + costType.getId())))
-            .thenReturn(Collections.singletonList(costType));
-
-        // Search the costType
-        restCostTypeMockMvc
-            .perform(get(ENTITY_SEARCH_API_URL + "?query=id:" + costType.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(costType.getId().intValue())))
-            .andExpect(jsonPath("$.[*].no").value(hasItem(DEFAULT_NO)))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)));
     }
 }
