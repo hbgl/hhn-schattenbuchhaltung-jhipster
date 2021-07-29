@@ -6,7 +6,7 @@
     <!--
         Added the constraints for entity HistoryEntry.
     -->
-    <changeSet id="20210722221744-2" author="jhipster">
+    <changeSet id="20210614205645-2" author="jhipster">
 
         <addForeignKeyConstraint baseColumnNames="author_id"
                                  baseTableName="history_entry"

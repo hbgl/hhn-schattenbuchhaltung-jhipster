@@ -19,5 +19,11 @@
                                  constraintName="fk_comment__ledger_entry_id"
                                  referencedColumnNames="id"
                                  referencedTableName="ledger_entry"/>
+
+        <addForeignKeyConstraint baseColumnNames="parent_id"
+                                 baseTableName="comment"
+                                 constraintName="fk_comment__parent_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="comment"/>
     </changeSet>
 </databaseChangeLog>

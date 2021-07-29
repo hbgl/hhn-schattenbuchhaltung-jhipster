@@ -13,9 +13,5 @@
                                  constraintName="fk_cost_center__parent_id"
                                  referencedColumnNames="id"
                                  referencedTableName="cost_center"/>
-
-        <addUniqueConstraint tableName="cost_center"
-                             columnNames="no"
-                             constraintName="uc_cost_center__no"/>
     </changeSet>
 </databaseChangeLog>

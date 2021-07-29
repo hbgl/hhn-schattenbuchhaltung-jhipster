@@ -25,7 +25,7 @@ public class CostCenter implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "no", nullable = false)
+    @Column(name = "no", nullable = false, unique = true)
     private String no;
 
     @NotNull

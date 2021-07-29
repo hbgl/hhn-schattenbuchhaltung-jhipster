@@ -24,7 +24,20 @@
       "relationshipType": "many-to-one",
       "otherEntityName": "ledgerEntry",
       "otherEntityRelationshipName": "comments",
+      "relationshipValidateRules": "required",
       "relationshipName": "ledgerEntry"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "comment",
+      "otherEntityRelationshipName": "parent",
+      "relationshipName": "children"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "comment",
+      "otherEntityRelationshipName": "children",
+      "relationshipName": "parent"
     }
   ],
   "entityTableName": "comment",

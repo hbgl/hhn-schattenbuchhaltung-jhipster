@@ -49,9 +49,5 @@
                                  constraintName="fk_ledger_entry__cost_type_id"
                                  referencedColumnNames="id"
                                  referencedTableName="cost_type"/>
-
-        <addUniqueConstraint tableName="ledger_entry"
-                             columnNames="no"
-                             constraintName="uc_ledger_entry__no"/>
     </changeSet>
 </databaseChangeLog>

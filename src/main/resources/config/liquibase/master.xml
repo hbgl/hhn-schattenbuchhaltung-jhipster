@@ -34,6 +34,7 @@
     <include file="config/liquibase/changelog/20210614205643_added_entity_constraints_TagCustomValue.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210614205644_added_entity_constraints_Tag.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210614205646_added_entity_constraints_HistoryEntryField.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210614205645_added_entity_constraints_HistoryEntry.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>

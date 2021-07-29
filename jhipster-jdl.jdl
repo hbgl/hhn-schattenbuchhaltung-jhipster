@@ -1,7 +1,7 @@
 @skipClient
 @search(elasticsearch)
 entity LedgerEntry {
-    no String required
+    no String required, unique
 	description String required
     aNo String
     bookingDate Instant required
@@ -11,7 +11,8 @@ entity LedgerEntry {
 }
 
 relationship OneToMany {
-	LedgerEntry{comments} to Comment{ledgerEntry}
+	LedgerEntry{comments} to Comment{ledgerEntry required}
+    Comment{parent} to Comment{children}
 }
 
 relationship ManyToMany {
@@ -20,7 +21,7 @@ relationship ManyToMany {
 
 @skipClient
 entity CostCenter {
-	no String required
+	no String required, unique
 	name String required
     rank Integer required
 }
@@ -34,7 +35,7 @@ relationship OneToMany {
 
 @skipClient
 entity Division {
-	no String required
+	no String required, unique
 	name String required
 }
 
@@ -44,7 +45,7 @@ relationship OneToMany {
 
 @skipClient
 entity CostType {
-	no String required
+	no String required, unique
 	name String required
 }
 

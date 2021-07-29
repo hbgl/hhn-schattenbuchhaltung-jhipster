@@ -71,6 +71,7 @@ public class CacheConfiguration {
             createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.LedgerEntry.class.getName() + ".tags");
             createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.Tag.class.getName());
             createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.Tag.class.getName() + ".ledgerEntries");
+            createCache(cm, dev.hbgl.hhn.schattenbuchhaltung.domain.Comment.class.getName() + ".children");
             // jhipster-needle-ehcache-add-entry
         };
     }

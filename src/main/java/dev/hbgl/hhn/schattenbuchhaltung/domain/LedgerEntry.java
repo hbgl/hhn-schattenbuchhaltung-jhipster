@@ -29,7 +29,7 @@ public class LedgerEntry implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "no", nullable = false)
+    @Column(name = "no", nullable = false, unique = true)
     private String no;
 
     @NotNull
@@ -58,7 +58,7 @@ public class LedgerEntry implements Serializable {
     @OneToMany(mappedBy = "ledgerEntry")
     @OrderBy("id")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "author", "ledgerEntry" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "author", "ledgerEntry", "children", "parent" }, allowSetters = true)
     private Set<Comment> comments = new HashSet<>();
 
     @ManyToMany

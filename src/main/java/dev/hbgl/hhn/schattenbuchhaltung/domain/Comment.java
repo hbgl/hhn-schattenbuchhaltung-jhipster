@@ -3,6 +3,8 @@ package dev.hbgl.hhn.schattenbuchhaltung.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
@@ -37,12 +39,22 @@ public class Comment implements Serializable {
     @NotNull
     private User author;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties(
         value = { "comments", "tags", "costCenter1", "costCenter2", "costCenter3", "division", "costType" },
         allowSetters = true
     )
     private LedgerEntry ledgerEntry;
+
+    @OneToMany(mappedBy = "parent")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "author", "ledgerEntry", "children", "parent" }, allowSetters = true)
+    private Set<Comment> children = new HashSet<>();
+
+    @ManyToOne
+    @JsonIgnoreProperties(value = { "author", "ledgerEntry", "children", "parent" }, allowSetters = true)
+    private Comment parent;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -108,6 +120,50 @@ public class Comment implements Serializable {
 
     public void setLedgerEntry(LedgerEntry ledgerEntry) {
         this.ledgerEntry = ledgerEntry;
+    }
+
+    public Set<Comment> getChildren() {
+        return this.children;
+    }
+
+    public Comment children(Set<Comment> comments) {
+        this.setChildren(comments);
+        return this;
+    }
+
+    public Comment addChildren(Comment comment) {
+        this.children.add(comment);
+        comment.setParent(this);
+        return this;
+    }
+
+    public Comment removeChildren(Comment comment) {
+        this.children.remove(comment);
+        comment.setParent(null);
+        return this;
+    }
+
+    public void setChildren(Set<Comment> comments) {
+        if (this.children != null) {
+            this.children.forEach(i -> i.setParent(null));
+        }
+        if (comments != null) {
+            comments.forEach(i -> i.setParent(this));
+        }
+        this.children = comments;
+    }
+
+    public Comment getParent() {
+        return this.parent;
+    }
+
+    public Comment parent(Comment comment) {
+        this.setParent(comment);
+        return this;
+    }
+
+    public void setParent(Comment comment) {
+        this.parent = comment;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import dev.hbgl.hhn.schattenbuchhaltung.IntegrationTest;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.Comment;
+import dev.hbgl.hhn.schattenbuchhaltung.domain.LedgerEntry;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.User;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.CommentRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.search.CommentSearchRepository;
@@ -88,6 +89,16 @@ class CommentResourceIT {
         em.persist(user);
         em.flush();
         comment.setAuthor(user);
+        // Add required entity
+        LedgerEntry ledgerEntry;
+        if (TestUtil.findAll(em, LedgerEntry.class).isEmpty()) {
+            ledgerEntry = LedgerEntryResourceIT.createEntity(em);
+            em.persist(ledgerEntry);
+            em.flush();
+        } else {
+            ledgerEntry = TestUtil.findAll(em, LedgerEntry.class).get(0);
+        }
+        comment.setLedgerEntry(ledgerEntry);
         return comment;
     }
 
@@ -104,6 +115,16 @@ class CommentResourceIT {
         em.persist(user);
         em.flush();
         comment.setAuthor(user);
+        // Add required entity
+        LedgerEntry ledgerEntry;
+        if (TestUtil.findAll(em, LedgerEntry.class).isEmpty()) {
+            ledgerEntry = LedgerEntryResourceIT.createUpdatedEntity(em);
+            em.persist(ledgerEntry);
+            em.flush();
+        } else {
+            ledgerEntry = TestUtil.findAll(em, LedgerEntry.class).get(0);
+        }
+        comment.setLedgerEntry(ledgerEntry);
         return comment;
     }
 
