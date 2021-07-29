@@ -2,6 +2,7 @@ package dev.hbgl.hhn.schattenbuchhaltung.web.rest;
 
 import static dev.hbgl.hhn.schattenbuchhaltung.web.rest.TestUtil.sameNumber;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -11,10 +12,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import dev.hbgl.hhn.schattenbuchhaltung.IntegrationTest;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.LedgerEntry;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.LedgerEntryRepository;
+import dev.hbgl.hhn.schattenbuchhaltung.repository.search.LedgerEntrySearchRepository;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -65,6 +68,7 @@ class LedgerEntryResourceIT {
 
     private static final String ENTITY_API_URL = "/api/ledger-entries";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
+    private static final String ENTITY_SEARCH_API_URL = "/api/_search/ledger-entries";
 
     private static Random random = new Random();
     private static AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
@@ -74,6 +78,14 @@ class LedgerEntryResourceIT {
 
     @Mock
     private LedgerEntryRepository ledgerEntryRepositoryMock;
+
+    /**
+     * This repository is mocked in the dev.hbgl.hhn.schattenbuchhaltung.repository.search test package.
+     *
+     * @see dev.hbgl.hhn.schattenbuchhaltung.repository.search.LedgerEntrySearchRepositoryMockConfiguration
+     */
+    @Autowired
+    private LedgerEntrySearchRepository mockLedgerEntrySearchRepository;
 
     @Autowired
     private EntityManager em;
@@ -149,6 +161,9 @@ class LedgerEntryResourceIT {
         assertThat(testLedgerEntry.getIncome()).isEqualByComparingTo(DEFAULT_INCOME);
         assertThat(testLedgerEntry.getExpenditure()).isEqualByComparingTo(DEFAULT_EXPENDITURE);
         assertThat(testLedgerEntry.getLiability()).isEqualByComparingTo(DEFAULT_LIABILITY);
+
+        // Validate the LedgerEntry in Elasticsearch
+        verify(mockLedgerEntrySearchRepository, times(1)).save(testLedgerEntry);
     }
 
     @Test
@@ -172,6 +187,9 @@ class LedgerEntryResourceIT {
         // Validate the LedgerEntry in the database
         List<LedgerEntry> ledgerEntryList = ledgerEntryRepository.findAll();
         assertThat(ledgerEntryList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the LedgerEntry in Elasticsearch
+        verify(mockLedgerEntrySearchRepository, times(0)).save(ledgerEntry);
     }
 
     @Test
@@ -414,6 +432,9 @@ class LedgerEntryResourceIT {
         assertThat(testLedgerEntry.getIncome()).isEqualTo(UPDATED_INCOME);
         assertThat(testLedgerEntry.getExpenditure()).isEqualTo(UPDATED_EXPENDITURE);
         assertThat(testLedgerEntry.getLiability()).isEqualTo(UPDATED_LIABILITY);
+
+        // Validate the LedgerEntry in Elasticsearch
+        verify(mockLedgerEntrySearchRepository).save(testLedgerEntry);
     }
 
     @Test
@@ -435,6 +456,9 @@ class LedgerEntryResourceIT {
         // Validate the LedgerEntry in the database
         List<LedgerEntry> ledgerEntryList = ledgerEntryRepository.findAll();
         assertThat(ledgerEntryList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the LedgerEntry in Elasticsearch
+        verify(mockLedgerEntrySearchRepository, times(0)).save(ledgerEntry);
     }
 
     @Test
@@ -456,6 +480,9 @@ class LedgerEntryResourceIT {
         // Validate the LedgerEntry in the database
         List<LedgerEntry> ledgerEntryList = ledgerEntryRepository.findAll();
         assertThat(ledgerEntryList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the LedgerEntry in Elasticsearch
+        verify(mockLedgerEntrySearchRepository, times(0)).save(ledgerEntry);
     }
 
     @Test
@@ -477,6 +504,9 @@ class LedgerEntryResourceIT {
         // Validate the LedgerEntry in the database
         List<LedgerEntry> ledgerEntryList = ledgerEntryRepository.findAll();
         assertThat(ledgerEntryList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the LedgerEntry in Elasticsearch
+        verify(mockLedgerEntrySearchRepository, times(0)).save(ledgerEntry);
     }
 
     @Test
@@ -581,6 +611,9 @@ class LedgerEntryResourceIT {
         // Validate the LedgerEntry in the database
         List<LedgerEntry> ledgerEntryList = ledgerEntryRepository.findAll();
         assertThat(ledgerEntryList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the LedgerEntry in Elasticsearch
+        verify(mockLedgerEntrySearchRepository, times(0)).save(ledgerEntry);
     }
 
     @Test
@@ -602,6 +635,9 @@ class LedgerEntryResourceIT {
         // Validate the LedgerEntry in the database
         List<LedgerEntry> ledgerEntryList = ledgerEntryRepository.findAll();
         assertThat(ledgerEntryList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the LedgerEntry in Elasticsearch
+        verify(mockLedgerEntrySearchRepository, times(0)).save(ledgerEntry);
     }
 
     @Test
@@ -623,6 +659,9 @@ class LedgerEntryResourceIT {
         // Validate the LedgerEntry in the database
         List<LedgerEntry> ledgerEntryList = ledgerEntryRepository.findAll();
         assertThat(ledgerEntryList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the LedgerEntry in Elasticsearch
+        verify(mockLedgerEntrySearchRepository, times(0)).save(ledgerEntry);
     }
 
     @Test
@@ -641,5 +680,32 @@ class LedgerEntryResourceIT {
         // Validate the database contains one less item
         List<LedgerEntry> ledgerEntryList = ledgerEntryRepository.findAll();
         assertThat(ledgerEntryList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the LedgerEntry in Elasticsearch
+        verify(mockLedgerEntrySearchRepository, times(1)).deleteById(ledgerEntry.getId());
+    }
+
+    @Test
+    @Transactional
+    void searchLedgerEntry() throws Exception {
+        // Configure the mock search repository
+        // Initialize the database
+        ledgerEntryRepository.saveAndFlush(ledgerEntry);
+        when(mockLedgerEntrySearchRepository.search(queryStringQuery("id:" + ledgerEntry.getId())))
+            .thenReturn(Collections.singletonList(ledgerEntry));
+
+        // Search the ledgerEntry
+        restLedgerEntryMockMvc
+            .perform(get(ENTITY_SEARCH_API_URL + "?query=id:" + ledgerEntry.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(ledgerEntry.getId().intValue())))
+            .andExpect(jsonPath("$.[*].no").value(hasItem(DEFAULT_NO)))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].aNo").value(hasItem(DEFAULT_A_NO)))
+            .andExpect(jsonPath("$.[*].bookingDate").value(hasItem(DEFAULT_BOOKING_DATE.toString())))
+            .andExpect(jsonPath("$.[*].income").value(hasItem(sameNumber(DEFAULT_INCOME))))
+            .andExpect(jsonPath("$.[*].expenditure").value(hasItem(sameNumber(DEFAULT_EXPENDITURE))))
+            .andExpect(jsonPath("$.[*].liability").value(hasItem(sameNumber(DEFAULT_LIABILITY))));
     }
 }

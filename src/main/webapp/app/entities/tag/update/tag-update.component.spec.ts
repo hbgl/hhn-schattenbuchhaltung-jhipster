@@ -70,10 +70,10 @@ describe('Component Tests', () => {
 
       it('Should call TagCustomType query and add missing value', () => {
         const tag: ITag = { id: 456 };
-        const customType: ITagCustomType = { id: 11136 };
+        const customType: ITagCustomType = { id: 16909 };
         tag.customType = customType;
 
-        const tagCustomTypeCollection: ITagCustomType[] = [{ id: 2186 }];
+        const tagCustomTypeCollection: ITagCustomType[] = [{ id: 3631 }];
         spyOn(tagCustomTypeService, 'query').and.returnValue(of(new HttpResponse({ body: tagCustomTypeCollection })));
         const additionalTagCustomTypes = [customType];
         const expectedCollection: ITagCustomType[] = [...additionalTagCustomTypes, ...tagCustomTypeCollection];
@@ -116,7 +116,7 @@ describe('Component Tests', () => {
         const tag: ITag = { id: 456 };
         const person: IUser = { id: 'Jordanien initiatives SSL' };
         tag.person = person;
-        const customType: ITagCustomType = { id: 75865 };
+        const customType: ITagCustomType = { id: 55844 };
         tag.customType = customType;
         const customValue: ITagCustomValue = { id: 97013 };
         tag.customValue = customValue;

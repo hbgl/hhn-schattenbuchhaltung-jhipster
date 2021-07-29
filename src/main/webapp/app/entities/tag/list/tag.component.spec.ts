@@ -35,6 +35,7 @@ describe('Component Tests', () => {
                   sort: 'id,desc',
                 })
               ),
+              snapshot: { queryParams: {} },
             },
           },
         ],

@@ -91,5 +91,6 @@
   "embedded": false,
   "applications": "*",
   "skipClient": true,
+  "searchEngine": "elasticsearch",
   "changelogDate": "20210722115800"
 }

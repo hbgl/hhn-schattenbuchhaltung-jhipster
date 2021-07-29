@@ -13,7 +13,6 @@ import dev.hbgl.hhn.schattenbuchhaltung.repository.LedgerEntryRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.CostCenterDTO;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.CommentVM;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.LedgerEntryVM;
-import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.LedgerListEntryVM;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.LedgerImportEntryDTO;
 import dev.hbgl.hhn.schattenbuchhaltung.service.parser.LedgerEntryInstantParser;
 import dev.hbgl.hhn.schattenbuchhaltung.web.rest.errors.BadRequestAlertException;

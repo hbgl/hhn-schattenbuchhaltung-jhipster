@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
+import { SearchWithPagination } from 'app/core/request/request.model';
 import { ITag, getTagIdentifier } from '../tag.model';
 
 export type EntityResponseType = HttpResponse<ITag>;
@@ -13,6 +14,7 @@ export type EntityArrayResponseType = HttpResponse<ITag[]>;
 @Injectable({ providedIn: 'root' })
 export class TagService {
   public resourceUrl = this.applicationConfigService.getEndpointFor('api/tags');
+  public resourceSearchUrl = this.applicationConfigService.getEndpointFor('api/_search/tags');
 
   constructor(protected http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
@@ -39,6 +41,11 @@ export class TagService {
 
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  }
+
+  search(req: SearchWithPagination): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http.get<ITag[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
   }
 
   addTagToCollectionIfMissing(tagCollection: ITag[], ...tagsToCheck: (ITag | null | undefined)[]): ITag[] {

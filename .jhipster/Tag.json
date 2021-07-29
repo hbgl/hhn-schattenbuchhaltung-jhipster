@@ -48,5 +48,6 @@
   "readOnly": false,
   "embedded": false,
   "applications": "*",
+  "searchEngine": "elasticsearch",
   "changelogDate": "20210722115807"
 }
