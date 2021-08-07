@@ -32,6 +32,6 @@ public interface LedgerEntryRepository extends JpaRepository<LedgerEntry, Long> 
     @Query("select distinct ledgerEntry from LedgerEntry ledgerEntry left join fetch ledgerEntry.tags")
     List<LedgerEntry> findAllWithEagerRelationships();
 
-    @Query("select ledgerEntry from LedgerEntry ledgerEntry left join fetch ledgerEntry.tags where ledgerEntry.id =:id")
+    @Query("select ledgerEntry from LedgerEntry ledgerEntry left join fetch ledgerEntry.tags where ledgerEntry.id = :id")
     Optional<LedgerEntry> findOneWithEagerRelationships(@Param("id") Long id);
 }

@@ -1,0 +1,42 @@
+<div class="comment" [ngClass]="{ 'delete-overlay': state === 'deleting' }" *ngIf="comment !== undefined && collapsed !== undefined">
+  <div class="main">
+    <div class="header">
+      <strong class="author">{{ comment.author.displayText }}</strong>
+      <span class="date">{{ comment.createdAt }}</span>
+      <button class="btn btn-link collapse-toggle" type="button" (click)="toggleCollapse()">
+        [{{ (collapsed ? 'global.action.expand' : 'global.action.collapse') | translate | lowercase }}]
+      </button>
+    </div>
+    <jhi-comment-form
+      *ngIf="isEditFormVisible"
+      [type]="'edit'"
+      [commentId]="comment.id"
+      [parentId]="comment.parentId"
+      [contentHtml]="comment.contentHtml"
+      [ledgerEntryNo]="ledgerEntryNo"
+      (canceled)="editCanceled()"
+      (commentSaved)="editCommentSaved($event)"
+    ></jhi-comment-form>
+    <div *ngIf="!isEditFormVisible" class="body" [ngClass]="{ collapse: collapsed }" [innerHTML]="comment.contentHtml | safeHtml"></div>
+  </div>
+  <div class="dots">
+    <div ngbDropdown *ngIf="actions.length > 0">
+      <button
+        ngbDropdownToggle
+        class="btn bnt-sm dropdown-notoggle"
+        type="button"
+        [id]="'dropdown-' + componentId"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <fa-icon icon="ellipsis-h"></fa-icon>
+      </button>
+      <div ngbDropdownMenu [attr.aria-labelledby]="'dropdown-' + componentId">
+        <a ngbDropdownItem *ngFor="let action of actions; trackBy: actionId" href="javascript:void(0);" (click)="action.run()">{{
+          action.name
+        }}</a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,7 +1,9 @@
+/* eslint-disable no-console */
 import { Component, OnInit } from '@angular/core';
 import { LedgerService } from '../ledger.service';
-import { Comment, LedgerEntryDetail, Tag } from '../ledger-entry.model';
+import { LedgerEntryDetail, Tag } from '../ledger-entry.model';
 import { ActivatedRoute } from '@angular/router';
+import { Comment } from 'app/shared/comment/comment.model';
 
 @Component({
   selector: 'jhi-ledger-entry',
@@ -23,6 +25,21 @@ export class LedgerEntryComponent implements OnInit {
 
   trackComment(index: number, comment: Comment): number {
     return comment.id;
+  }
+
+  commentCreated(comment: Comment): void {
+    if (this.entry) {
+      this.entry.comments.unshift(comment);
+    }
+  }
+
+  commentDeleted(comment: Comment): void {
+    if (this.entry) {
+      const index = this.entry.comments.findIndex(c => c.id === comment.id);
+      if (index >= 0) {
+        this.entry.comments.splice(index, 1);
+      }
+    }
   }
 
   protected handleNavigation(): void {

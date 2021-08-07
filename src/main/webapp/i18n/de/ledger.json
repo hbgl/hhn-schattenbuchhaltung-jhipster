@@ -6,7 +6,10 @@
         "notFound": "Keine Kontoeinträge gefunden"
       },
       "import": {
-        "title": "Kontoimport"
+        "title": "Kontoimport",
+        "message": {
+          "imported": "Die Datei wurde erfolgreich importiert."
+        }
       },
       "entry": {
         "title": "Posten",

@@ -29,6 +29,20 @@ public final class SecurityUtils {
         return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));
     }
 
+    public static Optional<String> getCurrentUserId() {
+        var securityContext = SecurityContextHolder.getContext();
+        var authentication = securityContext.getAuthentication();
+
+        if (authentication.getPrincipal() instanceof DefaultOidcUser) {
+            var attributes = ((DefaultOidcUser) authentication.getPrincipal()).getAttributes();
+            if (attributes.containsKey("sub")) {
+                return Optional.of((String) attributes.get("sub"));
+            }
+        }
+
+        return Optional.empty();
+    }
+
     private static String extractPrincipal(Authentication authentication) {
         if (authentication == null) {
             return null;

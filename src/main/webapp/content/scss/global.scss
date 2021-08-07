@@ -63,7 +63,7 @@ Generic styles
   border-left: 5px solid green;
 }
 
-.ng-invalid:not(form) {
+.ng-invalid:not(form):not(.ng-pristine.form-control-stealth) {
   border-left: 5px solid red;
 }
 
@@ -215,4 +215,8 @@ ui bootstrap tweaks
       grid-column: 2;
     }
   }
+}
+
+.dropdown-toggle.dropdown-notoggle::after {
+  display: none;
 }

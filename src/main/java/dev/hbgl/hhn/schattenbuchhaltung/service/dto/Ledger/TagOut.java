@@ -6,7 +6,7 @@ import dev.hbgl.hhn.schattenbuchhaltung.domain.Tag;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.enumeration.TagKind;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY)
-public class TagVM {
+public class TagOut {
 
     public Long id;
 
@@ -14,17 +14,17 @@ public class TagVM {
 
     public String text;
 
-    public UserVM person;
+    public UserOut person;
 
     public String customType;
 
     public String customValue;
 
-    public static TagVM fromEntity(Tag entity) {
+    public static TagOut fromEntity(Tag entity) {
         if (entity == null) {
             return null;
         }
-        var vm = new TagVM();
+        var vm = new TagOut();
         vm.id = entity.getId();
         var customType = entity.getCustomType();
         var customValue = entity.getCustomValue();
@@ -33,7 +33,7 @@ public class TagVM {
             vm.customValue = customValue.getValue();
         }
         vm.text = entity.getText();
-        vm.person = UserVM.fromEntity(entity.getPerson());
+        vm.person = UserOut.fromEntity(entity.getPerson());
         return vm;
     }
 }

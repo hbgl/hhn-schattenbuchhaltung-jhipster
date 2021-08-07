@@ -1,6 +1,8 @@
 import * as internal from 'node:stream';
 import { Type } from 'class-transformer';
 import { TagKind } from 'app/entities/enumerations/tag-kind.model';
+import { User } from 'app/shared/user/user.model';
+import { Comment } from 'app/shared/comment/comment.model';
 
 // Had to factor out some properties from the constructor into
 // the class body in order to apply the @Type decorator.
@@ -31,26 +33,6 @@ export class CostType {
   }
 }
 
-export class User {
-  constructor(
-    public id: string,
-    public firstName: string | null,
-    public lastName: string | null,
-    public email: string | null,
-    public imageUrl: string | null
-  ) {}
-
-  public get displayText(): string {
-    if (this.firstName !== null && this.lastName != null) {
-      return `${this.firstName} ${this.lastName}`;
-    } else if (this.email !== null) {
-      return this.email;
-    } else {
-      return this.id;
-    }
-  }
-}
-
 export class Tag {
   constructor(
     public id: number,
@@ -73,15 +55,6 @@ export class Tag {
       return this.customValue!;
     }
     return '';
-  }
-}
-
-export class Comment {
-  @Type(() => User)
-  public author: User;
-
-  constructor(public id: number, public contentHtml: string, public createdAt: string, author: User) {
-    this.author = author;
   }
 }
 

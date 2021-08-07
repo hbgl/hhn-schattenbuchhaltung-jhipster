@@ -166,6 +166,10 @@ public class Comment implements Serializable {
         this.parent = comment;
     }
 
+    public boolean isOwnedBy(User user) {
+        return this.getAuthor().getId().equals(user.getId());
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override

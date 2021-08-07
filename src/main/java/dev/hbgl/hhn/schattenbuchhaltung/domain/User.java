@@ -147,6 +147,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.authorities = authorities;
     }
 
+    public boolean hasAuthority(String authority) {
+        return this.getAuthorities().stream().anyMatch(a -> a.getName().equals(authority));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

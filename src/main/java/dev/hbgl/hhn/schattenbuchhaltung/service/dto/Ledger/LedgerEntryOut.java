@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY)
-public class LedgerEntryVM {
+public class LedgerEntryOut {
 
     public Long id;
 
@@ -27,25 +27,25 @@ public class LedgerEntryVM {
 
     public BigDecimal liability;
 
-    public Iterable<CommentVM> comments;
+    public Iterable<CommentOut> comments;
 
-    public Iterable<TagVM> tags;
+    public Iterable<TagOut> tags;
 
-    public CostCenterVM costCenter1;
+    public CostCenterOut costCenter1;
 
-    public CostCenterVM costCenter2;
+    public CostCenterOut costCenter2;
 
-    public CostCenterVM costCenter3;
+    public CostCenterOut costCenter3;
 
-    public DivisionVM division;
+    public DivisionOut division;
 
-    public CostTypeVM costType;
+    public CostTypeOut costType;
 
-    public static LedgerEntryVM fromEntity(LedgerEntry entity, EntityManager entityManager) {
+    public static LedgerEntryOut fromEntity(LedgerEntry entity, EntityManager entityManager) {
         if (entity == null) {
             return null;
         }
-        var vm = new LedgerEntryVM();
+        var vm = new LedgerEntryOut();
         vm.id = entity.getId();
         vm.no = entity.getNo();
         vm.description = entity.getDescription();
@@ -56,16 +56,16 @@ public class LedgerEntryVM {
         vm.liability = entity.getLiability();
         var util = entityManager.getEntityManagerFactory().getPersistenceUnitUtil();
         if (util.isLoaded(entity, "comments")) {
-            vm.comments = entity.getComments().stream().map(CommentVM::fromEntity).collect(Collectors.toList());
+            vm.comments = entity.getComments().stream().map(CommentOut::fromEntity).collect(Collectors.toList());
         }
         if (util.isLoaded(entity, "tags")) {
-            vm.tags = entity.getTags().stream().map(TagVM::fromEntity).collect(Collectors.toList());
+            vm.tags = entity.getTags().stream().map(TagOut::fromEntity).collect(Collectors.toList());
         }
-        vm.costCenter1 = CostCenterVM.fromEntity(entity.getCostCenter1());
-        vm.costCenter2 = CostCenterVM.fromEntity(entity.getCostCenter2());
-        vm.costCenter3 = CostCenterVM.fromEntity(entity.getCostCenter3());
-        vm.division = DivisionVM.fromEntity(entity.getDivision());
-        vm.costType = CostTypeVM.fromEntity(entity.getCostType());
+        vm.costCenter1 = CostCenterOut.fromEntity(entity.getCostCenter1());
+        vm.costCenter2 = CostCenterOut.fromEntity(entity.getCostCenter2());
+        vm.costCenter3 = CostCenterOut.fromEntity(entity.getCostCenter3());
+        vm.division = DivisionOut.fromEntity(entity.getDivision());
+        vm.costType = CostTypeOut.fromEntity(entity.getCostType());
         return vm;
     }
 }

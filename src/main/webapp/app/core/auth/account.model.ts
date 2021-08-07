@@ -1,5 +1,6 @@
 export class Account {
   constructor(
+    public id: string,
     public activated: boolean,
     public authorities: string[],
     public email: string,
@@ -9,4 +10,11 @@ export class Account {
     public login: string,
     public imageUrl: string | null
   ) {}
+
+  hasAnyAuthority(authorities: string[] | string): boolean {
+    if (!Array.isArray(authorities)) {
+      authorities = [authorities];
+    }
+    return this.authorities.some((authority: string) => authorities.includes(authority));
+  }
 }

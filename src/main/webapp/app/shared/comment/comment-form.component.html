@@ -1,0 +1,28 @@
+<form role="form" novalidate (ngSubmit)="save()" [formGroup]="form">
+  <textarea
+    #contentTextarea
+    class="w-100 mb-2 form-control form-control-stealth"
+    placeholder="Write a comment"
+    rows="3"
+    formControlName="content"
+  ></textarea>
+  <div class="d-flex justify-content-end">
+    <button
+      class="btn btn-link text-secondary mr-2"
+      type="button"
+      jhiTranslate="entity.action.cancel"
+      [disabled]="isSubmitting"
+      (click)="cancel()"
+    >
+      Cancel
+    </button>
+    <button
+      class="btn btn-primary"
+      type="submit"
+      [jhiTranslate]="type === 'create' ? 'global.action.comment' : 'entity.action.save'"
+      [disabled]="isSubmitting || form.invalid || contentHtml === originalContentHtml"
+    >
+      Comment
+    </button>
+  </div>
+</form>

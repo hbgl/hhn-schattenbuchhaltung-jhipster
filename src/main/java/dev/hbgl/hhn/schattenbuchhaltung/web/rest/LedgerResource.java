@@ -11,8 +11,8 @@ import dev.hbgl.hhn.schattenbuchhaltung.repository.CostTypeRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.DivisionRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.LedgerEntryRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.CostCenterDTO;
-import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.CommentVM;
-import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.LedgerEntryVM;
+import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.CommentOut;
+import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.LedgerEntryOut;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.LedgerImportEntryDTO;
 import dev.hbgl.hhn.schattenbuchhaltung.service.parser.LedgerEntryInstantParser;
 import dev.hbgl.hhn.schattenbuchhaltung.web.rest.errors.BadRequestAlertException;
@@ -80,7 +80,7 @@ public class LedgerResource {
     }
 
     @GetMapping("/ledger")
-    public List<LedgerEntryVM> listLedger() {
+    public List<LedgerEntryOut> listLedger() {
         log.debug("REST request to get all LedgerEntries");
 
         var ledgerEntryGraph = entityManager.createEntityGraph(LedgerEntry.class);
@@ -90,14 +90,14 @@ public class LedgerResource {
             .createQuery("SELECT le FROM LedgerEntry le ORDER BY bookingDate", LedgerEntry.class)
             .setHint("javax.persistence.loadgraph", ledgerEntryGraph)
             .getResultStream()
-            .map(e -> LedgerEntryVM.fromEntity(e, this.entityManager))
+            .map(e -> LedgerEntryOut.fromEntity(e, this.entityManager))
             .collect(Collectors.toList());
 
         return result;
     }
 
     @GetMapping("/ledger/entry/{no}")
-    public ResponseEntity<LedgerEntryVM> getLedgerDetails(@PathVariable String no) {
+    public ResponseEntity<LedgerEntryOut> getLedgerDetails(@PathVariable String no) {
         log.debug("REST request to get LedgerEntry by no : {}", no);
 
         var ledgerEntryGraph = entityManager.createEntityGraph(LedgerEntry.class);
@@ -120,13 +120,13 @@ public class LedgerResource {
         var commentGraph = entityManager.createEntityGraph(Comment.class);
         commentGraph.addAttributeNodes("author");
         var comments = entityManager
-            .createQuery("SELECT cm FROM Comment cm WHERE cm.ledgerEntry = :ledgerEntry ORDER BY cm.id", Comment.class)
+            .createQuery("SELECT cm FROM Comment cm WHERE cm.ledgerEntry = :ledgerEntry ORDER BY cm.id DESC", Comment.class)
             .setParameter("ledgerEntry", ledgerEntry)
             .setHint("javax.persistence.loadgraph", commentGraph)
             .getResultList();
 
-        var vm = LedgerEntryVM.fromEntity(ledgerEntry, this.entityManager);
-        vm.comments = comments.stream().map(CommentVM::fromEntity).collect(Collectors.toList());
+        var vm = LedgerEntryOut.fromEntity(ledgerEntry, this.entityManager);
+        vm.comments = comments.stream().map(CommentOut::fromEntity).collect(Collectors.toList());
 
         return ResponseUtil.wrapOrNotFound(Optional.of(vm));
     }

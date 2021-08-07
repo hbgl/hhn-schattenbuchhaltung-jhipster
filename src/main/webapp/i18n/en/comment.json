@@ -1,0 +1,12 @@
+{
+  "schattenbuchhaltungApp": {
+    "comment": {
+      "created": "The comment was saved.",
+      "updated": "The comment was updated.",
+      "deleted": "The comment was deleted.",
+      "delete": {
+        "question": "Are you sure you want to permanently delete the comment?"
+      }
+    }
+  }
+}

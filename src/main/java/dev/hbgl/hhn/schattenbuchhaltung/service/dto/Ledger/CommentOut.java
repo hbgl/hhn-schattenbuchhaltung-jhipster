@@ -6,7 +6,7 @@ import dev.hbgl.hhn.schattenbuchhaltung.domain.Comment;
 import java.time.Instant;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY)
-public class CommentVM {
+public class CommentOut {
 
     public Long id;
 
@@ -14,17 +14,17 @@ public class CommentVM {
 
     public Instant createdAt;
 
-    public UserVM author;
+    public UserOut author;
 
-    public static CommentVM fromEntity(Comment entity) {
+    public static CommentOut fromEntity(Comment entity) {
         if (entity == null) {
             return null;
         }
-        var vm = new CommentVM();
+        var vm = new CommentOut();
         vm.id = entity.getId();
         vm.contentHtml = entity.getContentHtml();
         vm.createdAt = entity.getCreatedAt();
-        vm.author = UserVM.fromEntity(entity.getAuthor());
+        vm.author = UserOut.fromEntity(entity.getAuthor());
         return vm;
     }
 }

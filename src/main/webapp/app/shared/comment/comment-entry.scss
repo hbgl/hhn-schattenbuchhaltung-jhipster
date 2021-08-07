@@ -1,0 +1,82 @@
+@import '../../../content/scss/bootstrap-prelude';
+
+.comment {
+  position: relative;
+  padding: map-get($spacers, 2);
+  margin: -(map-get($spacers, 2));
+  margin-bottom: map-get($spacers, 3);
+  margin-right: map-get($spacers, 3);
+  display: flex;
+}
+
+.main {
+  width: 100%;
+  margin-right: map-get($spacers, 2);
+}
+
+.dots {
+  .dropdown {
+    visibility: hidden;
+
+    > button {
+      color: $gray-500;
+      &:hover {
+        color: $gray-700;
+      }
+    }
+
+    &.show {
+      visibility: visible;
+      > button {
+        color: $gray-700;
+      }
+    }
+  }
+}
+
+.comment:hover .dots .dropdown {
+  visibility: visible;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+
+  > :not(:first-child) {
+    margin-left: map-get($spacers, 2);
+  }
+}
+
+.author {
+  max-width: 24rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.collapse-toggle {
+  padding: 0;
+  font-weight: $font-weight-normal;
+  font-size: $small-font-size;
+  color: $secondary;
+}
+
+.body {
+  white-space: pre-wrap;
+  margin-top: 0.15rem;
+  margin-bottom: 1.5rem;
+}
+
+.delete-overlay {
+  pointer-events: none;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: $gray-200;
+    opacity: 0.65;
+  }
+}

@@ -109,8 +109,9 @@
     },
     "item-count": "Ergebnis {{first}} - {{second}} von {{total}} Elemente.",
     "action": {
-      "collapse": "Collapse",
-      "expand": "Expand"
+      "collapse": "Zuklappen",
+      "expand": "Aufklappen",
+      "comment": "Kommentieren"
     }
   },
   "entity": {
@@ -160,6 +161,7 @@
     "idnull": "Ungültige ID",
     "idinvalid": "Ungültige ID",
     "idnotfound": "ID konnte nicht gefunden werden",
+    "nonotfound": "Nummer konnte nicht gefunden werden.",
     "file": {
       "could.not.extract": "Datei konnte nicht extrahiert werden",
       "not.image": "Es wird erwartet, dass die Datei ein Bild ist. Die Datei ist jedoch vom Typ \"{{ fileType }}\""

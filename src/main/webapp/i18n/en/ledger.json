@@ -6,7 +6,10 @@
         "notFound": "No ledger entries found"
       },
       "import": {
-        "title": "Ledger import"
+        "title": "Ledger import",
+        "message": {
+          "imported": "The file was successfully imported."
+        }
       },
       "entry": {
         "title": "Ledger entry",

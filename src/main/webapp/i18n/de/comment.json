@@ -1,0 +1,12 @@
+{
+  "schattenbuchhaltungApp": {
+    "comment": {
+      "created": "Der Kommentar wurde gespeichert.",
+      "updated": "Der Kommentar wurde geändert.",
+      "deleted": "Der Kommentar wurde gelöscht.",
+      "delete": {
+        "question": "Soll der Kommentar wirklich dauerhaft gelöscht werden?"
+      }
+    }
+  }
+}

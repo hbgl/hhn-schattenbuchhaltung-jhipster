@@ -2,10 +2,10 @@ package dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import dev.hbgl.hhn.schattenbuchhaltung.domain.CostType;
+import dev.hbgl.hhn.schattenbuchhaltung.domain.Division;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY)
-public class CostTypeVM {
+public class DivisionOut {
 
     public Long id;
 
@@ -13,11 +13,11 @@ public class CostTypeVM {
 
     public String name;
 
-    public static CostTypeVM fromEntity(CostType entity) {
+    public static DivisionOut fromEntity(Division entity) {
         if (entity == null) {
             return null;
         }
-        var vm = new CostTypeVM();
+        var vm = new DivisionOut();
         vm.id = entity.getId();
         vm.no = entity.getNo();
         vm.name = entity.getName();

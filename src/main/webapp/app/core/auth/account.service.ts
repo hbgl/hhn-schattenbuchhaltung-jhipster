@@ -4,11 +4,12 @@ import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { SessionStorageService } from 'ngx-webstorage';
 import { Observable, ReplaySubject, of } from 'rxjs';
-import { shareReplay, tap, catchError } from 'rxjs/operators';
+import { shareReplay, tap, catchError, map } from 'rxjs/operators';
 
 import { StateStorageService } from 'app/core/auth/state-storage.service';
 import { ApplicationConfigService } from '../config/application-config.service';
 import { Account } from 'app/core/auth/account.model';
+import { plainToClass } from 'class-transformer';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
@@ -34,10 +35,7 @@ export class AccountService {
     if (!this.userIdentity) {
       return false;
     }
-    if (!Array.isArray(authorities)) {
-      authorities = [authorities];
-    }
-    return this.userIdentity.authorities.some((authority: string) => authorities.includes(authority));
+    return this.userIdentity.hasAnyAuthority(authorities);
   }
 
   identity(force?: boolean): Observable<Account | null> {
@@ -77,7 +75,7 @@ export class AccountService {
   }
 
   private fetch(): Observable<Account> {
-    return this.http.get<Account>(this.applicationConfigService.getEndpointFor('api/account'));
+    return this.http.get<Account>(this.applicationConfigService.getEndpointFor('api/account')).pipe(map(res => plainToClass(Account, res)));
   }
 
   private navigateToStoredUrl(): void {

@@ -34,7 +34,7 @@ public class LedgerEntryResource {
 
     private final Logger log = LoggerFactory.getLogger(LedgerEntryResource.class);
 
-    private static final String ENTITY_NAME = "ledgerEntry";
+    public static final String ENTITY_NAME = "ledgerEntry";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;

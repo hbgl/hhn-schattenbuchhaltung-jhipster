@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.CostCenter;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY)
-public class CostCenterVM {
+public class CostCenterOut {
 
     public Long id;
 
@@ -15,11 +15,11 @@ public class CostCenterVM {
 
     public Integer rank;
 
-    public static CostCenterVM fromEntity(CostCenter entity) {
+    public static CostCenterOut fromEntity(CostCenter entity) {
         if (entity == null) {
             return null;
         }
-        var vm = new CostCenterVM();
+        var vm = new CostCenterOut();
         vm.id = entity.getId();
         vm.no = entity.getNo();
         vm.name = entity.getName();

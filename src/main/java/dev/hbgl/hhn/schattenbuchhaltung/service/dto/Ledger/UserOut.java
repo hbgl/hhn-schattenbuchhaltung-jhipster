@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.User;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY)
-public class UserVM {
+public class UserOut {
 
     public String id;
 
@@ -17,11 +17,11 @@ public class UserVM {
 
     public String imageUrl;
 
-    public static UserVM fromEntity(User entity) {
+    public static UserOut fromEntity(User entity) {
         if (entity == null) {
             return null;
         }
-        var vm = new UserVM();
+        var vm = new UserOut();
         vm.id = entity.getId();
         vm.firstName = entity.getFirstName();
         vm.lastName = entity.getLastName();
