@@ -161,3 +161,8 @@ Desktop.ini
 # Elastic
 ######################
 /src/main/docker/elastic-db
+
+######################
+# Postgres
+######################
+/src/main/docker/pg-db
