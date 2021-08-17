@@ -1,7 +1,7 @@
 # This configuration is intended for development purpose, it's **your** responsibility to harden it for production
 version: '3.8'
 services:
-  schattenbuchhaltung-postgresql:
+  postgres:
     image: postgres:13.2
     volumes:
       - ./pg-db:/var/lib/postgresql/data/
