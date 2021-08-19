@@ -46,7 +46,7 @@ export class LedgerImportComponent {
       const file = input.files[0];
       const result = await new Promise((resolve: (value: Papa.ParseResult<Record<string, string>>) => void, reject) => {
         Papa.parse(file, {
-          worker: true,
+          worker: false,
           header: true,
           newline: '\r\n',
           complete(parseResult: Papa.ParseResult<Record<string, string>>): void {
