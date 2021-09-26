@@ -1,29 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
     <!--
         Added the constraints for entity Tag.
     -->
     <changeSet id="20210614205644-2" author="jhipster">
 
-        <addForeignKeyConstraint baseColumnNames="person_id"
-                                 baseTableName="tag"
-                                 constraintName="fk_tag__person_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="jhi_user"/>
-
-        <addForeignKeyConstraint baseColumnNames="custom_type_id"
-                                 baseTableName="tag"
-                                 constraintName="fk_tag__custom_type_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="tag_custom_type"/>
-
-        <addForeignKeyConstraint baseColumnNames="custom_value_id"
-                                 baseTableName="tag"
-                                 constraintName="fk_tag__custom_value_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="tag_custom_value"/>
+        <addUniqueConstraint tableName="tag"
+                             columnNames="text_normalized"
+                             constraintName="uc_tag__text_normalized"/>
     </changeSet>
 </databaseChangeLog>

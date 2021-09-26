@@ -1,12 +1,14 @@
 @import 'bootstrap-prelude';
 @import 'sizing';
+@import 'typography';
+@import 'tooltip';
 @import 'fontawesome-extras';
+@import 'loader';
 
 /* ==============================================================
 Bootstrap tweaks
 ===============================================================*/
 
-body,
 h1,
 h2,
 h3,
@@ -14,14 +16,32 @@ h4 {
   font-weight: 300;
 }
 
-/* Increase contrast of links to get 100% on Lighthouse Accessability Audit. Override this color if you want to change the link color, or use a Bootswatch theme */
-a {
-  color: #533f03;
-  font-weight: bold;
+body {
+  min-height: 100vh;
 }
 
-a:hover {
-  color: #533f03;
+.main-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+}
+
+/* Increase contrast of links to get 100% on Lighthouse Accessability Audit. Override this color if you want to change the link color, or use a Bootswatch theme */
+a {
+  // color: #533f03;
+  font-weight: $font-weight-bold;
+
+  // &:hover {
+  //   color: #533f03;
+  // }
+}
+
+a.link-u {
+  text-decoration: underline;
 }
 
 /* override hover color for dropdown-item forced by bootstrap to all a:not([href]):not([tabindex]) elements in _reboot.scss */
@@ -70,8 +90,7 @@ Generic styles
 /* other generic styles */
 
 .jh-card {
-  padding: 1.5rem;
-  margin-top: 20px;
+  padding: 3rem;
   border: none;
 }
 
@@ -131,7 +150,8 @@ Custom alerts for notification
   }
   .jhi-toast {
     position: fixed;
-    width: 100%;
+    width: 30rem;
+    max-width: 100%;
     &.left {
       left: 5px;
     }
@@ -139,17 +159,11 @@ Custom alerts for notification
       right: 5px;
     }
     &.top {
-      top: 55px;
+      top: 75px;
     }
     &.bottom {
       bottom: 55px;
     }
-  }
-}
-
-@media screen and (min-width: map-get($grid-breakpoints, sm)) {
-  .alerts .jhi-toast {
-    width: 50%;
   }
 }
 
@@ -219,4 +233,63 @@ ui bootstrap tweaks
 
 .dropdown-toggle.dropdown-notoggle::after {
   display: none;
+}
+
+// Add a 1px border to all tags so we can have outlined badges without
+// messing up the sizing.
+@each $color, $value in $theme-colors {
+  .badge-#{$color} {
+    border: $border-width solid $value;
+  }
+}
+
+.badge-outline-plain {
+  color: $body-color;
+  background-color: $body-bg;
+  border: 1px solid $body-color;
+  &:hover {
+    color: $body-color;
+    background-color: $body-bg;
+  }
+}
+
+.toast-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: $zindex-fixed;
+}
+
+.toasts {
+  position: absolute;
+  top: map-get($spacers, 3);
+  right: map-get($spacers, 3);
+
+  .toast {
+    width: $toast-max-width;
+  }
+
+  .toast .toast-header .close:not(:only-child) {
+    margin-left: map-get($spacers, 2);
+  }
+}
+
+.popover.popover-no-arrow .arrow {
+  display: none;
+}
+
+.btn-link {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.btn-xs {
+  @include button-size($btn-padding-y-xs, $btn-padding-x-xs, $btn-font-size-xs, $btn-line-height-xs, $btn-border-radius-xs);
+}
+
+.boder-transparent {
+  border: 1px solid transparent;
+}
+
+.mr-icon {
+  margin-right: 1ch;
 }

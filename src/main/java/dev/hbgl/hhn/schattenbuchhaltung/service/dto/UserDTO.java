@@ -1,11 +1,12 @@
 package dev.hbgl.hhn.schattenbuchhaltung.service.dto;
 
 import dev.hbgl.hhn.schattenbuchhaltung.domain.User;
+import java.io.Serializable;
 
 /**
  * A DTO representing a user, with only the public attributes.
  */
-public class UserDTO {
+public class UserDTO implements Serializable {
 
     private String id;
 

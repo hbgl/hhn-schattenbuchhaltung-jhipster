@@ -1,0 +1,18 @@
+@each $color, $value in $theme-colors {
+  .tooltip-#{$color} {
+    .tooltip-inner {
+      color: theme-color-level($color, $tooltip-color-level);
+      background-color: theme-color-level($color, $tooltip-bg-level);
+    }
+
+    @each $position in ('top', 'right', 'bottom', 'left') {
+      &.bs-tooltip-#{$position} {
+        .arrow {
+          &::before {
+            border-#{$position}-color: theme-color-level($color, $tooltip-bg-level);
+          }
+        }
+      }
+    }
+  }
+}

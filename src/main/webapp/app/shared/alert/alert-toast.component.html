@@ -1,0 +1,17 @@
+<div class="toasts">
+  <ngb-toast
+    *ngFor="let entry of alerts | keyvalue"
+    [autohide]="entry.value.timeout! >= 0"
+    [delay]="entry.value.timeout!"
+    (hidden)="close(entry)"
+  >
+    <ng-template ngbToastHeader>
+      <div class="rounded mr-2" [ngClass]="'bg-' + entry.value.type" style="height: 1.25rem; width: 1.25rem"></div>
+      <strong class="mr-auto" [ngClass]="'text-' + entry.value.type">
+        <ng-container *ngIf="entry.value.title">{{ entry.value.title }}</ng-container>
+        <ng-container *ngIf="!entry.value.title">{{ 'global.messages.toast.titles.' + entry.value.type | translate }}</ng-container>
+      </strong>
+    </ng-template>
+    <div [innerHtml]="entry.value.message"></div>
+  </ngb-toast>
+</div>

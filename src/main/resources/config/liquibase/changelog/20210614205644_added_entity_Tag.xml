@@ -14,20 +14,11 @@
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="type" type="varchar(255)">
+            <column name="text" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="text" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="person_id" type="varchar(100)">
-                <constraints nullable="true" />
-            </column>
-            <column name="custom_type_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
-            <column name="custom_value_id" type="bigint">
-                <constraints nullable="true" />
+            <column name="text_normalized" type="varchar(255)">
+                <constraints nullable="false" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>

@@ -1,8 +1,8 @@
 import * as internal from 'node:stream';
 import { Type } from 'class-transformer';
-import { TagKind } from 'app/entities/enumerations/tag-kind.model';
-import { User } from 'app/shared/user/user.model';
 import { Comment } from 'app/shared/comment/comment.model';
+import { normalizeText as tagNormalizeText } from 'app/entities/tag/tag-utils';
+import { ID_UNDEFINED } from 'app/entities/constants';
 
 // Had to factor out some properties from the constructor into
 // the class body in order to apply the @Type decorator.
@@ -33,28 +33,67 @@ export class CostType {
   }
 }
 
-export class Tag {
-  constructor(
-    public id: number,
-    public type: TagKind,
-    public text: string | null,
-    public person: User | null,
-    public customType: string | null,
-    public customValue: string | null
-  ) {}
+export interface ITag {
+  id: number;
+  text: string;
+  textNormalized: string;
+}
+
+export class Tag implements ITag {
+  private _text!: string;
+
+  private _textNormalized!: string;
+
+  public id: number;
+
+  constructor(id?: number, text?: string) {
+    this.id = id ?? ID_UNDEFINED;
+    this.text = text ?? '';
+  }
+
+  public static fromRawComponents(id: number, text: string, textNormalized: string): Tag {
+    const instance = Object.create(this.prototype) as Tag;
+    instance.id = id;
+    instance._text = text;
+    instance._textNormalized = textNormalized;
+    return instance;
+  }
+
+  public static fromPojo(pojo: ITag): Tag {
+    return this.fromRawComponents(pojo.id, pojo.text, pojo.textNormalized);
+  }
+
+  public toPojo(): ITag {
+    return {
+      id: this.id,
+      text: this.text,
+      textNormalized: this.textNormalized,
+    };
+  }
+
+  public setTextRaw(value: string): void {
+    this._text = value;
+  }
+
+  public setTextNormalizedRaw(value: string): void {
+    this._textNormalized = value;
+  }
+
+  public get text(): string {
+    return this._text;
+  }
+
+  public set text(value: string) {
+    this._text = value;
+    this._textNormalized = tagNormalizeText(value);
+  }
+
+  public get textNormalized(): string {
+    return this._textNormalized;
+  }
 
   public get displayText(): string {
-    if (this.type === 'TEXT') {
-      return this.text!;
-    }
-    if (this.type === 'PERSON') {
-      return this.person!.displayText;
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (this.type === 'CUSTOM') {
-      return this.customValue!;
-    }
-    return '';
+    return this.text;
   }
 }
 

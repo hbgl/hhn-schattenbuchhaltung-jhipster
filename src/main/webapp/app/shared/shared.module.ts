@@ -12,13 +12,16 @@ import { SortByDirective } from './sort/sort-by.directive';
 import { SortDirective } from './sort/sort.directive';
 import { ItemCountComponent } from './pagination/item-count.component';
 import { DeleteDialogComponent } from './modal/delete-dialog.component';
+import { AlertToastComponent } from './alert/alert-toast.component';
+import { PipesModule } from 'app/pipes/pipes.module';
 
 @NgModule({
-  imports: [SharedLibsModule],
+  imports: [SharedLibsModule, PipesModule],
   declarations: [
     FindLanguageFromKeyPipe,
     TranslateDirective,
     AlertComponent,
+    AlertToastComponent,
     AlertErrorComponent,
     HasAnyAuthorityDirective,
     DurationPipe,
@@ -34,6 +37,7 @@ import { DeleteDialogComponent } from './modal/delete-dialog.component';
     FindLanguageFromKeyPipe,
     TranslateDirective,
     AlertComponent,
+    AlertToastComponent,
     AlertErrorComponent,
     HasAnyAuthorityDirective,
     DurationPipe,

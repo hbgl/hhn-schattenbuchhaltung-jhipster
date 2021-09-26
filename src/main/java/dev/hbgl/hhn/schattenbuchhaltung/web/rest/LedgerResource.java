@@ -5,15 +5,20 @@ import dev.hbgl.hhn.schattenbuchhaltung.domain.CostCenter;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.CostType;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.Division;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.LedgerEntry;
+import dev.hbgl.hhn.schattenbuchhaltung.domain.LedgerEntryTag;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.Tag;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.CostCenterRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.CostTypeRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.DivisionRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.LedgerEntryRepository;
+import dev.hbgl.hhn.schattenbuchhaltung.repository.LedgerEntryTagRepository;
+import dev.hbgl.hhn.schattenbuchhaltung.repository.TagRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.CostCenterDTO;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.CommentOut;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.LedgerEntryOut;
+import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.TagOut;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.LedgerImportEntryDTO;
+import dev.hbgl.hhn.schattenbuchhaltung.service.dto.UpdateLedgerEntryTagsDTO;
 import dev.hbgl.hhn.schattenbuchhaltung.service.parser.LedgerEntryInstantParser;
 import dev.hbgl.hhn.schattenbuchhaltung.web.rest.errors.BadRequestAlertException;
 import java.io.IOException;
@@ -36,6 +41,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
@@ -59,6 +65,10 @@ public class LedgerResource {
 
     private final CostTypeRepository costTypeRepository;
 
+    private final TagRepository tagRepository;
+
+    private LedgerEntryTagRepository ledgerEntryTagRepository;
+
     private final LedgerEntryInstantParser ledgerEntryInstantParser;
 
     private final EntityManager entityManager;
@@ -68,6 +78,8 @@ public class LedgerResource {
         CostCenterRepository costCenterRepository,
         DivisionRepository divisionRepository,
         CostTypeRepository costTypeRepository,
+        TagRepository tagRepository,
+        LedgerEntryTagRepository ledgerEntryTagRepository,
         LedgerEntryInstantParser ledgerEntryInstantParser,
         EntityManager entityManager
     ) {
@@ -75,6 +87,8 @@ public class LedgerResource {
         this.costCenterRepository = costCenterRepository;
         this.divisionRepository = divisionRepository;
         this.costTypeRepository = costTypeRepository;
+        this.tagRepository = tagRepository;
+        this.ledgerEntryTagRepository = ledgerEntryTagRepository;
         this.ledgerEntryInstantParser = ledgerEntryInstantParser;
         this.entityManager = entityManager;
     }
@@ -90,7 +104,7 @@ public class LedgerResource {
             .createQuery("SELECT le FROM LedgerEntry le ORDER BY bookingDate", LedgerEntry.class)
             .setHint("javax.persistence.loadgraph", ledgerEntryGraph)
             .getResultStream()
-            .map(e -> LedgerEntryOut.fromEntity(e, this.entityManager))
+            .map(e -> LedgerEntryOut.fromEntity(e, null, this.entityManager))
             .collect(Collectors.toList());
 
         return result;
@@ -102,7 +116,6 @@ public class LedgerResource {
 
         var ledgerEntryGraph = entityManager.createEntityGraph(LedgerEntry.class);
         ledgerEntryGraph.addAttributeNodes("costCenter1", "costCenter2", "costCenter3", "costType", "division");
-        ledgerEntryGraph.addSubgraph("tags").addAttributeNodes("customType", "customValue");
 
         var ledgerEntryMaybe = entityManager
             .createQuery("SELECT le FROM LedgerEntry le WHERE le.no = :no", LedgerEntry.class)
@@ -117,6 +130,17 @@ public class LedgerResource {
 
         var ledgerEntry = ledgerEntryMaybe.get();
 
+        var ledgerEntryTagGraph = entityManager.createEntityGraph(LedgerEntryTag.class);
+        ledgerEntryTagGraph.addSubgraph("tag");
+        var ledgerEntryTags = entityManager
+            .createQuery(
+                "SELECT let FROM LedgerEntryTag let WHERE let.ledgerEntry = :ledgerEntry ORDER BY let.priority, let.id",
+                LedgerEntryTag.class
+            )
+            .setParameter("ledgerEntry", ledgerEntry)
+            .setHint("javax.persistence.loadgraph", ledgerEntryTagGraph)
+            .getResultList();
+
         var commentGraph = entityManager.createEntityGraph(Comment.class);
         commentGraph.addAttributeNodes("author");
         var comments = entityManager
@@ -125,10 +149,105 @@ public class LedgerResource {
             .setHint("javax.persistence.loadgraph", commentGraph)
             .getResultList();
 
-        var vm = LedgerEntryOut.fromEntity(ledgerEntry, this.entityManager);
+        var relations = new LedgerEntryOut.Relations();
+        relations.comments = comments;
+        relations.ledgerEntryTags = ledgerEntryTags;
+
+        var vm = LedgerEntryOut.fromEntity(ledgerEntry, relations, this.entityManager);
         vm.comments = comments.stream().map(CommentOut::fromEntity).collect(Collectors.toList());
 
         return ResponseUtil.wrapOrNotFound(Optional.of(vm));
+    }
+
+    @PutMapping("/ledger/entry/{no}/tags")
+    public ResponseEntity<List<TagOut>> updateTags(@PathVariable String no, @Valid @RequestBody UpdateLedgerEntryTagsDTO input) {
+        var maybeLedgerEntry = ledgerEntryRepository.findByNo(no);
+        if (maybeLedgerEntry.isEmpty()) {
+            throw new BadRequestAlertException("Related ledger entry not found.", LedgerEntryResource.ENTITY_NAME, "notfound");
+        }
+        var ledgerEntry = maybeLedgerEntry.get();
+
+        // Tag IDs to delete.
+        var deleteNormalizedTexts = Arrays.stream(input.deleteTags).collect(Collectors.toSet());
+
+        // Existing tag IDs to assign to this ledger entry.
+        var assignTags = new ArrayList<Tag>();
+        var assignTagIndices = new HashMap<String, Integer>();
+        for (var text : input.assignTags) {
+            var tag = new Tag().text(text).normalized();
+            var duplicateIndex = assignTagIndices.get(tag.getTextNormalized());
+            if (duplicateIndex != null) {
+                assignTags.set(duplicateIndex, tag);
+            } else {
+                assignTagIndices.put(tag.getTextNormalized(), assignTags.size());
+                assignTags.add(tag);
+            }
+        }
+
+        // Load existing tags from DB.
+        var existingTags = tagRepository.findAllByNormalizedText(assignTagIndices.keySet());
+
+        // Update text of existing tags.
+        for (var existingTag : existingTags) {
+            var assignTagIndex = assignTagIndices.get(existingTag.getTextNormalized());
+            var assignTag = assignTags.get(assignTagIndex);
+            existingTag.setText(assignTag.getText());
+            assignTags.set(assignTagIndex, existingTag);
+        }
+
+        // Delete tags and assignments.
+        if (!deleteNormalizedTexts.isEmpty()) {
+            var deleteTags = tagRepository.findAllByNormalizedText(deleteNormalizedTexts);
+            if (!deleteTags.isEmpty()) {
+                ledgerEntryTagRepository.deleteAllByTags(deleteTags);
+                tagRepository.deleteAll(deleteTags);
+            }
+        }
+
+        // Upsert tag assignments.
+        tagRepository.saveAll(assignTags);
+
+        var priorities = new HashMap<Long, Integer>();
+        var priotity = 1;
+        for (var tag : assignTags) {
+            priorities.put(tag.getId(), priotity++);
+        }
+
+        // Set up ledger entry tags.
+        var assignLedgerEntryTags = assignTags
+            .stream()
+            .map(
+                t ->
+                    new LedgerEntryTag()
+                        .ledgerEntry(ledgerEntry)
+                        .ledgerEntryNo(ledgerEntry.getNo())
+                        .tag(t)
+                        .priority(priorities.get(t.getId()))
+            )
+            .collect(Collectors.toMap(e -> e.getTag().getId(), e -> e));
+
+        // Load existing ledger entry tags.
+        var existingLedgerEntryTags = ledgerEntryTagRepository.findAllByLedgerAndTagId(ledgerEntry.getId(), assignLedgerEntryTags.keySet());
+
+        // Update existing ledger entry tags.
+        for (var existingLedgerEntryTag : existingLedgerEntryTags) {
+            var tagId = existingLedgerEntryTag.getTag().getId();
+            var assignLedgerEntryTag = assignLedgerEntryTags.get(tagId);
+            existingLedgerEntryTag.setPriority(assignLedgerEntryTag.getPriority());
+            assignLedgerEntryTags.put(tagId, existingLedgerEntryTag);
+        }
+
+        // Upsert ledger entry tags.
+        ledgerEntryTagRepository.saveAll(assignLedgerEntryTags.values());
+
+        var result = assignTags.stream().map(t -> TagOut.fromEntity(t)).collect(Collectors.toList());
+
+        return ResponseEntity
+            .ok()
+            .headers(
+                HeaderUtil.createAlert(applicationName, applicationName + ".ledger.entry.message.tagsSaved", ledgerEntry.getId().toString())
+            )
+            .body(result);
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)

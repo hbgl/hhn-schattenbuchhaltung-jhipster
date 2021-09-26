@@ -7,8 +7,6 @@
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
         "main": "Entitäten",
-        "tagCustomType": "Tag Custom Type",
-        "tagCustomValue": "Tag Custom Value",
         "tag": "Tag",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
@@ -54,6 +52,14 @@
       "csvFile.label": "CSV-Datei"
     },
     "messages": {
+      "toast": {
+        "titles": {
+          "success": "Erfolg",
+          "info": "Meldung",
+          "warning": "Warning",
+          "danger": "Achtung"
+        }
+      },
       "info": {
         "authenticated": {
           "prefix": "Wenn Sie sich ",
@@ -111,7 +117,8 @@
     "action": {
       "collapse": "Zuklappen",
       "expand": "Aufklappen",
-      "comment": "Kommentieren"
+      "comment": "Kommentieren",
+      "remove": "Entfernen"
     }
   },
   "entity": {

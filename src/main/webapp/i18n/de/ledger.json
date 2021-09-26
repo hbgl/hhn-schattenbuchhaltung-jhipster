@@ -15,7 +15,16 @@
         "title": "Posten",
         "noTags": "Keine Tags",
         "comments": "Kommentare",
-        "comment": "Kommentar"
+        "comment": "Kommentar",
+        "newTagPlaceholder": "+ Tag",
+        "newTagPlaceholderEmpty": "Neuen Tag erstellen",
+        "message": {
+          "tagsSaved": "Die Tags wurden gespeichert.",
+          "tagDuplicate": "Der Tag existiert bereits."
+        },
+        "action": {
+          "editTags": "Tags bearbeiten"
+        }
       }
     }
   }

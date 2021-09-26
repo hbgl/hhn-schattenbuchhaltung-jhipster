@@ -19,12 +19,9 @@
         "title": "Tag"
       },
       "id": "ID",
-      "type": "Type",
       "text": "Text",
       "person": "Person",
-      "customType": "Custom Type",
-      "customValue": "Custom Value",
-      "ledgerEntries": "Ledger Entries"
+      "ledgerEntryTags": "Ledger Entry Tags"
     }
   }
 }

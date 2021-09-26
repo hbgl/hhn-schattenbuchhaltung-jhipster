@@ -51,8 +51,9 @@
       "TagCustomValue",
       "Tag",
       "HistoryEntry",
-      "HistoryEntryField"
+      "HistoryEntryField",
+      "LedgerEntryTag"
     ],
-    "lastLiquibaseTimestamp": 1623704206000
+    "lastLiquibaseTimestamp": 1628381878000
   }
 }

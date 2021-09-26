@@ -3,7 +3,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
-import { LedgerEntryDetail, LedgerListEntry } from './ledger-entry.model';
+import { LedgerEntryDetail, LedgerListEntry, Tag } from './ledger-entry.model';
 import { map } from 'rxjs/operators';
 import { plainToClass } from 'class-transformer';
 import { LedgerImportEntry } from './ledger-import-entry.model';
@@ -15,9 +15,7 @@ export class LedgerService {
   constructor(protected http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
   list(): Observable<LedgerListEntry[]> {
-    return this.http
-      .get<unknown[]>(this.resourceUrl, { observe: 'response' })
-      .pipe(map(res => (res.body === null ? [] : plainToClass(LedgerListEntry, res.body))));
+    return this.http.get<unknown[]>(this.resourceUrl).pipe(map(res => plainToClass(LedgerListEntry, res)));
   }
 
   detail(no: string): Observable<LedgerEntryDetail> {
@@ -28,5 +26,15 @@ export class LedgerService {
 
   import(entries: LedgerImportEntry[]): Observable<HttpResponse<{}>> {
     return this.http.post<LedgerImportEntry[]>(`${this.resourceUrl}/import`, entries, { observe: 'response' });
+  }
+
+  updateTags(no: string, assignTags: string[], deleteTags: string[]): Observable<Tag[]> {
+    const input = {
+      assignTags,
+      deleteTags,
+    };
+    return this.http
+      .put<unknown[]>(`${this.resourceUrl}/entry/${encodeURIComponent(no)}/tags`, input)
+      .pipe(map(res => plainToClass(Tag, res)));
   }
 }

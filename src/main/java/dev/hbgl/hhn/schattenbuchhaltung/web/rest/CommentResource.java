@@ -113,6 +113,7 @@ public class CommentResource {
         comment.setParent(parent);
         comment.setCreatedAt(Instant.now());
         comment.setContentHtml(input.contentHtml);
+        comment.setLedgerEntryNo(ledgerEntry.getNo());
         comment = commentRepository.save(comment);
         var output = CommentOut.fromEntity(comment);
         return ResponseEntity

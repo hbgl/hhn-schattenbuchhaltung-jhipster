@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 import { AlertService } from 'app/core/util/alert.service';
+import { NOTIFICATION_HIDE_AFTER_MS } from 'app/entities/constants';
 
 @Injectable()
 export class NotificationInterceptor implements HttpInterceptor {
@@ -29,6 +30,8 @@ export class NotificationInterceptor implements HttpInterceptor {
               type: 'success',
               translationKey: alert,
               translationParams: { param: alertParams },
+              toast: true,
+              timeout: NOTIFICATION_HIDE_AFTER_MS,
             });
           }
         }

@@ -179,13 +179,12 @@ public class LedgerEntryResource {
     /**
      * {@code GET  /ledger-entries} : get all the ledgerEntries.
      *
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of ledgerEntries in body.
      */
     @GetMapping("/ledger-entries")
-    public List<LedgerEntry> getAllLedgerEntries(@RequestParam(required = false, defaultValue = "false") boolean eagerload) {
+    public List<LedgerEntry> getAllLedgerEntries() {
         log.debug("REST request to get all LedgerEntries");
-        return ledgerEntryRepository.findAllWithEagerRelationships();
+        return ledgerEntryRepository.findAll();
     }
 
     /**
@@ -197,7 +196,7 @@ public class LedgerEntryResource {
     @GetMapping("/ledger-entries/{id}")
     public ResponseEntity<LedgerEntry> getLedgerEntry(@PathVariable Long id) {
         log.debug("REST request to get LedgerEntry : {}", id);
-        Optional<LedgerEntry> ledgerEntry = ledgerEntryRepository.findOneWithEagerRelationships(id);
+        Optional<LedgerEntry> ledgerEntry = ledgerEntryRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(ledgerEntry);
     }
 

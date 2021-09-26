@@ -1,0 +1,65 @@
+@import '../../../content/scss/bootstrap-prelude';
+@import '~node_modules/ngx-chips/core/styles/core/_core.scss';
+
+$custom-primary: $primary;
+$custom-primary-dark: darken($custom-primary, 7.5%);
+
+// this is the container's theme
+$custom-theme: (
+  container-border-bottom: (
+    2 * $border-width,
+  )
+  solid $custom-primary,
+  container-border-bottom-focused: (
+    2 * $border-width,
+  )
+  solid $custom-primary,
+);
+
+// this is the tag's theme
+$custom-tag-theme: (
+  background-focused: $custom-primary,
+  background-active: $custom-primary-dark,
+  background-hover: $custom-primary,
+  color: $body-color,
+  color-hover: $body-color-inverse,
+  border-radius: $badge-border-radius,
+  transition: all 0s,
+);
+
+// this is the delete icon's theme
+$custom-icon-theme: (
+  fill: $body-color,
+  transition: all 0.35s,
+);
+
+.tag-input {
+  width: 100%;
+}
+
+// apply theme to the container
+::ng-deep tag-input .ng2-tag-input.custom-theme {
+  @include tag-input-theme($custom-theme);
+
+  tag {
+    @include tag-theme($custom-tag-theme);
+
+    padding-left: 0.6em;
+    padding-right: 0.6em;
+
+    &:hover,
+    &:focus {
+      delete-icon svg path {
+        fill: $body-color-inverse;
+      }
+    }
+
+    delete-icon {
+      @include icon-theme($custom-icon-theme);
+    }
+  }
+
+  tag-input-form input {
+    background: transparent;
+  }
+}

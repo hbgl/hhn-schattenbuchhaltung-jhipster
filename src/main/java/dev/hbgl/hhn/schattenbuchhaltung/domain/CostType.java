@@ -35,7 +35,7 @@ public class CostType implements Serializable {
     @OneToMany(mappedBy = "costType")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(
-        value = { "comments", "tags", "costCenter1", "costCenter2", "costCenter3", "division", "costType" },
+        value = { "comments", "ledgerEntryTags", "costCenter1", "costCenter2", "costCenter3", "division", "costType" },
         allowSetters = true
     )
     private Set<LedgerEntry> ledgerEntries = new HashSet<>();

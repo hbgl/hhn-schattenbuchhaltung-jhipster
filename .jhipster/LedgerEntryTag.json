@@ -1,0 +1,41 @@
+{
+  "name": "LedgerEntryTag",
+  "fields": [
+    {
+      "fieldName": "ledgerEntryNo",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "priority",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "ledgerEntry",
+      "otherEntityRelationshipName": "ledgerEntryTags",
+      "relationshipName": "ledgerEntry"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "tag",
+      "otherEntityRelationshipName": "ledgerEntryTags",
+      "relationshipValidateRules": "required",
+      "relationshipName": "tag"
+    }
+  ],
+  "entityTableName": "ledger_entry_tag",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": "*",
+  "skipClient": true,
+  "changelogDate": "20210808001758"
+}

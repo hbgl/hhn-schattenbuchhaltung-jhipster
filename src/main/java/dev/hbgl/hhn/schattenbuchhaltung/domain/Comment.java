@@ -22,13 +22,19 @@ public class Comment implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final int CONTENT_HTML_LENGTH = 10000;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
     @NotNull
-    @Column(name = "content_html", nullable = false)
+    @Column(name = "ledger_entry_no", nullable = false)
+    private String ledgerEntryNo;
+
+    @NotNull
+    @Column(name = "content_html", nullable = false, length = CONTENT_HTML_LENGTH)
     private String contentHtml;
 
     @NotNull
@@ -39,10 +45,9 @@ public class Comment implements Serializable {
     @NotNull
     private User author;
 
-    @ManyToOne(optional = false)
-    @NotNull
+    @ManyToOne
     @JsonIgnoreProperties(
-        value = { "comments", "tags", "costCenter1", "costCenter2", "costCenter3", "division", "costType" },
+        value = { "comments", "ledgerEntryTags", "costCenter1", "costCenter2", "costCenter3", "division", "costType" },
         allowSetters = true
     )
     private LedgerEntry ledgerEntry;
@@ -68,6 +73,19 @@ public class Comment implements Serializable {
     public Comment id(Long id) {
         this.id = id;
         return this;
+    }
+
+    public String getLedgerEntryNo() {
+        return this.ledgerEntryNo;
+    }
+
+    public Comment ledgerEntryNo(String ledgerEntryNo) {
+        this.ledgerEntryNo = ledgerEntryNo;
+        return this;
+    }
+
+    public void setLedgerEntryNo(String ledgerEntryNo) {
+        this.ledgerEntryNo = ledgerEntryNo;
     }
 
     public String getContentHtml() {
@@ -194,6 +212,7 @@ public class Comment implements Serializable {
     public String toString() {
         return "Comment{" +
             "id=" + getId() +
+            ", ledgerEntryNo='" + getLedgerEntryNo() + "'" +
             ", contentHtml='" + getContentHtml() + "'" +
             ", createdAt='" + getCreatedAt() + "'" +
             "}";

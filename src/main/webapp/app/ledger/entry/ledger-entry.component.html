@@ -1,18 +1,12 @@
 <!-- TODO Date formatting -->
-<div>
+<div class="mw-lg mx-auto">
   <h2 id="page-heading" data-cy="LederImportHeading">
     <span jhiTranslate="schattenbuchhaltungApp.ledger.entry.title">Ledger</span>
   </h2>
 
   <div *ngIf="entry">
-    <ng-container *ngIf="entry.tags && entry.tags.length > 0; else noTags">
-      <span class="badge badge-info mr-2" *ngFor="let tag of entry.tags; trackBy: trackTag">{{ tag.text }}</span>
-    </ng-container>
-    <ng-template #noTags>
-      <span class="badge badge-light" jhiTranslate="schattenbuchhaltungApp.ledger.entry.noTags">No tags</span>
-    </ng-template>
+    <jhi-ledger-entry-tags [ledgerEntryNo]="entry.no" [(tags)]="entry.tags"></jhi-ledger-entry-tags>
   </div>
-
   <hr />
 
   <jhi-alert-error></jhi-alert-error>
@@ -47,7 +41,7 @@
       <dd class="dl-tab-2">{{ entry.liability }}</dd>
     </dl>
 
-    <div class="mw-lg mt-6 ml-md-8 mr-auto">
+    <div class="mt-6">
       <h3>
         {{ entry.comments.length }}&#160;{{
           (entry.comments.length === 1 ? 'schattenbuchhaltungApp.ledger.entry.comment' : 'schattenbuchhaltungApp.ledger.entry.comments')

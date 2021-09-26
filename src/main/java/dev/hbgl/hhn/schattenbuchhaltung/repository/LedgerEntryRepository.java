@@ -22,16 +22,4 @@ public interface LedgerEntryRepository extends JpaRepository<LedgerEntry, Long> 
     List<LedgerEntry> findByNos(Iterable<String> nos);
 
     Optional<LedgerEntry> findByNo(String no);
-
-    @Query(
-        value = "select distinct ledgerEntry from LedgerEntry ledgerEntry left join fetch ledgerEntry.tags",
-        countQuery = "select count(distinct ledgerEntry) from LedgerEntry ledgerEntry"
-    )
-    Page<LedgerEntry> findAllWithEagerRelationships(Pageable pageable);
-
-    @Query("select distinct ledgerEntry from LedgerEntry ledgerEntry left join fetch ledgerEntry.tags")
-    List<LedgerEntry> findAllWithEagerRelationships();
-
-    @Query("select ledgerEntry from LedgerEntry ledgerEntry left join fetch ledgerEntry.tags where ledgerEntry.id = :id")
-    Optional<LedgerEntry> findOneWithEagerRelationships(@Param("id") Long id);
 }

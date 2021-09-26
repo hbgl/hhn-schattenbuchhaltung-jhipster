@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import dev.hbgl.hhn.schattenbuchhaltung.IntegrationTest;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.Comment;
-import dev.hbgl.hhn.schattenbuchhaltung.domain.LedgerEntry;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.User;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.CommentRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.search.CommentSearchRepository;
@@ -43,6 +42,9 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @WithMockUser
 class CommentResourceIT {
+
+    private static final String DEFAULT_LEDGER_ENTRY_NO = "AAAAAAAAAA";
+    private static final String UPDATED_LEDGER_ENTRY_NO = "BBBBBBBBBB";
 
     private static final String DEFAULT_CONTENT_HTML = "AAAAAAAAAA";
     private static final String UPDATED_CONTENT_HTML = "BBBBBBBBBB";
@@ -83,22 +85,15 @@ class CommentResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Comment createEntity(EntityManager em) {
-        Comment comment = new Comment().contentHtml(DEFAULT_CONTENT_HTML).createdAt(DEFAULT_CREATED_AT);
+        Comment comment = new Comment()
+            .ledgerEntryNo(DEFAULT_LEDGER_ENTRY_NO)
+            .contentHtml(DEFAULT_CONTENT_HTML)
+            .createdAt(DEFAULT_CREATED_AT);
         // Add required entity
         User user = UserResourceIT.createEntity(em);
         em.persist(user);
         em.flush();
         comment.setAuthor(user);
-        // Add required entity
-        LedgerEntry ledgerEntry;
-        if (TestUtil.findAll(em, LedgerEntry.class).isEmpty()) {
-            ledgerEntry = LedgerEntryResourceIT.createEntity(em);
-            em.persist(ledgerEntry);
-            em.flush();
-        } else {
-            ledgerEntry = TestUtil.findAll(em, LedgerEntry.class).get(0);
-        }
-        comment.setLedgerEntry(ledgerEntry);
         return comment;
     }
 
@@ -109,22 +104,15 @@ class CommentResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Comment createUpdatedEntity(EntityManager em) {
-        Comment comment = new Comment().contentHtml(UPDATED_CONTENT_HTML).createdAt(UPDATED_CREATED_AT);
+        Comment comment = new Comment()
+            .ledgerEntryNo(UPDATED_LEDGER_ENTRY_NO)
+            .contentHtml(UPDATED_CONTENT_HTML)
+            .createdAt(UPDATED_CREATED_AT);
         // Add required entity
         User user = UserResourceIT.createEntity(em);
         em.persist(user);
         em.flush();
         comment.setAuthor(user);
-        // Add required entity
-        LedgerEntry ledgerEntry;
-        if (TestUtil.findAll(em, LedgerEntry.class).isEmpty()) {
-            ledgerEntry = LedgerEntryResourceIT.createUpdatedEntity(em);
-            em.persist(ledgerEntry);
-            em.flush();
-        } else {
-            ledgerEntry = TestUtil.findAll(em, LedgerEntry.class).get(0);
-        }
-        comment.setLedgerEntry(ledgerEntry);
         return comment;
     }
 
@@ -148,6 +136,7 @@ class CommentResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(comment.getId().intValue())))
+            .andExpect(jsonPath("$.[*].ledgerEntryNo").value(hasItem(DEFAULT_LEDGER_ENTRY_NO)))
             .andExpect(jsonPath("$.[*].contentHtml").value(hasItem(DEFAULT_CONTENT_HTML)))
             .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())));
     }

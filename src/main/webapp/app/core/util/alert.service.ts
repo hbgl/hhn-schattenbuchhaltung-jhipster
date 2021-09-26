@@ -2,12 +2,16 @@ import { Injectable, SecurityContext, NgZone } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { translationNotFoundMessage } from 'app/config/translation.config';
+import { Subject } from 'rxjs';
 
 export type AlertType = 'success' | 'danger' | 'warning' | 'info';
 
 export interface Alert {
   id?: number;
   type: AlertType;
+  title?: string;
+  titleTranslationKey?: string;
+  titleTranslationParams?: { [key: string]: unknown };
   message?: string;
   translationKey?: string;
   translationParams?: { [key: string]: unknown };
@@ -28,6 +32,8 @@ export class AlertService {
   // unique id for each alert. Starts from 0.
   private alertId = 0;
   private alerts: Alert[] = [];
+  private subjectAdd = new Subject<Alert>();
+  private subjectClose = new Subject<Alert>();
 
   constructor(private sanitizer: DomSanitizer, private ngZone: NgZone, private translateService: TranslateService) {}
 
@@ -37,6 +43,14 @@ export class AlertService {
 
   get(): Alert[] {
     return this.alerts;
+  }
+
+  getSubjectAdd(): Subject<Alert> {
+    return this.subjectAdd;
+  }
+
+  getSubjectClose(): Subject<Alert> {
+    return this.subjectClose;
   }
 
   /**
@@ -50,6 +64,17 @@ export class AlertService {
   addAlert(alert: Alert, extAlerts?: Alert[]): Alert {
     alert.id = this.alertId++;
 
+    if (alert.titleTranslationKey) {
+      const translatedTitle = this.translateService.instant(alert.titleTranslationKey, alert.titleTranslationParams);
+      // if translation key exists
+      if (translatedTitle !== `${translationNotFoundMessage}[${alert.titleTranslationKey}]`) {
+        alert.title = translatedTitle;
+      } else if (!alert.message) {
+        alert.title = alert.translationKey;
+      }
+    }
+    alert.title = this.sanitizer.sanitize(SecurityContext.HTML, alert.title ?? '') ?? '';
+
     if (alert.translationKey) {
       const translatedMessage = this.translateService.instant(alert.translationKey, alert.translationParams);
       // if translation key exists
@@ -59,14 +84,18 @@ export class AlertService {
         alert.message = alert.translationKey;
       }
     }
-
     alert.message = this.sanitizer.sanitize(SecurityContext.HTML, alert.message ?? '') ?? '';
+
     alert.timeout = alert.timeout ?? this.timeout;
     alert.toast = alert.toast ?? this.toast;
     alert.position = alert.position ?? this.position;
     alert.close = (alertsArray: Alert[]) => this.closeAlert(alert.id!, alertsArray);
 
     (extAlerts ?? this.alerts).push(alert);
+
+    if (!extAlerts) {
+      this.subjectAdd.next(alert);
+    }
 
     if (alert.timeout > 0) {
       // Workaround protractor waiting for setTimeout.
@@ -85,10 +114,13 @@ export class AlertService {
 
   private closeAlert(alertId: number, extAlerts?: Alert[]): void {
     const alerts = extAlerts ?? this.alerts;
-    const alertIndex = alerts.map(alert => alert.id).indexOf(alertId);
-    // if found alert then remove
-    if (alertIndex >= 0) {
-      alerts.splice(alertIndex, 1);
+    const index = alerts.map(alert => alert.id).indexOf(alertId);
+    if (index >= 0) {
+      const alert = alerts[index];
+      alerts.splice(index, 1);
+      if (!extAlerts) {
+        this.subjectClose.next(alert);
+      }
     }
   }
 }

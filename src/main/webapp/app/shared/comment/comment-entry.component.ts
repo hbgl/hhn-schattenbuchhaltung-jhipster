@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChange, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChange } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { Authority } from 'app/config/authority.constants';
@@ -12,6 +12,7 @@ import { distinctUntilChanged, startWith } from 'rxjs/operators';
 import { DeleteDialogComponent } from '../modal/delete-dialog.component';
 import { exhaustMapWithTrailing } from 'rxjs-exhaustmap-with-trailing';
 import { CommentService } from './comment.service';
+import { promiseToCompletingObservable } from 'app/core/util/promise.utils';
 
 class Action {
   constructor(public name: string, public run: () => void) {}
@@ -93,7 +94,7 @@ export class CommentEntryComponent implements OnChanges, OnDestroy {
     const sub = this.collapseSubject
       .pipe(
         distinctUntilChanged((a, b) => a.equals(b)),
-        exhaustMapWithTrailing(cs => this.db.commentCollapseStates.put(cs, cs.id))
+        exhaustMapWithTrailing(cs => promiseToCompletingObservable(this.db.commentCollapseStates.put(cs, cs.id)))
       )
       .subscribe();
     this.subscriptions.push(sub);

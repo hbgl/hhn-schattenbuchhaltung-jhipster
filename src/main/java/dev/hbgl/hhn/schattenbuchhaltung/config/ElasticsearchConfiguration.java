@@ -1,10 +1,14 @@
 package dev.hbgl.hhn.schattenbuchhaltung.config;
 
+import dev.hbgl.hhn.schattenbuchhaltung.domain.elasticsearch.ElasticTag;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -12,6 +16,7 @@ import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
 import org.springframework.data.elasticsearch.config.ElasticsearchConfigurationSupport;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
+import org.springframework.stereotype.Component;
 
 @Configuration
 public class ElasticsearchConfiguration extends ElasticsearchConfigurationSupport {
@@ -100,6 +105,18 @@ public class ElasticsearchConfiguration extends ElasticsearchConfigurationSuppor
                 return null;
             }
             return LocalDate.parse(source);
+        }
+    }
+
+    @Component
+    private static class PostConstructBean implements InitializingBean {
+
+        @Autowired
+        private RestHighLevelClient highLevelClient;
+
+        @Override
+        public void afterPropertiesSet() throws Exception {
+            ElasticTag.setup(highLevelClient);
         }
     }
 }

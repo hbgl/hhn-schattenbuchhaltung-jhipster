@@ -1,15 +1,14 @@
 package dev.hbgl.hhn.schattenbuchhaltung.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import dev.hbgl.hhn.schattenbuchhaltung.domain.enumeration.TagKind;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  * A Tag.
@@ -17,7 +16,6 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @Entity
 @Table(name = "tag")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@org.springframework.data.elasticsearch.annotations.Document(indexName = "tag")
 public class Tag implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -28,31 +26,17 @@ public class Tag implements Serializable {
     private Long id;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
-    private TagKind type;
-
     @Column(name = "text")
     private String text;
 
-    @ManyToOne
-    private User person;
+    @NotNull
+    @Column(name = "textNormalized")
+    private String textNormalized;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnoreProperties(value = { "values", "tags" }, allowSetters = true)
-    private TagCustomType customType;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnoreProperties(value = { "tags", "type" }, allowSetters = true)
-    private TagCustomValue customValue;
-
-    @ManyToMany(mappedBy = "tags")
+    @OneToMany(mappedBy = "tag")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(
-        value = { "comments", "tags", "costCenter1", "costCenter2", "costCenter3", "division", "costType" },
-        allowSetters = true
-    )
-    private Set<LedgerEntry> ledgerEntries = new HashSet<>();
+    @JsonIgnoreProperties(value = { "ledgerEntry", "tag" }, allowSetters = true)
+    private Set<LedgerEntryTag> ledgerEntryTags = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -68,19 +52,6 @@ public class Tag implements Serializable {
         return this;
     }
 
-    public TagKind getType() {
-        return this.type;
-    }
-
-    public Tag type(TagKind type) {
-        this.type = type;
-        return this;
-    }
-
-    public void setType(TagKind type) {
-        this.type = type;
-    }
-
     public String getText() {
         return this.text;
     }
@@ -94,74 +65,48 @@ public class Tag implements Serializable {
         this.text = text;
     }
 
-    public User getPerson() {
-        return this.person;
+    public String getTextNormalized() {
+        return this.textNormalized;
     }
 
-    public Tag person(User user) {
-        this.setPerson(user);
+    public Tag textNormalized(String textNormalized) {
+        this.textNormalized = textNormalized;
         return this;
     }
 
-    public void setPerson(User user) {
-        this.person = user;
+    public void setTextNormalized(String textNormalized) {
+        this.textNormalized = textNormalized;
     }
 
-    public TagCustomType getCustomType() {
-        return this.customType;
+    public Set<LedgerEntryTag> getLedgerEntryTags() {
+        return this.ledgerEntryTags;
     }
 
-    public Tag customType(TagCustomType tagCustomType) {
-        this.setCustomType(tagCustomType);
+    public Tag ledgerEntryTags(Set<LedgerEntryTag> ledgerEntryTags) {
+        this.setLedgerEntryTags(ledgerEntryTags);
         return this;
     }
 
-    public void setCustomType(TagCustomType tagCustomType) {
-        this.customType = tagCustomType;
-    }
-
-    public TagCustomValue getCustomValue() {
-        return this.customValue;
-    }
-
-    public Tag customValue(TagCustomValue tagCustomValue) {
-        this.setCustomValue(tagCustomValue);
+    public Tag addLedgerEntryTags(LedgerEntryTag ledgerEntryTag) {
+        this.ledgerEntryTags.add(ledgerEntryTag);
+        ledgerEntryTag.setTag(this);
         return this;
     }
 
-    public void setCustomValue(TagCustomValue tagCustomValue) {
-        this.customValue = tagCustomValue;
-    }
-
-    public Set<LedgerEntry> getLedgerEntries() {
-        return this.ledgerEntries;
-    }
-
-    public Tag ledgerEntries(Set<LedgerEntry> ledgerEntries) {
-        this.setLedgerEntries(ledgerEntries);
+    public Tag removeLedgerEntryTags(LedgerEntryTag ledgerEntryTag) {
+        this.ledgerEntryTags.remove(ledgerEntryTag);
+        ledgerEntryTag.setTag(null);
         return this;
     }
 
-    public Tag addLedgerEntries(LedgerEntry ledgerEntry) {
-        this.ledgerEntries.add(ledgerEntry);
-        ledgerEntry.getTags().add(this);
-        return this;
-    }
-
-    public Tag removeLedgerEntries(LedgerEntry ledgerEntry) {
-        this.ledgerEntries.remove(ledgerEntry);
-        ledgerEntry.getTags().remove(this);
-        return this;
-    }
-
-    public void setLedgerEntries(Set<LedgerEntry> ledgerEntries) {
-        if (this.ledgerEntries != null) {
-            this.ledgerEntries.forEach(i -> i.removeTags(this));
+    public void setLedgerEntryTags(Set<LedgerEntryTag> ledgerEntryTags) {
+        if (this.ledgerEntryTags != null) {
+            this.ledgerEntryTags.forEach(i -> i.setTag(null));
         }
-        if (ledgerEntries != null) {
-            ledgerEntries.forEach(i -> i.addTags(this));
+        if (ledgerEntryTags != null) {
+            ledgerEntryTags.forEach(i -> i.setTag(this));
         }
-        this.ledgerEntries = ledgerEntries;
+        this.ledgerEntryTags = ledgerEntryTags;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -188,8 +133,24 @@ public class Tag implements Serializable {
     public String toString() {
         return "Tag{" +
             "id=" + getId() +
-            ", type='" + getType() + "'" +
             ", text='" + getText() + "'" +
+            ", text='" + getTextNormalized() + "'" +
             "}";
+    }
+
+    public Tag normalized() {
+        this.setTextNormalized(Tag.normalizeText(this.text));
+        return this;
+    }
+
+    public static String cleanText(String input) {
+        return input.replace(",", "");
+    }
+
+    public static String normalizeText(String input) {
+        if (input == null) {
+            return null;
+        }
+        return input.toLowerCase(Locale.ROOT).trim();
     }
 }

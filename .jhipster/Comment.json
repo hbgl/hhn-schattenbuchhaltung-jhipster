@@ -2,6 +2,11 @@
   "name": "Comment",
   "fields": [
     {
+      "fieldName": "ledgerEntryNo",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
       "fieldName": "contentHtml",
       "fieldType": "String",
       "fieldValidateRules": ["required"]
@@ -24,7 +29,6 @@
       "relationshipType": "many-to-one",
       "otherEntityName": "ledgerEntry",
       "otherEntityRelationshipName": "comments",
-      "relationshipValidateRules": "required",
       "relationshipName": "ledgerEntry"
     },
     {

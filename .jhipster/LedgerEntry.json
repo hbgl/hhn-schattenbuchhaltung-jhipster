@@ -44,11 +44,10 @@
       "relationshipName": "comments"
     },
     {
-      "relationshipType": "many-to-many",
-      "otherEntityName": "tag",
-      "otherEntityRelationshipName": "ledgerEntries",
-      "relationshipName": "tags",
-      "ownerSide": true
+      "relationshipType": "one-to-many",
+      "otherEntityName": "ledgerEntryTag",
+      "otherEntityRelationshipName": "ledgerEntry",
+      "relationshipName": "ledgerEntryTags"
     },
     {
       "relationshipType": "many-to-one",

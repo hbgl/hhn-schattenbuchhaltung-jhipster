@@ -5,6 +5,7 @@
     placeholder="Write a comment"
     rows="3"
     formControlName="content"
+    maxlength="10000"
   ></textarea>
   <div class="d-flex justify-content-end">
     <button
@@ -17,12 +18,12 @@
       Cancel
     </button>
     <button
-      class="btn btn-primary"
+      class="btn btn-primary d-flex align-items-center"
       type="submit"
-      [jhiTranslate]="type === 'create' ? 'global.action.comment' : 'entity.action.save'"
       [disabled]="isSubmitting || form.invalid || contentHtml === originalContentHtml"
     >
-      Comment
+      <span *ngIf="isSubmitting" class="d-inline-block inline-spinner mr-icon"></span>
+      <span [jhiTranslate]="type === 'create' ? 'global.action.comment' : 'entity.action.save'">Comment</span>
     </button>
   </div>
 </form>

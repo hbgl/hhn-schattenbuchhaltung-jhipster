@@ -2,41 +2,22 @@
   "name": "Tag",
   "fields": [
     {
-      "fieldName": "type",
-      "fieldType": "TagKind",
-      "fieldValues": "TEXT,CUSTOM,PERSON",
+      "fieldName": "text",
+      "fieldType": "String",
       "fieldValidateRules": ["required"]
     },
     {
-      "fieldName": "text",
-      "fieldType": "String"
+      "fieldName": "textNormalized",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique"]
     }
   ],
   "relationships": [
     {
-      "relationshipType": "many-to-one",
-      "otherEntityName": "user",
+      "relationshipType": "one-to-many",
+      "otherEntityName": "ledgerEntryTag",
       "otherEntityRelationshipName": "tag",
-      "relationshipName": "person"
-    },
-    {
-      "relationshipType": "many-to-one",
-      "otherEntityName": "tagCustomType",
-      "otherEntityRelationshipName": "tag",
-      "relationshipName": "customType"
-    },
-    {
-      "relationshipType": "many-to-one",
-      "otherEntityName": "tagCustomValue",
-      "otherEntityRelationshipName": "tag",
-      "relationshipName": "customValue"
-    },
-    {
-      "relationshipType": "many-to-many",
-      "otherEntityName": "ledgerEntry",
-      "otherEntityRelationshipName": "tags",
-      "relationshipName": "ledgerEntries",
-      "ownerSide": false
+      "relationshipName": "ledgerEntryTags"
     }
   ],
   "entityTableName": "tag",

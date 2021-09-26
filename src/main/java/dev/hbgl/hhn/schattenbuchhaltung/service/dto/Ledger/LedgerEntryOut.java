@@ -2,10 +2,14 @@ package dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import dev.hbgl.hhn.schattenbuchhaltung.domain.Comment;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.LedgerEntry;
+import dev.hbgl.hhn.schattenbuchhaltung.domain.LedgerEntryTag;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.persistence.EntityManager;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY)
@@ -41,7 +45,7 @@ public class LedgerEntryOut {
 
     public CostTypeOut costType;
 
-    public static LedgerEntryOut fromEntity(LedgerEntry entity, EntityManager entityManager) {
+    public static LedgerEntryOut fromEntity(LedgerEntry entity, Relations relations, EntityManager entityManager) {
         if (entity == null) {
             return null;
         }
@@ -55,17 +59,38 @@ public class LedgerEntryOut {
         vm.expenditure = entity.getExpenditure();
         vm.liability = entity.getLiability();
         var util = entityManager.getEntityManagerFactory().getPersistenceUnitUtil();
-        if (util.isLoaded(entity, "comments")) {
-            vm.comments = entity.getComments().stream().map(CommentOut::fromEntity).collect(Collectors.toList());
+
+        Stream<Comment> commentStream = null;
+        if (relations != null && relations.comments != null) {
+            commentStream = relations.comments.stream();
+        } else if (util.isLoaded(entity, "comments")) {
+            commentStream = entity.getComments().stream();
         }
-        if (util.isLoaded(entity, "tags")) {
-            vm.tags = entity.getTags().stream().map(TagOut::fromEntity).collect(Collectors.toList());
+        if (commentStream != null) {
+            vm.comments = commentStream.map(CommentOut::fromEntity).collect(Collectors.toList());
         }
+
+        Stream<LedgerEntryTag> ledgerEntryTagStream = null;
+        if (relations != null && relations.ledgerEntryTags != null) {
+            ledgerEntryTagStream = relations.ledgerEntryTags.stream();
+        } else if (util.isLoaded(entity, "ledgerEntryTags")) {
+            ledgerEntryTagStream = entity.getLedgerEntryTags().stream();
+        }
+        if (ledgerEntryTagStream != null) {
+            vm.tags = ledgerEntryTagStream.map(let -> TagOut.fromEntity(let.getTag())).collect(Collectors.toList());
+        }
+
         vm.costCenter1 = CostCenterOut.fromEntity(entity.getCostCenter1());
         vm.costCenter2 = CostCenterOut.fromEntity(entity.getCostCenter2());
         vm.costCenter3 = CostCenterOut.fromEntity(entity.getCostCenter3());
         vm.division = DivisionOut.fromEntity(entity.getDivision());
         vm.costType = CostTypeOut.fromEntity(entity.getCostType());
         return vm;
+    }
+
+    public static class Relations {
+
+        public List<Comment> comments;
+        public List<LedgerEntryTag> ledgerEntryTags;
     }
 }

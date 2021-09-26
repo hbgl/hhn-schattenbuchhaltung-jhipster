@@ -15,7 +15,16 @@
         "title": "Ledger entry",
         "noTags": "No tags",
         "comments": "Comments",
-        "comment": "Comment"
+        "comment": "Comment",
+        "newTagPlaceholder": "+ Tag",
+        "newTagPlaceholderEmpty": "Enter new Tag",
+        "message": {
+          "tagsSaved": "The tags have been saved.",
+          "tagDuplicate": "The tag already exists."
+        },
+        "action": {
+          "editTags": "Edit tags"
+        }
       }
     }
   }

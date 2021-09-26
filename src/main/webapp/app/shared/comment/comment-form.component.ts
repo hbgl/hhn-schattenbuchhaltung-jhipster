@@ -2,8 +2,8 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, O
 import { FormBuilder, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from 'app/core/util/alert.service';
+import { loading } from 'app/support/observable';
 import escapeHTML from 'escape-html';
-import { timer, zip } from 'rxjs';
 import { Comment, CommentIn } from './comment.model';
 import { CommentService } from './comment.service';
 
@@ -96,7 +96,7 @@ export class CommentFormComponent implements OnChanges, AfterViewInit {
       }
 
       // Wait at least 500ms to not make the UI look smoother.
-      const [response] = await zip(observable, timer(500)).toPromise();
+      const response = await loading(observable).toPromise();
 
       this.commentSaved.emit(response);
 

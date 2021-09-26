@@ -11,6 +11,9 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
-    @Query("select tag from Tag tag where tag.person.login = ?#{principal.preferredUsername}")
-    List<Tag> findByPersonIsCurrentUser();
+    @Query("SELECT t FROM Tag t WHERE t.textNormalized IN ?1")
+    List<Tag> findAllByNormalizedText(Iterable<String> normalizedTexts);
+
+    @Query("DELETE FROM Tag t WHERE t.textNormalized IN ?1")
+    Long deleteAllByNormalizedText(Iterable<String> normalizedTexts);
 }

@@ -105,6 +105,12 @@ export class AlertErrorComponent implements OnDestroy {
   }
 
   private addErrorAlert(message?: string, translationKey?: string, translationParams?: { [key: string]: unknown }): void {
-    this.alertService.addAlert({ type: 'danger', message, translationKey, translationParams }, this.alerts);
+    this.alertService.addAlert({
+      type: 'danger',
+      message,
+      translationKey,
+      translationParams,
+      toast: true,
+    });
   }
 }

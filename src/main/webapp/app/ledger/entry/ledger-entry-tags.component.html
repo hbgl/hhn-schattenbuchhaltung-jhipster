@@ -1,0 +1,46 @@
+<div class="tag-container d-flex flex-wrap" [ngClass]="{ editing: isEditMode }">
+  <ng-container *ngIf="tags && isDefaultMode">
+    <ng-container *ngFor="let tag of tags; trackBy: trackTag; let index = index">
+      <a href="#" class="tag badge badge-info mr-2">{{ tag.text }}</a>
+    </ng-container>
+  </ng-container>
+  <span *ngIf="isDefaultMode && tags && tags.length === 0" class="tag badge badge-secondary"> No tags </span>
+  <tag-input
+    #tagInput
+    class="tag-input"
+    *ngIf="isEditMode"
+    [(ngModel)]="editTags"
+    [placeholder]="'schattenbuchhaltungApp.ledger.entry.newTagPlaceholder' | translate"
+    [secondaryPlaceholder]="'schattenbuchhaltungApp.ledger.entry.newTagPlaceholderEmpty' | translate"
+    theme="custom-theme"
+    [ripple]="false"
+    [animationDuration]="{ enter: '0ms', leave: '0ms' }"
+    [disable]="
+      false && 'should use !canEdit here but ngx-chips is bugged and throws ExpressionChangedAfterItHasBeenCheckedError when saving'
+    "
+    [dragZone]="canEdit ? 'tags' : ''"
+    identifyBy="textNormalized"
+    displayBy="text"
+  >
+  </tag-input>
+</div>
+<div [ngClass]="isDefaultMode ? 'mt-1' : 'mt-3'">
+  <button
+    type="button"
+    class="btn btn-link btn-xs px-0 boder-transparent"
+    [ngClass]="{ 'text-secondary': isEditMode }"
+    (click)="isDefaultMode ? onEnterEditMode() : onCancelEditMode()"
+    [disabled]="isEditMode && !canEdit"
+    [jhiTranslate]="isDefaultMode ? 'schattenbuchhaltungApp.ledger.entry.action.editTags' : 'entity.action.cancel'"
+  ></button>
+  <button
+    *ngIf="isEditMode"
+    type="button"
+    class="btn btn-primary btn-xs ml-2 d-inline-flex align-items-center"
+    (click)="onSaveEditMode()"
+    [disabled]="!canEdit"
+  >
+    <span *ngIf="isSaving" class="d-inline-block inline-spinner mr-icon"></span>
+    <span jhiTranslate="entity.action.save">Save</span>
+  </button>
+</div>

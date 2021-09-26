@@ -3,6 +3,7 @@ package dev.hbgl.hhn.schattenbuchhaltung.service.dto;
 import dev.hbgl.hhn.schattenbuchhaltung.config.Constants;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.Authority;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.User;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,7 +12,7 @@ import javax.validation.constraints.*;
 /**
  * A DTO representing a user, with his authorities.
  */
-public class AdminUserDTO {
+public class AdminUserDTO implements Serializable {
 
     private String id;
 

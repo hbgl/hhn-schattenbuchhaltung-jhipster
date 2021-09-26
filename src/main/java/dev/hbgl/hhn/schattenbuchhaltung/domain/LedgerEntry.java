@@ -56,21 +56,16 @@ public class LedgerEntry implements Serializable {
     private BigDecimal liability;
 
     @OneToMany(mappedBy = "ledgerEntry")
-    @OrderBy("id")
+    @OrderBy("id DESC")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "author", "ledgerEntry", "children", "parent" }, allowSetters = true)
     private Set<Comment> comments = new HashSet<>();
 
-    @ManyToMany
-    @OrderBy("id")
+    @OneToMany(mappedBy = "ledgerEntry")
+    @OrderBy("priority, id")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JoinTable(
-        name = "rel_ledger_entry__tags",
-        joinColumns = @JoinColumn(name = "ledger_entry_id"),
-        inverseJoinColumns = @JoinColumn(name = "tags_id")
-    )
-    @JsonIgnoreProperties(value = { "person", "customType", "customValue", "ledgerEntries" }, allowSetters = true)
-    private Set<Tag> tags = new HashSet<>();
+    @JsonIgnoreProperties(value = { "ledgerEntry", "tag" }, allowSetters = true)
+    private Set<LedgerEntryTag> ledgerEntryTags = new HashSet<>();
 
     @ManyToOne
     @JsonIgnoreProperties(value = { "children", "ledgerEntries1s", "ledgerEntries2s", "ledgerEntries3s", "parent" }, allowSetters = true)
@@ -228,29 +223,35 @@ public class LedgerEntry implements Serializable {
         this.comments = comments;
     }
 
-    public Set<Tag> getTags() {
-        return this.tags;
+    public Set<LedgerEntryTag> getLedgerEntryTags() {
+        return this.ledgerEntryTags;
     }
 
-    public LedgerEntry tags(Set<Tag> tags) {
-        this.setTags(tags);
+    public LedgerEntry ledgerEntryTags(Set<LedgerEntryTag> ledgerEntryTags) {
+        this.setLedgerEntryTags(ledgerEntryTags);
         return this;
     }
 
-    public LedgerEntry addTags(Tag tag) {
-        this.tags.add(tag);
-        tag.getLedgerEntries().add(this);
+    public LedgerEntry addLedgerEntryTags(LedgerEntryTag ledgerEntryTag) {
+        this.ledgerEntryTags.add(ledgerEntryTag);
+        ledgerEntryTag.setLedgerEntry(this);
         return this;
     }
 
-    public LedgerEntry removeTags(Tag tag) {
-        this.tags.remove(tag);
-        tag.getLedgerEntries().remove(this);
+    public LedgerEntry removeLedgerEntryTags(LedgerEntryTag ledgerEntryTag) {
+        this.ledgerEntryTags.remove(ledgerEntryTag);
+        ledgerEntryTag.setLedgerEntry(null);
         return this;
     }
 
-    public void setTags(Set<Tag> tags) {
-        this.tags = tags;
+    public void setLedgerEntryTags(Set<LedgerEntryTag> ledgerEntryTags) {
+        if (this.ledgerEntryTags != null) {
+            this.ledgerEntryTags.forEach(i -> i.setLedgerEntry(null));
+        }
+        if (ledgerEntryTags != null) {
+            ledgerEntryTags.forEach(i -> i.setLedgerEntry(this));
+        }
+        this.ledgerEntryTags = ledgerEntryTags;
     }
 
     public CostCenter getCostCenter1() {

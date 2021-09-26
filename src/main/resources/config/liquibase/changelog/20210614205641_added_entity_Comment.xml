@@ -14,7 +14,10 @@
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="content_html" type="varchar(255)">
+            <column name="ledger_entry_no" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="content_html" type="varchar(10000)">
                 <constraints nullable="false" />
             </column>
             <column name="created_at" type="${datetimeType}">
@@ -24,7 +27,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="ledger_entry_id" type="bigint">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
             <column name="parent_id" type="bigint">
                 <constraints nullable="true" />

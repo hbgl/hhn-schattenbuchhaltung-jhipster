@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <!--
+        Added the constraints for entity LedgerEntryTag.
+    -->
+    <changeSet id="20210808001758-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="ledger_entry_id"
+                                 baseTableName="ledger_entry_tag"
+                                 constraintName="fk_ledger_entry_tag__ledger_entry_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="ledger_entry"/>
+
+        <addForeignKeyConstraint baseColumnNames="tag_id"
+                                 baseTableName="ledger_entry_tag"
+                                 constraintName="fk_ledger_entry_tag__tag_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tag"/>
+    </changeSet>
+</databaseChangeLog>
