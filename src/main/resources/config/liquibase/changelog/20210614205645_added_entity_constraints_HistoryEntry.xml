@@ -8,6 +8,10 @@
     -->
     <changeSet id="20210614205645-2" author="jhipster">
 
+        <createIndex indexName="idx__history_entry__author_id" tableName="history_entry">
+            <column name="author_id"/>
+        </createIndex>
+
         <addForeignKeyConstraint baseColumnNames="author_id"
                                  baseTableName="history_entry"
                                  constraintName="fk_history_entry__author_id"

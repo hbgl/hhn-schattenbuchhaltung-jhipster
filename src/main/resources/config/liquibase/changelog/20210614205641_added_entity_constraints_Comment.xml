@@ -8,6 +8,18 @@
     -->
     <changeSet id="20210614205641-2" author="jhipster">
 
+        <createIndex indexName="idx__comment__author_id" tableName="comment">
+            <column name="author_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx__comment__ledger_entry_id" tableName="comment">
+            <column name="ledger_entry_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx__comment__parent_id" tableName="comment">
+            <column name="parent_id"/>
+        </createIndex>
+
         <addForeignKeyConstraint baseColumnNames="author_id"
                                  baseTableName="comment"
                                  constraintName="fk_comment__author_id"

@@ -8,6 +8,10 @@
     -->
     <changeSet id="20210614205638-2" author="jhipster">
 
+        <createIndex indexName="idx__cost_center__parent_id" tableName="cost_center">
+            <column name="parent_id"/>
+        </createIndex>
+
         <addForeignKeyConstraint baseColumnNames="parent_id"
                                  baseTableName="cost_center"
                                  constraintName="fk_cost_center__parent_id"

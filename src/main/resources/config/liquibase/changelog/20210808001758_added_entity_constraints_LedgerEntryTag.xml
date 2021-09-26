@@ -8,6 +8,14 @@
     -->
     <changeSet id="20210808001758-2" author="jhipster">
 
+        <createIndex indexName="idx__ledger_entry_tag_fieldy__ledger_entry_id" tableName="ledger_entry_tag">
+            <column name="ledger_entry_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx__ledger_entry_tag_fieldy__tag_id" tableName="ledger_entry_tag">
+            <column name="tag_id"/>
+        </createIndex>
+
         <addForeignKeyConstraint baseColumnNames="ledger_entry_id"
                                  baseTableName="ledger_entry_tag"
                                  constraintName="fk_ledger_entry_tag__ledger_entry_id"

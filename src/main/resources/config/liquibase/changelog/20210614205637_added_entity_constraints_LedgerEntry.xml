@@ -8,6 +8,26 @@
     -->
     <changeSet id="20210614205637-2" author="jhipster">
 
+        <createIndex indexName="idx__ledger_entry__cost_center1_id" tableName="ledger_entry">
+            <column name="cost_center1_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx__ledger_entry__cost_center2_id" tableName="ledger_entry">
+            <column name="cost_center2_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx__ledger_entry__cost_center3_id" tableName="ledger_entry">
+            <column name="cost_center3_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx__ledger_entry__division_id" tableName="ledger_entry">
+            <column name="division_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx__ledger_entry__cost_type_id" tableName="ledger_entry">
+            <column name="cost_type_id"/>
+        </createIndex>
+
         <addForeignKeyConstraint baseColumnNames="cost_center1_id"
                                  baseTableName="ledger_entry"
                                  constraintName="fk_ledger_entry__cost_center1_id"
