@@ -7,12 +7,14 @@ import dev.hbgl.hhn.schattenbuchhaltung.domain.Division;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.LedgerEntry;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.LedgerEntryTag;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.Tag;
+import dev.hbgl.hhn.schattenbuchhaltung.domain.elasticsearch.ElasticTag;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.CostCenterRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.CostTypeRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.DivisionRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.LedgerEntryRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.LedgerEntryTagRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.TagRepository;
+import dev.hbgl.hhn.schattenbuchhaltung.repository.search.TagSearchRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.CostCenterDTO;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.CommentOut;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.LedgerEntryOut;
@@ -37,6 +39,9 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +72,8 @@ public class LedgerResource {
 
     private final TagRepository tagRepository;
 
+    private final TagSearchRepository tagSearchRepository;
+
     private LedgerEntryTagRepository ledgerEntryTagRepository;
 
     private final LedgerEntryInstantParser ledgerEntryInstantParser;
@@ -79,6 +86,7 @@ public class LedgerResource {
         DivisionRepository divisionRepository,
         CostTypeRepository costTypeRepository,
         TagRepository tagRepository,
+        TagSearchRepository tagSearchRepository,
         LedgerEntryTagRepository ledgerEntryTagRepository,
         LedgerEntryInstantParser ledgerEntryInstantParser,
         EntityManager entityManager
@@ -88,6 +96,7 @@ public class LedgerResource {
         this.divisionRepository = divisionRepository;
         this.costTypeRepository = costTypeRepository;
         this.tagRepository = tagRepository;
+        this.tagSearchRepository = tagSearchRepository;
         this.ledgerEntryTagRepository = ledgerEntryTagRepository;
         this.ledgerEntryInstantParser = ledgerEntryInstantParser;
         this.entityManager = entityManager;
@@ -161,6 +170,8 @@ public class LedgerResource {
 
     @PutMapping("/ledger/entry/{no}/tags")
     public ResponseEntity<List<TagOut>> updateTags(@PathVariable String no, @Valid @RequestBody UpdateLedgerEntryTagsDTO input) {
+        log.debug("REST request to update tag of LedgerEntry by no : {}", no);
+
         var maybeLedgerEntry = ledgerEntryRepository.findByNo(no);
         if (maybeLedgerEntry.isEmpty()) {
             throw new BadRequestAlertException("Related ledger entry not found.", LedgerEntryResource.ENTITY_NAME, "notfound");
@@ -240,6 +251,11 @@ public class LedgerResource {
         // Upsert ledger entry tags.
         ledgerEntryTagRepository.saveAll(assignLedgerEntryTags.values());
 
+        // Update search repo. There are race conditions here but it's good enough for now.
+        // TODO: Remove race conditions.
+        var elasticTags = assignTags.stream().map(t -> ElasticTag.fromEntity(t)).collect(Collectors.toList());
+        tagSearchRepository.saveAll(elasticTags);
+
         var result = assignTags.stream().map(t -> TagOut.fromEntity(t)).collect(Collectors.toList());
 
         return ResponseEntity
@@ -248,6 +264,18 @@ public class LedgerResource {
                 HeaderUtil.createAlert(applicationName, applicationName + ".ledger.entry.message.tagsSaved", ledgerEntry.getId().toString())
             )
             .body(result);
+    }
+
+    @GetMapping("/ledger/tag/autocomplete")
+    public ResponseEntity<List<TagOut>> getTagAutocomplete(@RequestParam String text, @RequestParam String existing) {
+        log.debug("REST request to autocomplete tag text: {}", text);
+
+        var pagable = PageRequest.of(0, 10);
+        var textNormalized = Tag.normalizeText(text);
+        var searchResult = tagSearchRepository.findTextAutocomplete(text, textNormalized, pagable);
+        var result = searchResult.stream().map(et -> TagOut.fromElastic(et)).collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(result);
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)

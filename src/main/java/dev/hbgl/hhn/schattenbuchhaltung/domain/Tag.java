@@ -143,14 +143,10 @@ public class Tag implements Serializable {
         return this;
     }
 
-    public static String cleanText(String input) {
-        return input.replace(",", "");
-    }
-
     public static String normalizeText(String input) {
         if (input == null) {
             return null;
         }
-        return input.toLowerCase(Locale.ROOT).trim();
+        return input.trim().toLowerCase(Locale.ROOT).replace(",", "");
     }
 }

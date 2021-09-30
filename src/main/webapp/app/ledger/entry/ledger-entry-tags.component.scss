@@ -5,16 +5,7 @@ $custom-primary: $primary;
 $custom-primary-dark: darken($custom-primary, 7.5%);
 
 // this is the container's theme
-$custom-theme: (
-  container-border-bottom: (
-    2 * $border-width,
-  )
-  solid $custom-primary,
-  container-border-bottom-focused: (
-    2 * $border-width,
-  )
-  solid $custom-primary,
-);
+$custom-theme: ();
 
 // this is the tag's theme
 $custom-tag-theme: (
@@ -41,6 +32,8 @@ $custom-icon-theme: (
 ::ng-deep tag-input .ng2-tag-input.custom-theme {
   @include tag-input-theme($custom-theme);
 
+  border-bottom: (2 * $border-width) solid $custom-primary !important;
+
   tag {
     @include tag-theme($custom-tag-theme);
 
@@ -57,6 +50,11 @@ $custom-icon-theme: (
     delete-icon {
       @include icon-theme($custom-icon-theme);
     }
+  }
+
+  // We don't need a loading bar for autocomplete items. wtf
+  .progress-bar {
+    display: none !important;
   }
 
   tag-input-form input {

@@ -12,6 +12,7 @@
     [(ngModel)]="editTags"
     [placeholder]="'schattenbuchhaltungApp.ledger.entry.newTagPlaceholder' | translate"
     [secondaryPlaceholder]="'schattenbuchhaltungApp.ledger.entry.newTagPlaceholderEmpty' | translate"
+    [separatorKeyCodes]="[188]"
     theme="custom-theme"
     [ripple]="false"
     [animationDuration]="{ enter: '0ms', leave: '0ms' }"
@@ -22,6 +23,8 @@
     identifyBy="textNormalized"
     displayBy="text"
   >
+    <tag-input-dropdown [autocompleteObservable]="autocompleteCallback" [minimumTextLength]="3" [matchingFn]="autocompleteMatch">
+    </tag-input-dropdown>
   </tag-input>
 </div>
 <div [ngClass]="isDefaultMode ? 'mt-1' : 'mt-3'">
