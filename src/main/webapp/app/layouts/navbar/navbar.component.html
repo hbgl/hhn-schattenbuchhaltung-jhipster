@@ -42,6 +42,7 @@
           </span>
         </a>
         <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="ledger-menu">
+          <li><h6 class="dropdown-header" jhiTranslate="global.menu.ledger.main">Ledger</h6></li>
           <li>
             <a
               class="dropdown-item"
@@ -50,20 +51,46 @@
               [routerLinkActiveOptions]="{ exact: true }"
               (click)="collapseNavbar()"
             >
-              <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+              <fa-icon icon="list" [fixedWidth]="true"></fa-icon>
               <span jhiTranslate="global.menu.ledger.view">View</span>
             </a>
           </li>
           <li>
             <a
               class="dropdown-item"
-              routerLink="ledger/import"
+              routerLink="ledger/update"
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }"
               (click)="collapseNavbar()"
             >
-              <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-              <span jhiTranslate="global.menu.ledger.import">Import</span>
+              <fa-icon icon="sync" [fixedWidth]="true"></fa-icon>
+              <span jhiTranslate="global.menu.ledger.update">Update</span>
+            </a>
+          </li>
+          <li><div class="dropdown-divider"></div></li>
+          <li><h6 class="dropdown-header" jhiTranslate="global.menu.ledger.metaSection">Comments & Tags</h6></li>
+          <li>
+            <a
+              class="dropdown-item"
+              routerLink="ledger/meta/export"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="collapseNavbar()"
+            >
+              <fa-icon icon="share-alt" [fixedWidth]="true"></fa-icon>
+              <span jhiTranslate="global.menu.ledger.metaShare">Share</span>
+            </a>
+          </li>
+          <li>
+            <a
+              class="dropdown-item"
+              routerLink="ledger/meta/import"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="collapseNavbar()"
+            >
+              <fa-icon icon="upload" [fixedWidth]="true"></fa-icon>
+              <span jhiTranslate="global.menu.ledger.metaImport">Import</span>
             </a>
           </li>
         </ul>

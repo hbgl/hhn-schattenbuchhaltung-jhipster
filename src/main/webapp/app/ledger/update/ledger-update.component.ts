@@ -10,11 +10,11 @@ import { LedgerService } from '../ledger.service';
 type ImportState = 'initial' | 'opening' | 'opened' | 'importing' | 'imported';
 
 @Component({
-  selector: 'jhi-ledger-import',
-  templateUrl: './ledger-import.component.html',
-  styleUrls: ['./ledger-import.component.scss'],
+  selector: 'jhi-ledger-update',
+  templateUrl: './ledger-update.component.html',
+  styleUrls: ['./ledger-update.component.scss'],
 })
-export class LedgerImportComponent {
+export class LedgerUpdateComponent {
   @ViewChild('file') fileInput: ElementRef<HTMLInputElement> | undefined = undefined;
   entries: LedgerImportEntry[] = [];
   fileName?: string;

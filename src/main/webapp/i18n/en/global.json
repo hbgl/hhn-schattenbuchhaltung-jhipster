@@ -13,7 +13,10 @@
       "ledger": {
         "main": "Ledger",
         "view": "View",
-        "import": "Import"
+        "update": "Update",
+        "metaImport": "Import",
+        "metaShare": "Share",
+        "metaSection": "Comments & Tags"
       },
       "account": {
         "main": "Account",

@@ -6,7 +6,7 @@ import { ApplicationConfigService } from 'app/core/config/application-config.ser
 import { LedgerImportEntry } from '../ledger-import-entry.model';
 
 @Injectable({ providedIn: 'root' })
-export class LedgerImportService {
+export class LedgerUpdateService {
   public resourceUrl = this.applicationConfigService.getEndpointFor('api/ledger/import');
 
   constructor(protected http: HttpClient, private applicationConfigService: ApplicationConfigService) {}

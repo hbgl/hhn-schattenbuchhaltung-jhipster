@@ -25,6 +25,20 @@
         "action": {
           "editTags": "Edit tags"
         }
+      },
+      "metaExport": {
+        "title": "Share comments and tags",
+        "action": {
+          "exportOnlyMine": "Only export my own",
+          "exportAll": "Export all"
+        }
+      },
+      "metaImport": {
+        "title": "Import comments and tags",
+        "action": {},
+        "file": "JSON file",
+        "exportedBy": "Exported by",
+        "exportedAt": "Exported at"
       }
     }
   }

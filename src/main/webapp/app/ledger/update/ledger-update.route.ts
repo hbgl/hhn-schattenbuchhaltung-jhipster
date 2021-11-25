@@ -1,10 +1,10 @@
 import { Route } from '@angular/router';
 
-import { LedgerImportComponent } from './ledger-import.component';
+import { LedgerUpdateComponent } from './ledger-update.component';
 
 export const importRoute: Route = {
   path: '',
-  component: LedgerImportComponent,
+  component: LedgerUpdateComponent,
   data: {
     pageTitle: 'schattenbuchhaltungApp.ledger.import.title',
   },

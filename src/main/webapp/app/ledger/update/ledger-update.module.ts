@@ -2,11 +2,11 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from 'app/shared/shared.module';
 
-import { LedgerImportComponent } from './ledger-import.component';
-import { importRoute } from './ledger-import.route';
+import { LedgerUpdateComponent } from './ledger-update.component';
+import { importRoute } from './ledger-update.route';
 
 @NgModule({
   imports: [SharedModule, RouterModule.forChild([importRoute])],
-  declarations: [LedgerImportComponent],
+  declarations: [LedgerUpdateComponent],
 })
-export class LedgerImportModule {}
+export class LedgerUpdateModule {}

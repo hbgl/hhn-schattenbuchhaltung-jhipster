@@ -23,12 +23,8 @@ public class HistoryEntryField implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "type", nullable = false)
-    private String type;
-
-    @NotNull
-    @Column(name = "trans_key", nullable = false)
-    private String transKey;
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @Column(name = "old_value")
     private String oldValue;
@@ -55,30 +51,17 @@ public class HistoryEntryField implements Serializable {
         return this;
     }
 
-    public String getType() {
-        return this.type;
+    public String getName() {
+        return this.name;
     }
 
-    public HistoryEntryField type(String type) {
-        this.type = type;
+    public HistoryEntryField name(String name) {
+        this.name = name;
         return this;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getTransKey() {
-        return this.transKey;
-    }
-
-    public HistoryEntryField transKey(String transKey) {
-        this.transKey = transKey;
-        return this;
-    }
-
-    public void setTransKey(String transKey) {
-        this.transKey = transKey;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getOldValue() {
@@ -144,8 +127,7 @@ public class HistoryEntryField implements Serializable {
     public String toString() {
         return "HistoryEntryField{" +
             "id=" + getId() +
-            ", type='" + getType() + "'" +
-            ", transKey='" + getTransKey() + "'" +
+            ", name='" + getName() + "'" +
             ", oldValue='" + getOldValue() + "'" +
             ", newValue='" + getNewValue() + "'" +
             "}";

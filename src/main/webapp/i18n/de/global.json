@@ -13,7 +13,10 @@
       "ledger": {
         "main": "Konto",
         "view": "Übersicht",
-        "import": "Import"
+        "update": "Aktualisieren",
+        "metaImport": "Import",
+        "metaShare": "Teilen",
+        "metaSection": "Kommentare & Tags"
       },
       "account": {
         "main": "Zugang",

@@ -1,0 +1,38 @@
+<div>
+  <h2 id="page-heading" data-cy="LederMetaImportHeading">
+    <span jhiTranslate="schattenbuchhaltungApp.ledger.metaImport.title">Import ledger comments & tags</span>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div>
+    <div class="form-group">
+      <label for="field_file" jhiTranslate="schattenbuchhaltungApp.ledger.metaImport.file">JSON file</label>
+      <input #file type="file" id="field_file" class="form-control-file w-auto" name="file" [disabled]="!canOpen" (change)="open()" />
+    </div>
+    <div class="form-group">
+      <button class="btn btn-secondary mr-2" (click)="reset()" [disabled]="!canRefresh">
+        <fa-icon icon="times"></fa-icon>
+        <span jhiTranslate="entity.action.reset">Reset</span>
+      </button>
+      <button type="button" [disabled]="!canImport" class="btn btn-primary" (click)="import()">
+        <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.import">Import</span>
+      </button>
+    </div>
+  </div>
+
+  <hr />
+
+  <ng-container *ngIf="canShowInfo && data">
+    <div>
+      <dl>
+        <dt jhiTranslate="schattenbuchhaltungApp.ledger.metaImport.exportedBy">Exported by</dt>
+        <dd>{{ data.userName }} &lt;{{ data.userEmail }}&gt;</dd>
+        <dt jhiTranslate="schattenbuchhaltungApp.ledger.metaImport.exportedAt">Exported at</dt>
+        <dd>{{ data.instant.toLocaleString() }}</dd>
+      </dl>
+    </div>
+  </ng-container>
+</div>

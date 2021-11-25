@@ -17,23 +17,20 @@
             <column name="instant" type="${datetimeType}">
                 <constraints nullable="false" />
             </column>
-            <column name="action" type="varchar(255)">
+            <column name="action" type="varchar(30)">
                 <constraints nullable="false" />
             </column>
-            <column name="patch" type="longblob">
-                <constraints nullable="true" />
-            </column>
-            <column name="patch_content_type" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="rec_type" type="varchar(255)">
+            <column name="rec_type" type="varchar(60)">
                 <constraints nullable="false" />
             </column>
-            <column name="rec_id" type="bigint">
+            <column name="rec_id_1" type="varchar(60)">
                 <constraints nullable="false" />
             </column>
-            <column name="rec_id_2" type="bigint">
-                <constraints nullable="true" />
+            <column name="rec_id_2" type="varchar(60)">
+                <constraints nullable="false" />
+            </column>
+            <column name="uuid" type="uuid">
+                <constraints nullable="false" unique="true" uniqueConstraintName="ux_history_entry__uuid" />
             </column>
             <column name="author_id" type="varchar(100)">
                 <constraints nullable="true" />
@@ -41,6 +38,16 @@
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
         <dropDefaultValue tableName="history_entry" columnName="instant" columnDataType="${datetimeType}"/>
+        <createIndex indexName="idx__history_entry__author_id_instant" tableName="history_entry">
+            <column name="author_id"/>
+            <column name="instant"/>
+        </createIndex>
+        <createIndex indexName="idx__history_entry__rec_type_rec_id_instant" tableName="history_entry">
+            <column name="rec_type"/>
+            <column name="rec_id_1"/>
+            <column name="rec_id_2"/>
+            <column name="instant"/>
+        </createIndex>
     </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->

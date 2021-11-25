@@ -32,6 +32,9 @@
             <column name="parent_id" type="bigint">
                 <constraints nullable="true" />
             </column>
+            <column name="uuid" type="uuid">
+                <constraints nullable="false" unique="true" uniqueConstraintName="ux_comment__uuid" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
         <dropDefaultValue tableName="comment" columnName="created_at" columnDataType="${datetimeType}"/>

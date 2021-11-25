@@ -5,11 +5,11 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  * A Comment.
@@ -40,6 +40,10 @@ public class Comment implements Serializable {
     @NotNull
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
+
+    @NotNull
+    @Column(name = "uuid", nullable = false)
+    private UUID uuid;
 
     @ManyToOne(optional = false)
     @NotNull
@@ -112,6 +116,19 @@ public class Comment implements Serializable {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public UUID getUuid() {
+        return this.uuid;
+    }
+
+    public Comment uuid(UUID uuid) {
+        this.uuid = uuid;
+        return this;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public User getAuthor() {

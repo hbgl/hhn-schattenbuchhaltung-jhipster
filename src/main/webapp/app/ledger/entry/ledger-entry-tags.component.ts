@@ -120,12 +120,12 @@ export class LedgerEntryTagsComponent {
     const editedTagTexts = editedTags.map(t => t.text);
 
     const existingTags = this.tags!;
-    const deleteTagTexts = existingTags.filter(t => !editedTagSet.has(t.textNormalized)).map(t => t.text);
+    const unassignTagTexts = existingTags.filter(t => !editedTagSet.has(t.textNormalized)).map(t => t.text);
 
     let tags = [];
     try {
       this.editState = EditState.Saving;
-      tags = await loading(this.ledgerService.updateTags(this.ledgerEntryNo!, editedTagTexts, deleteTagTexts)).toPromise();
+      tags = await loading(this.ledgerService.updateTags(this.ledgerEntryNo!, editedTagTexts, unassignTagTexts)).toPromise();
     } catch (e) {
       // Handled by middleware.
       return;

@@ -1,8 +1,6 @@
 package dev.hbgl.hhn.schattenbuchhaltung.domain.elasticsearch;
 
 import dev.hbgl.hhn.schattenbuchhaltung.domain.Tag;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.ingest.DeletePipelineRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
@@ -23,38 +21,26 @@ public class ElasticTag {
     @Id
     public Long id;
 
-    @Field(type = FieldType.Object)
-    public Content content;
+    @Field(type = FieldType.Text)
+    public String invariant;
+
+    @Field(type = FieldType.Text)
+    public String de;
+
+    @Field(type = FieldType.Text)
+    public String en;
+
+    @Field(type = FieldType.Keyword)
+    public String normalized;
 
     public static ElasticTag fromEntity(Tag entity) {
-        var et = new ElasticTag();
-        et.id = entity.getId();
-        et.content = Content.fromTag(entity);
-        return et;
-    }
-
-    public static class Content {
-
-        @Field(type = FieldType.Text)
-        public String invariant;
-
-        @Field(type = FieldType.Text)
-        public String de;
-
-        @Field(type = FieldType.Text)
-        public String en;
-
-        @Field(type = FieldType.Keyword)
-        public String normalized;
-
-        public static Content fromTag(Tag tag) {
-            var content = new Content();
-            content.invariant = tag.getText();
-            content.de = tag.getText();
-            content.en = tag.getText();
-            content.normalized = tag.getTextNormalized();
-            return content;
-        }
+        var instance = new ElasticTag();
+        instance.id = entity.getId();
+        instance.invariant = entity.getText();
+        instance.de = entity.getText();
+        instance.en = entity.getText();
+        instance.normalized = entity.getTextNormalized();
+        return instance;
     }
 
     public static void setup(RestHighLevelClient client) throws Exception {
@@ -65,7 +51,7 @@ public class ElasticTag {
         var existsReq = new GetIndexRequest(INDEX_NAME);
         if (client.indices().exists(existsReq, RequestOptions.DEFAULT)) {
             // TODO: Remove debug code
-            // var indexDeleteReq = new DeleteIndexRequest(INDEX_NAME);
+            // var indexDeleteReq = new org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest(INDEX_NAME);
             // client.indices().delete(indexDeleteReq, RequestOptions.DEFAULT);
             return;
         }
@@ -75,24 +61,20 @@ public class ElasticTag {
             """
         {
             "properties": {
-                "content": {
-                    "properties": {
-                        "invariant": {
-                            "type": "text",
-                            "analyzer": "default"
-                        },
-                        "en": {
-                            "type": "text",
-                            "analyzer": "english"
-                        },
-                        "de": {
-                            "type": "text",
-                            "analyzer": "german"
-                        },
-                        "normalized": {
-                            "type":  "keyword"
-                        }
-                    }
+                "invariant": {
+                    "type": "text",
+                    "analyzer": "default"
+                },
+                "en": {
+                    "type": "text",
+                    "analyzer": "english"
+                },
+                "de": {
+                    "type": "text",
+                    "analyzer": "german"
+                },
+                "normalized": {
+                    "type":  "keyword"
                 }
             }
         }

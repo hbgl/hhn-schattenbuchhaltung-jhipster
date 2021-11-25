@@ -28,10 +28,17 @@ export class LedgerService {
     return this.http.post<LedgerImportEntry[]>(`${this.baseUrl}/import`, entries, { observe: 'response' });
   }
 
-  updateTags(no: string, assignTags: string[], deleteTags: string[]): Observable<Tag[]> {
+  importMeta(json: string): Observable<HttpResponse<{}>> {
+    return this.http.post(`${this.baseUrl}/meta/import`, json, {
+      headers: { 'Content-Type': 'application/json' },
+      observe: 'response',
+    });
+  }
+
+  updateTags(no: string, assignTags: string[], unassignTags: string[]): Observable<Tag[]> {
     const input = {
       assignTags,
-      deleteTags,
+      unassignTags,
     };
     return this.http.put<unknown[]>(`${this.baseUrl}/entry/${encodeURIComponent(no)}/tags`, input).pipe(map(res => plainToClass(Tag, res)));
   }

@@ -9,5 +9,5 @@ public class UpdateLedgerEntryTagsDTO implements Serializable {
     public String[] assignTags;
 
     @NotNull
-    public String[] deleteTags;
+    public String[] unassignTags;
 }

@@ -5,8 +5,8 @@ import { RouterModule } from '@angular/router';
   imports: [
     RouterModule.forChild([
       {
-        path: 'import',
-        loadChildren: () => import('./import/ledger-import.module').then(m => m.LedgerImportModule),
+        path: 'update',
+        loadChildren: () => import('./update/ledger-update.module').then(m => m.LedgerUpdateModule),
       },
       {
         path: '',
@@ -15,6 +15,14 @@ import { RouterModule } from '@angular/router';
       {
         path: 'entry/:no',
         loadChildren: () => import('./entry/ledger-entry.module').then(m => m.LedgerEntryModule),
+      },
+      {
+        path: 'meta/export',
+        loadChildren: () => import('./meta-export/meta-export.module').then(m => m.LedgerMetaExportModule),
+      },
+      {
+        path: 'meta/import',
+        loadChildren: () => import('./meta-import/meta-import.module').then(m => m.LedgerMetaImportModule),
       },
     ]),
   ],

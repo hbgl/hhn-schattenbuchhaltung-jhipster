@@ -13,23 +13,24 @@
       "fieldValidateRules": ["required"]
     },
     {
-      "fieldName": "patch",
-      "fieldType": "byte[]",
-      "fieldTypeBlobContent": "any"
-    },
-    {
       "fieldName": "recType",
       "fieldType": "String",
       "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "recId",
-      "fieldType": "Long",
+      "fieldType": "String",
       "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "recId2",
-      "fieldType": "Long"
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "uuid",
+      "fieldType": "UUID",
+      "fieldValidateRules": ["required", "unique"]
     }
   ],
   "relationships": [

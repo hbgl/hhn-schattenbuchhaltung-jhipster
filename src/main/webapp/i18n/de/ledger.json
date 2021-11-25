@@ -25,6 +25,20 @@
         "action": {
           "editTags": "Tags bearbeiten"
         }
+      },
+      "metaExport": {
+        "title": "Kommentare und Tags teilen",
+        "action": {
+          "exportOnlyMine": "Nur eigene exportieren",
+          "exportAll": "Alle exportieren"
+        }
+      },
+      "metaImport": {
+        "title": "Kommentare und Tags importieren",
+        "action": {},
+        "file": "JSON-Datei",
+        "exportedBy": "Exportiert von",
+        "exportedAt": "Exportiert am"
       }
     }
   }

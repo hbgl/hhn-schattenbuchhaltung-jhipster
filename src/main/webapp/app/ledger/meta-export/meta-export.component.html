@@ -1,0 +1,15 @@
+<div>
+  <h2 id="page-heading" data-cy="LederMetaExportHeading">
+    <span jhiTranslate="schattenbuchhaltungApp.ledger.metaExport.title">Export ledger comments & tags</span>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="form-group">
+    <a class="btn btn-primary" href="/api/ledger/meta/export?onlyUser=false" download>
+      <fa-icon icon="download"></fa-icon> {{ 'schattenbuchhaltungApp.ledger.metaExport.action.exportAll' | translate }}
+    </a>
+  </div>
+</div>

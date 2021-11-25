@@ -4,27 +4,38 @@ import dev.hbgl.hhn.schattenbuchhaltung.domain.Comment;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.CostCenter;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.CostType;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.Division;
+import dev.hbgl.hhn.schattenbuchhaltung.domain.HistoryEntry;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.LedgerEntry;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.LedgerEntryTag;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.Tag;
+import dev.hbgl.hhn.schattenbuchhaltung.domain.User;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.elasticsearch.ElasticTag;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.CostCenterRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.CostTypeRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.DivisionRepository;
+import dev.hbgl.hhn.schattenbuchhaltung.repository.HistoryEntryFieldRepository;
+import dev.hbgl.hhn.schattenbuchhaltung.repository.HistoryEntryRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.LedgerEntryRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.LedgerEntryTagRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.TagRepository;
+import dev.hbgl.hhn.schattenbuchhaltung.repository.UserRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.search.TagSearchRepository;
+import dev.hbgl.hhn.schattenbuchhaltung.security.SecurityUtils;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.CostCenterDTO;
+import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Export.ExportHistoryEntryDTO;
+import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Export.ExportVersion;
+import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Export.ImportExportDTO;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.CommentOut;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.LedgerEntryOut;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.TagOut;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.LedgerImportEntryDTO;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.UpdateLedgerEntryTagsDTO;
 import dev.hbgl.hhn.schattenbuchhaltung.service.parser.LedgerEntryInstantParser;
+import dev.hbgl.hhn.schattenbuchhaltung.support.collections.Collect;
 import dev.hbgl.hhn.schattenbuchhaltung.web.rest.errors.BadRequestAlertException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,8 +51,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,9 +85,15 @@ public class LedgerResource {
 
     private LedgerEntryTagRepository ledgerEntryTagRepository;
 
+    private HistoryEntryRepository historyEntryRepository;
+
+    private HistoryEntryFieldRepository historyEntryFieldRepository;
+
     private final LedgerEntryInstantParser ledgerEntryInstantParser;
 
     private final EntityManager entityManager;
+
+    private final UserRepository userRepository;
 
     public LedgerResource(
         LedgerEntryRepository ledgerEntryRepository,
@@ -88,8 +103,11 @@ public class LedgerResource {
         TagRepository tagRepository,
         TagSearchRepository tagSearchRepository,
         LedgerEntryTagRepository ledgerEntryTagRepository,
+        HistoryEntryRepository historyEntryRepository,
+        HistoryEntryFieldRepository historyEntryFieldRepository,
         LedgerEntryInstantParser ledgerEntryInstantParser,
-        EntityManager entityManager
+        EntityManager entityManager,
+        UserRepository userRepository
     ) {
         this.ledgerEntryRepository = ledgerEntryRepository;
         this.costCenterRepository = costCenterRepository;
@@ -98,8 +116,11 @@ public class LedgerResource {
         this.tagRepository = tagRepository;
         this.tagSearchRepository = tagSearchRepository;
         this.ledgerEntryTagRepository = ledgerEntryTagRepository;
+        this.historyEntryRepository = historyEntryRepository;
+        this.historyEntryFieldRepository = historyEntryFieldRepository;
         this.ledgerEntryInstantParser = ledgerEntryInstantParser;
         this.entityManager = entityManager;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/ledger")
@@ -169,7 +190,8 @@ public class LedgerResource {
     }
 
     @PutMapping("/ledger/entry/{no}/tags")
-    public ResponseEntity<List<TagOut>> updateTags(@PathVariable String no, @Valid @RequestBody UpdateLedgerEntryTagsDTO input) {
+    public ResponseEntity<List<TagOut>> updateTags(@PathVariable String no, @Valid @RequestBody UpdateLedgerEntryTagsDTO input)
+        throws Exception {
         log.debug("REST request to update tag of LedgerEntry by no : {}", no);
 
         var maybeLedgerEntry = ledgerEntryRepository.findByNo(no);
@@ -178,8 +200,15 @@ public class LedgerResource {
         }
         var ledgerEntry = maybeLedgerEntry.get();
 
-        // Tag IDs to delete.
-        var deleteNormalizedTexts = Arrays.stream(input.deleteTags).collect(Collectors.toSet());
+        // List with actual changes.
+        var saveTags = new ArrayList<Tag>();
+        var insertTags = new ArrayList<Tag>();
+        var updateTags = new ArrayList<Tag>();
+        var saveLedgerEntryTags = new ArrayList<LedgerEntryTag>();
+        var insertLedgerEntryTags = new ArrayList<LedgerEntryTag>();
+        var updateLedgerEntryTags = new ArrayList<LedgerEntryTag>();
+        var historyEntries = new ArrayList<HistoryEntry>();
+        var userRef = entityManager.getReference(User.class, SecurityUtils.getCurrentUserId().get());
 
         // Existing tag IDs to assign to this ledger entry.
         var assignTags = new ArrayList<Tag>();
@@ -196,64 +225,109 @@ public class LedgerResource {
         }
 
         // Load existing tags from DB.
-        var existingTags = tagRepository.findAllByNormalizedText(assignTagIndices.keySet());
+        var existingTags = tagRepository
+            .findAllByNormalizedText(Collect.pluckToList(assignTags, t -> t.getTextNormalized()))
+            .stream()
+            .collect(Collectors.toMap(t -> t.getTextNormalized(), t -> t));
 
-        // Update text of existing tags.
-        for (var existingTag : existingTags) {
-            var assignTagIndex = assignTagIndices.get(existingTag.getTextNormalized());
-            var assignTag = assignTags.get(assignTagIndex);
-            existingTag.setText(assignTag.getText());
-            assignTags.set(assignTagIndex, existingTag);
+        // Check if tags need to be inserted or updated.
+        var assignTagsSize = assignTags.size();
+        for (var i = 0; i < assignTagsSize; i++) {
+            var assignTag = assignTags.get(i);
+            var existingTag = existingTags.get(assignTag.getTextNormalized());
+            if (existingTag == null) {
+                // Add new tag.
+                saveTags.add(assignTag);
+                insertTags.add(assignTag);
+            } else {
+                // Update existing tag if dirty.
+                var historyEntry = Tag.historyEntryModify(existingTag, assignTag, userRef);
+                if (historyEntry != null) {
+                    // Add tag history entry for modification.
+                    historyEntries.add(historyEntry);
+                    existingTag.setText(assignTag.getText());
+                    saveTags.add(existingTag);
+                    updateTags.add(assignTag);
+                }
+                assignTags.set(i, existingTag);
+            }
         }
 
-        // Delete tags and assignments.
-        if (!deleteNormalizedTexts.isEmpty()) {
-            var deleteTags = tagRepository.findAllByNormalizedText(deleteNormalizedTexts);
-            if (!deleteTags.isEmpty()) {
-                ledgerEntryTagRepository.deleteAllByTags(deleteTags);
-                tagRepository.deleteAll(deleteTags);
+        // Unassign tags.
+        var unassignNormalizedTexts = Arrays.stream(input.unassignTags).map(text -> Tag.normalizeText(text)).collect(Collectors.toSet());
+        if (!unassignNormalizedTexts.isEmpty()) {
+            var unassignTags = tagRepository.findAllByNormalizedText(unassignNormalizedTexts);
+            if (!unassignTags.isEmpty()) {
+                var unassignTagIds = Collect.pluckToList(unassignTags, t -> t.getId());
+                var unassignLedgerEntryTags = ledgerEntryTagRepository.findAllByLedgerAndTagId(ledgerEntry.getId(), unassignTagIds);
+
+                historyEntries.addAll(
+                    unassignLedgerEntryTags.stream().map(let -> LedgerEntryTag.historyEntryDelete(let, userRef)).toList()
+                );
+
+                ledgerEntryTagRepository.deleteAll(unassignLedgerEntryTags);
             }
         }
 
         // Upsert tag assignments.
-        tagRepository.saveAll(assignTags);
+        tagRepository.saveAll(saveTags);
 
-        var priorities = new HashMap<Long, Integer>();
-        var priotity = 1;
-        for (var tag : assignTags) {
-            priorities.put(tag.getId(), priotity++);
-        }
+        // Add tag history entries for inserts.
+        historyEntries.addAll(insertTags.stream().map(t -> Tag.historyEntryCreate(t, userRef)).toList());
 
         // Set up ledger entry tags.
-        var assignLedgerEntryTags = assignTags
-            .stream()
-            .map(
-                t ->
-                    new LedgerEntryTag()
-                        .ledgerEntry(ledgerEntry)
-                        .ledgerEntryNo(ledgerEntry.getNo())
-                        .tag(t)
-                        .priority(priorities.get(t.getId()))
-            )
-            .collect(Collectors.toMap(e -> e.getTag().getId(), e -> e));
-
-        // Load existing ledger entry tags.
-        var existingLedgerEntryTags = ledgerEntryTagRepository.findAllByLedgerAndTagId(ledgerEntry.getId(), assignLedgerEntryTags.keySet());
-
-        // Update existing ledger entry tags.
-        for (var existingLedgerEntryTag : existingLedgerEntryTags) {
-            var tagId = existingLedgerEntryTag.getTag().getId();
-            var assignLedgerEntryTag = assignLedgerEntryTags.get(tagId);
-            existingLedgerEntryTag.setPriority(assignLedgerEntryTag.getPriority());
-            assignLedgerEntryTags.put(tagId, existingLedgerEntryTag);
+        var assignLedgerEntryTags = new ArrayList<LedgerEntryTag>();
+        for (var i = 0; i < assignTagsSize; i++) {
+            var ledgerEntryTag = new LedgerEntryTag()
+                .ledgerEntry(ledgerEntry)
+                .ledgerEntryNo(ledgerEntry.getNo())
+                .tag(assignTags.get(i))
+                .priority(i + 1);
+            assignLedgerEntryTags.add(ledgerEntryTag);
         }
 
-        // Upsert ledger entry tags.
-        ledgerEntryTagRepository.saveAll(assignLedgerEntryTags.values());
+        // Load existing ledger entry tags.
+        var assignTagIds = Collect.pluckToList(assignTags, t -> t.getId());
+        var existingLedgerEntryTags = ledgerEntryTagRepository
+            .findAllByLedgerAndTagId(ledgerEntry.getId(), assignTagIds)
+            .stream()
+            .collect(Collectors.toMap(let -> let.getTag().getId(), let -> let));
+
+        // Check if ledger entry tags need to be inserted or updated.
+        var assignLedgerEntryTagsSize = assignLedgerEntryTags.size();
+        for (var i = 0; i < assignLedgerEntryTagsSize; i++) {
+            var assignLedgerEntryTag = assignLedgerEntryTags.get(i);
+            var existingLedgerEntryTag = existingLedgerEntryTags.get(assignLedgerEntryTag.getTag().getId());
+            if (existingLedgerEntryTag == null) {
+                saveLedgerEntryTags.add(assignLedgerEntryTag);
+                insertLedgerEntryTags.add(assignLedgerEntryTag);
+            } else {
+                // Update existing tag if dirty.
+                var historyEntry = LedgerEntryTag.historyEntryModify(existingLedgerEntryTag, assignLedgerEntryTag, userRef);
+                if (historyEntry != null) {
+                    // Add ledger entry history entry for modification.
+                    historyEntries.add(historyEntry);
+                    existingLedgerEntryTag.setPriority(assignLedgerEntryTag.getPriority());
+                    saveLedgerEntryTags.add(existingLedgerEntryTag);
+                    updateLedgerEntryTags.add(assignLedgerEntryTag);
+                }
+                assignLedgerEntryTags.set(i, existingLedgerEntryTag);
+            }
+        }
+
+        // // Upsert ledger entry tags.
+        ledgerEntryTagRepository.saveAll(saveLedgerEntryTags);
+
+        // Add ledger entry tag history entries for inserts.
+        historyEntries.addAll(insertLedgerEntryTags.stream().map(let -> LedgerEntryTag.historyEntryCreate(let, userRef)).toList());
+
+        // Save history entries.
+        historyEntryRepository.saveAll(historyEntries);
+        historyEntryFieldRepository.saveAll(historyEntries.stream().flatMap(e -> e.getFields().stream()).toList());
 
         // Update search repo. There are race conditions here but it's good enough for now.
         // TODO: Remove race conditions.
-        var elasticTags = assignTags.stream().map(t -> ElasticTag.fromEntity(t)).collect(Collectors.toList());
+        var elasticTags = saveTags.stream().map(t -> ElasticTag.fromEntity(t)).collect(Collectors.toList());
         tagSearchRepository.saveAll(elasticTags);
 
         var result = assignTags.stream().map(t -> TagOut.fromEntity(t)).collect(Collectors.toList());
@@ -426,6 +500,92 @@ public class LedgerResource {
         this.costTypeRepository.saveAll(costTypes.values());
         this.ledgerEntryRepository.saveAll(ledgerEntries.values());
 
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/ledger/meta/export")
+    public ResponseEntity<ImportExportDTO> getMetaExport(@RequestParam Boolean onlyUser) {
+        log.debug("REST request to export meta: only user ({})", onlyUser);
+
+        var entryGraph = entityManager.createEntityGraph(HistoryEntry.class);
+        entryGraph.addAttributeNodes("fields");
+
+        var historyEntries = entityManager
+            .createQuery("SELECT he FROM HistoryEntry he ORDER BY instant DESC", HistoryEntry.class)
+            .setHint("javax.persistence.loadgraph", entryGraph)
+            .getResultList();
+
+        var user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin().get()).get();
+
+        var export = new ImportExportDTO();
+        export.version = ExportVersion.VERSION_1.value;
+        export.userId = user.getId();
+        export.userEmail = user.getEmail();
+        export.userName = user.getFirstName() + " " + user.getLastName();
+        export.instant = Instant.now();
+        export.historyEntries = historyEntries.stream().map(e -> ExportHistoryEntryDTO.fromEntity(e)).toList();
+
+        return ResponseEntity.ok().body(export);
+    }
+
+    @Transactional
+    @PostMapping("/ledger/meta/import")
+    public ResponseEntity<Void> postMetaImport(@Valid @RequestBody ImportExportDTO dto) {
+        //     log.debug("REST request to import meta");
+
+        //     if (dto.historyEntries.size() == 0) {
+        //         return ResponseEntity.noContent().build();
+        //     }
+
+        //     var entries = dto.historyEntries.stream()
+        //         .map(e -> e.toEntity(entityManager))
+        //         .toList();
+
+        //     // Sort newest history entry first.
+        //     entries.sort((a, b) -> b.getInstant().compareTo(a.getInstant()));
+
+        //     var groups = entries.stream()
+        //         .collect(Collectors.groupingBy(e -> Triplet.create(e.getRecType(), e.getRecId1(), e.getRecId2())));
+
+        //     for (var key : groups.keySet()) {
+        //         var recEntries = groups.get(key);
+        //         var startIndexLocal = HistoryUtils.findSyncStartIndex(recEntries);
+        //         var startEntryLocal = recEntries.get(startIndexLocal);
+
+        //         var startEntryDbQuery = entityManager.createQuery("""
+        //         SELECT he FROM HistoryEntry he
+        //         WHERE
+        //             recType = :rec_type
+        //             AND recId1 = :rec_id_1
+        //             AND recId2 = :rec_id_1
+        //             AND \"action\" IN ('CREATE', 'DELETE')
+        //             AND instant >= :instant
+        //         ORDER BY instant DESC
+        //         """, HistoryEntry.class);
+        //         startEntryDbQuery.setParameter("rec_type", startEntryLocal.getRecType());
+        //         startEntryDbQuery.setParameter("rec_id_1", startEntryLocal.getRecId1());
+        //         startEntryDbQuery.setParameter("rec_id_2", startEntryLocal.getRecId2());
+        //         startEntryDbQuery.setParameter("instant", startEntryLocal.getInstant());
+        //         startEntryDbQuery.setMaxResults(1);
+        //         var startEntryDb = startEntryDbQuery.getResultList().stream().findFirst().orElse(null);
+
+        //         var startEntry = HistoryUtils.newest(startEntryLocal, startEntryDb);
+
+        //         var syncEntriesQuery = entityManager.createQuery("""
+        //             SELECT he FROM HistoryEntry he
+        //             WHERE
+        //                 recType = :rec_type
+        //                 AND recId1 = :rec_id_1
+        //                 AND recId2 = :rec_id_1
+        //                 AND instant >= :instant
+        //             ORDER BY instant DESC
+        //         """, HistoryEntry.class);
+        //         syncEntriesQuery.setParameter("rec_type", startEntry.getRecType());
+        //         syncEntriesQuery.setParameter("rec_id_1", startEntry.getRecId1());
+        //         syncEntriesQuery.setParameter("rec_id_2", startEntry.getRecId2());
+        //         syncEntriesQuery.setParameter("instant", startEntry.getInstant());
+        //     }
+        //
         return ResponseEntity.noContent().build();
     }
 }

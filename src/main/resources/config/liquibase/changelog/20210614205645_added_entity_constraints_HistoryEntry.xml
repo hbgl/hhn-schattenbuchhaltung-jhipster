@@ -8,9 +8,10 @@
     -->
     <changeSet id="20210614205645-2" author="jhipster">
 
-        <createIndex indexName="idx__history_entry__author_id" tableName="history_entry">
+        <!-- There is already index idx__history_entry__author_id_instant that covers the author ID -->
+        <!-- <createIndex indexName="idx__history_entry__author_id" tableName="history_entry">
             <column name="author_id"/>
-        </createIndex>
+        </createIndex> -->
 
         <addForeignKeyConstraint baseColumnNames="author_id"
                                  baseTableName="history_entry"

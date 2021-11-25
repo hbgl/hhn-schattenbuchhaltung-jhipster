@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
@@ -35,23 +36,21 @@ public class HistoryEntry implements Serializable {
     @Column(name = "action", nullable = false)
     private HistoryAction action;
 
-    @Lob
-    @Column(name = "patch")
-    private byte[] patch;
-
-    @Column(name = "patch_content_type")
-    private String patchContentType;
-
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "rec_type", nullable = false)
-    private String recType;
+    private HistoryEntryRecType recType;
 
     @NotNull
-    @Column(name = "rec_id", nullable = false)
-    private Long recId;
+    @Column(name = "rec_id_1", nullable = false)
+    private String recId1;
 
-    @Column(name = "rec_id_2")
-    private Long recId2;
+    @Column(name = "rec_id_2", nullable = false)
+    private String recId2;
+
+    @NotNull
+    @Column(name = "uuid", nullable = false)
+    private UUID uuid;
 
     @OneToMany(mappedBy = "entry")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -101,69 +100,56 @@ public class HistoryEntry implements Serializable {
         this.action = action;
     }
 
-    public byte[] getPatch() {
-        return this.patch;
-    }
-
-    public HistoryEntry patch(byte[] patch) {
-        this.patch = patch;
-        return this;
-    }
-
-    public void setPatch(byte[] patch) {
-        this.patch = patch;
-    }
-
-    public String getPatchContentType() {
-        return this.patchContentType;
-    }
-
-    public HistoryEntry patchContentType(String patchContentType) {
-        this.patchContentType = patchContentType;
-        return this;
-    }
-
-    public void setPatchContentType(String patchContentType) {
-        this.patchContentType = patchContentType;
-    }
-
-    public String getRecType() {
+    public HistoryEntryRecType getRecType() {
         return this.recType;
     }
 
-    public HistoryEntry recType(String recType) {
+    public HistoryEntry recType(HistoryEntryRecType recType) {
         this.recType = recType;
         return this;
     }
 
-    public void setRecType(String recType) {
+    public void setRecType(HistoryEntryRecType recType) {
         this.recType = recType;
     }
 
-    public Long getRecId() {
-        return this.recId;
+    public String getRecId1() {
+        return this.recId1;
     }
 
-    public HistoryEntry recId(Long recId) {
-        this.recId = recId;
+    public HistoryEntry recId1(String recId1) {
+        this.recId1 = recId1;
         return this;
     }
 
-    public void setRecId(Long recId) {
-        this.recId = recId;
+    public void setRecId1(String recId1) {
+        this.recId1 = recId1;
     }
 
-    public Long getRecId2() {
+    public String getRecId2() {
         return this.recId2;
     }
 
-    public HistoryEntry recId2(Long recId2) {
+    public HistoryEntry recId2(String recId2) {
         this.recId2 = recId2;
         return this;
     }
 
-    public void setRecId2(Long recId2) {
+    public void setRecId2(String recId2) {
         this.recId2 = recId2;
+    }
+
+    public UUID getUuid() {
+        return this.uuid;
+    }
+
+    public HistoryEntry uuid(UUID uuid) {
+        this.uuid = uuid;
+        return this;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public Set<HistoryEntryField> getFields() {
@@ -236,11 +222,10 @@ public class HistoryEntry implements Serializable {
             "id=" + getId() +
             ", instant='" + getInstant() + "'" +
             ", action='" + getAction() + "'" +
-            ", patch='" + getPatch() + "'" +
-            ", patchContentType='" + getPatchContentType() + "'" +
             ", recType='" + getRecType() + "'" +
-            ", recId=" + getRecId() +
+            ", recId1=" + getRecId1() +
             ", recId2=" + getRecId2() +
+            ", uuid=" + getUuid() +
             "}";
     }
 }

@@ -23,12 +23,12 @@ public class TagOut {
     }
 
     public static TagOut fromElastic(ElasticTag elasticTag) {
-        if (elasticTag == null || elasticTag.content == null) {
+        if (elasticTag == null) {
             return null;
         }
         var vm = new TagOut();
         vm.id = elasticTag.id;
-        vm.text = elasticTag.content.invariant;
+        vm.text = elasticTag.invariant;
         return vm;
     }
 }

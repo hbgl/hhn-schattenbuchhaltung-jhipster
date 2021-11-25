@@ -2,12 +2,7 @@
   "name": "HistoryEntryField",
   "fields": [
     {
-      "fieldName": "type",
-      "fieldType": "String",
-      "fieldValidateRules": ["required"]
-    },
-    {
-      "fieldName": "transKey",
+      "fieldName": "name",
       "fieldType": "String",
       "fieldValidateRules": ["required"]
     },
