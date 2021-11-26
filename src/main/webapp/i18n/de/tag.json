@@ -21,6 +21,7 @@
       "id": "ID",
       "text": "Text",
       "person": "Person",
+      "textNormalized": "Text Normalized",
       "ledgerEntryTags": "Ledger Entry Tags"
     }
   }

@@ -22,6 +22,7 @@ public class CostCenter implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
+    @Column(name = "id")
     private Long id;
 
     @NotNull
@@ -70,17 +71,18 @@ public class CostCenter implements Serializable {
     private CostCenter parent;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
     public Long getId() {
-        return id;
+        return this.id;
+    }
+
+    public CostCenter id(Long id) {
+        this.setId(id);
+        return this;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public CostCenter id(Long id) {
-        this.id = id;
-        return this;
     }
 
     public String getNo() {
@@ -88,7 +90,7 @@ public class CostCenter implements Serializable {
     }
 
     public CostCenter no(String no) {
-        this.no = no;
+        this.setNo(no);
         return this;
     }
 
@@ -101,7 +103,7 @@ public class CostCenter implements Serializable {
     }
 
     public CostCenter name(String name) {
-        this.name = name;
+        this.setName(name);
         return this;
     }
 
@@ -114,7 +116,7 @@ public class CostCenter implements Serializable {
     }
 
     public CostCenter rank(Integer rank) {
-        this.rank = rank;
+        this.setRank(rank);
         return this;
     }
 
@@ -124,6 +126,16 @@ public class CostCenter implements Serializable {
 
     public Set<CostCenter> getChildren() {
         return this.children;
+    }
+
+    public void setChildren(Set<CostCenter> costCenters) {
+        if (this.children != null) {
+            this.children.forEach(i -> i.setParent(null));
+        }
+        if (costCenters != null) {
+            costCenters.forEach(i -> i.setParent(this));
+        }
+        this.children = costCenters;
     }
 
     public CostCenter children(Set<CostCenter> costCenters) {
@@ -143,18 +155,18 @@ public class CostCenter implements Serializable {
         return this;
     }
 
-    public void setChildren(Set<CostCenter> costCenters) {
-        if (this.children != null) {
-            this.children.forEach(i -> i.setParent(null));
-        }
-        if (costCenters != null) {
-            costCenters.forEach(i -> i.setParent(this));
-        }
-        this.children = costCenters;
-    }
-
     public Set<LedgerEntry> getLedgerEntries1s() {
         return this.ledgerEntries1s;
+    }
+
+    public void setLedgerEntries1s(Set<LedgerEntry> ledgerEntries) {
+        if (this.ledgerEntries1s != null) {
+            this.ledgerEntries1s.forEach(i -> i.setCostCenter1(null));
+        }
+        if (ledgerEntries != null) {
+            ledgerEntries.forEach(i -> i.setCostCenter1(this));
+        }
+        this.ledgerEntries1s = ledgerEntries;
     }
 
     public CostCenter ledgerEntries1s(Set<LedgerEntry> ledgerEntries) {
@@ -174,18 +186,18 @@ public class CostCenter implements Serializable {
         return this;
     }
 
-    public void setLedgerEntries1s(Set<LedgerEntry> ledgerEntries) {
-        if (this.ledgerEntries1s != null) {
-            this.ledgerEntries1s.forEach(i -> i.setCostCenter1(null));
-        }
-        if (ledgerEntries != null) {
-            ledgerEntries.forEach(i -> i.setCostCenter1(this));
-        }
-        this.ledgerEntries1s = ledgerEntries;
-    }
-
     public Set<LedgerEntry> getLedgerEntries2s() {
         return this.ledgerEntries2s;
+    }
+
+    public void setLedgerEntries2s(Set<LedgerEntry> ledgerEntries) {
+        if (this.ledgerEntries2s != null) {
+            this.ledgerEntries2s.forEach(i -> i.setCostCenter2(null));
+        }
+        if (ledgerEntries != null) {
+            ledgerEntries.forEach(i -> i.setCostCenter2(this));
+        }
+        this.ledgerEntries2s = ledgerEntries;
     }
 
     public CostCenter ledgerEntries2s(Set<LedgerEntry> ledgerEntries) {
@@ -205,18 +217,18 @@ public class CostCenter implements Serializable {
         return this;
     }
 
-    public void setLedgerEntries2s(Set<LedgerEntry> ledgerEntries) {
-        if (this.ledgerEntries2s != null) {
-            this.ledgerEntries2s.forEach(i -> i.setCostCenter2(null));
-        }
-        if (ledgerEntries != null) {
-            ledgerEntries.forEach(i -> i.setCostCenter2(this));
-        }
-        this.ledgerEntries2s = ledgerEntries;
-    }
-
     public Set<LedgerEntry> getLedgerEntries3s() {
         return this.ledgerEntries3s;
+    }
+
+    public void setLedgerEntries3s(Set<LedgerEntry> ledgerEntries) {
+        if (this.ledgerEntries3s != null) {
+            this.ledgerEntries3s.forEach(i -> i.setCostCenter3(null));
+        }
+        if (ledgerEntries != null) {
+            ledgerEntries.forEach(i -> i.setCostCenter3(this));
+        }
+        this.ledgerEntries3s = ledgerEntries;
     }
 
     public CostCenter ledgerEntries3s(Set<LedgerEntry> ledgerEntries) {
@@ -236,27 +248,17 @@ public class CostCenter implements Serializable {
         return this;
     }
 
-    public void setLedgerEntries3s(Set<LedgerEntry> ledgerEntries) {
-        if (this.ledgerEntries3s != null) {
-            this.ledgerEntries3s.forEach(i -> i.setCostCenter3(null));
-        }
-        if (ledgerEntries != null) {
-            ledgerEntries.forEach(i -> i.setCostCenter3(this));
-        }
-        this.ledgerEntries3s = ledgerEntries;
-    }
-
     public CostCenter getParent() {
         return this.parent;
+    }
+
+    public void setParent(CostCenter costCenter) {
+        this.parent = costCenter;
     }
 
     public CostCenter parent(CostCenter costCenter) {
         this.setParent(costCenter);
         return this;
-    }
-
-    public void setParent(CostCenter costCenter) {
-        this.parent = costCenter;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

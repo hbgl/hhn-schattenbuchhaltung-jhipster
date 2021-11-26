@@ -20,6 +20,7 @@ public class HistoryEntryField implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
+    @Column(name = "id")
     private Long id;
 
     @NotNull
@@ -38,17 +39,18 @@ public class HistoryEntryField implements Serializable {
     private HistoryEntry entry;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
     public Long getId() {
-        return id;
+        return this.id;
+    }
+
+    public HistoryEntryField id(Long id) {
+        this.setId(id);
+        return this;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public HistoryEntryField id(Long id) {
-        this.id = id;
-        return this;
     }
 
     public String getName() {
@@ -56,7 +58,7 @@ public class HistoryEntryField implements Serializable {
     }
 
     public HistoryEntryField name(String name) {
-        this.name = name;
+        this.setName(name);
         return this;
     }
 
@@ -69,7 +71,7 @@ public class HistoryEntryField implements Serializable {
     }
 
     public HistoryEntryField oldValue(String oldValue) {
-        this.oldValue = oldValue;
+        this.setOldValue(oldValue);
         return this;
     }
 
@@ -82,7 +84,7 @@ public class HistoryEntryField implements Serializable {
     }
 
     public HistoryEntryField newValue(String newValue) {
-        this.newValue = newValue;
+        this.setNewValue(newValue);
         return this;
     }
 
@@ -94,13 +96,13 @@ public class HistoryEntryField implements Serializable {
         return this.entry;
     }
 
+    public void setEntry(HistoryEntry historyEntry) {
+        this.entry = historyEntry;
+    }
+
     public HistoryEntryField entry(HistoryEntry historyEntry) {
         this.setEntry(historyEntry);
         return this;
-    }
-
-    public void setEntry(HistoryEntry historyEntry) {
-        this.entry = historyEntry;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

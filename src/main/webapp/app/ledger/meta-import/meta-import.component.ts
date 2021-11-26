@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';

@@ -26,6 +26,7 @@ public class LedgerEntryTag implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
+    @Column(name = "id")
     private Long id;
 
     @NotNull
@@ -49,17 +50,18 @@ public class LedgerEntryTag implements Serializable {
     private Tag tag;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
     public Long getId() {
-        return id;
+        return this.id;
+    }
+
+    public LedgerEntryTag id(Long id) {
+        this.setId(id);
+        return this;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public LedgerEntryTag id(Long id) {
-        this.id = id;
-        return this;
     }
 
     public String getLedgerEntryNo() {
@@ -67,7 +69,7 @@ public class LedgerEntryTag implements Serializable {
     }
 
     public LedgerEntryTag ledgerEntryNo(String ledgerEntryNo) {
-        this.ledgerEntryNo = ledgerEntryNo;
+        this.setLedgerEntryNo(ledgerEntryNo);
         return this;
     }
 
@@ -80,7 +82,7 @@ public class LedgerEntryTag implements Serializable {
     }
 
     public LedgerEntryTag priority(Integer priority) {
-        this.priority = priority;
+        this.setPriority(priority);
         return this;
     }
 
@@ -92,26 +94,26 @@ public class LedgerEntryTag implements Serializable {
         return this.ledgerEntry;
     }
 
+    public void setLedgerEntry(LedgerEntry ledgerEntry) {
+        this.ledgerEntry = ledgerEntry;
+    }
+
     public LedgerEntryTag ledgerEntry(LedgerEntry ledgerEntry) {
         this.setLedgerEntry(ledgerEntry);
         return this;
-    }
-
-    public void setLedgerEntry(LedgerEntry ledgerEntry) {
-        this.ledgerEntry = ledgerEntry;
     }
 
     public Tag getTag() {
         return this.tag;
     }
 
+    public void setTag(Tag tag) {
+        this.tag = tag;
+    }
+
     public LedgerEntryTag tag(Tag tag) {
         this.setTag(tag);
         return this;
-    }
-
-    public void setTag(Tag tag) {
-        this.tag = tag;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

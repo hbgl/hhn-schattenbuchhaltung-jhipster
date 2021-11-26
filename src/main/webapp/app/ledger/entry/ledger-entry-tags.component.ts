@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/member-ordering */
-/* eslint-disable no-debugger */
-/* eslint-disable no-console */
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { AlertService } from 'app/core/util/alert.service';
 import { removeSeparator as tagRemoveSeparator } from 'app/entities/tag/tag-utils';
@@ -184,7 +181,7 @@ export class LedgerEntryTagsComponent {
       // We only expect a single autocomplete response.
       first(),
 
-      tap(result => {
+      tap(_result => {
         // The autocomplete is no longer pending.
         this.autocompletePendingState = undefined;
 
@@ -192,8 +189,6 @@ export class LedgerEntryTagsComponent {
         // canceled, but the observable was still loaded so we cache it instead of
         // discarding it.
         this.autocompleteCache.set(cacheKey, observable);
-
-        console.log(result);
       }),
 
       // Map to autocomplete model.

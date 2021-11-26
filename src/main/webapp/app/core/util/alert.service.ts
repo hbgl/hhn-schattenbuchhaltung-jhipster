@@ -85,7 +85,6 @@ export class AlertService {
       }
     }
     alert.message = this.sanitizer.sanitize(SecurityContext.HTML, alert.message ?? '') ?? '';
-
     alert.timeout = alert.timeout ?? this.timeout;
     alert.toast = alert.toast ?? this.toast;
     alert.position = alert.position ?? this.position;
@@ -103,7 +102,7 @@ export class AlertService {
       this.ngZone.runOutsideAngular(() => {
         setTimeout(() => {
           this.ngZone.run(() => {
-            this.closeAlert(alert.id!, extAlerts ?? this.alerts);
+            this.closeAlert(alert.id!, extAlerts);
           });
         }, alert.timeout);
       });
@@ -118,9 +117,7 @@ export class AlertService {
     if (index >= 0) {
       const alert = alerts[index];
       alerts.splice(index, 1);
-      if (!extAlerts) {
-        this.subjectClose.next(alert);
-      }
+      this.subjectClose.next(alert);
     }
   }
 }

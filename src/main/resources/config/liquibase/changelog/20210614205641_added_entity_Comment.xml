@@ -3,7 +3,7 @@
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
@@ -23,6 +23,9 @@
             <column name="created_at" type="${datetimeType}">
                 <constraints nullable="false" />
             </column>
+            <column name="uuid" type="${uuidType}">
+                <constraints nullable="false" unique="true" uniqueConstraintName="ux_comment__uuid" />
+            </column>
             <column name="author_id" type="varchar(100)">
                 <constraints nullable="false" />
             </column>
@@ -31,9 +34,6 @@
             </column>
             <column name="parent_id" type="bigint">
                 <constraints nullable="true" />
-            </column>
-            <column name="uuid" type="uuid">
-                <constraints nullable="false" unique="true" uniqueConstraintName="ux_comment__uuid" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>

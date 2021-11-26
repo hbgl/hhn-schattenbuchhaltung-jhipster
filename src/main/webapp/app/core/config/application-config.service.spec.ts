@@ -26,7 +26,7 @@ describe('ApplicationConfigService', () => {
 
   describe('with prefix', () => {
     beforeEach(() => {
-      service.endpointPrefix = 'prefix/';
+      service.setEndpointPrefix('prefix/');
     });
 
     it('should return correctly', () => {

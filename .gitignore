@@ -166,3 +166,9 @@ Desktop.ini
 # Postgres
 ######################
 /src/main/docker/pg-db
+
+######################
+# Code coverage
+######################
+/coverage/
+/.nyc_output/

@@ -10,7 +10,7 @@ export class IndexedDbService {
   private dexie: Dexie;
 
   constructor(configService: ApplicationConfigService) {
-    this.dexie = new Dexie(configService.indexedDbName);
+    this.dexie = new Dexie(configService.getIndexedDbName());
 
     this.dexie.version(1).stores({
       commentCollapseStates: 'id',

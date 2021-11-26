@@ -7,7 +7,6 @@ import dev.hbgl.hhn.schattenbuchhaltung.domain.User;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.CommentRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.LedgerEntryRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.UserRepository;
-import dev.hbgl.hhn.schattenbuchhaltung.repository.search.CommentSearchRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.security.AuthoritiesConstants;
 import dev.hbgl.hhn.schattenbuchhaltung.security.SecurityUtils;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.Ledger.CommentCreateIn;
@@ -54,8 +53,6 @@ public class CommentResource {
 
     private final CommentRepository commentRepository;
 
-    private final CommentSearchRepository commentSearchRepository;
-
     private final LedgerEntryRepository ledgerEntryRepository;
 
     private final UserRepository userRepository;
@@ -63,13 +60,11 @@ public class CommentResource {
     public CommentResource(
         EntityManager entityManager,
         CommentRepository commentRepository,
-        CommentSearchRepository commentSearchRepository,
         LedgerEntryRepository ledgerEntryRepository,
         UserRepository userRepository
     ) {
         this.entityManager = entityManager;
         this.commentRepository = commentRepository;
-        this.commentSearchRepository = commentSearchRepository;
         this.ledgerEntryRepository = ledgerEntryRepository;
         this.userRepository = userRepository;
     }
@@ -87,7 +82,7 @@ public class CommentResource {
 
         var maybeLedgerEntry = ledgerEntryRepository.findByNo(input.ledgerEntryNo);
         if (maybeLedgerEntry.isEmpty()) {
-            throw new BadRequestAlertException("Related ledger entry not found", LedgerEntryResource.ENTITY_NAME, "nonotfound");
+            throw new BadRequestAlertException("Related ledger entry not found", LedgerResource.LEDGER_ENTRY_ENTITY_NAME, "nonotfound");
         }
         var ledgerEntry = maybeLedgerEntry.get();
 
@@ -183,21 +178,5 @@ public class CommentResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
-    }
-
-    /**
-     * {@code SEARCH  /_search/comments?query=:query} : search for the comment corresponding
-     * to the query.
-     *
-     * @param query the query of the comment search.
-     * @param pageable the pagination information.
-     * @return the result of the search.
-     */
-    @GetMapping("/_search/comments")
-    public ResponseEntity<List<Comment>> searchComments(@RequestParam String query, Pageable pageable) {
-        log.debug("REST request to search for a page of Comments for query {}", query);
-        Page<Comment> page = commentSearchRepository.search(queryStringQuery(query), pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 }

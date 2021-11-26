@@ -27,14 +27,15 @@ public class Tag implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
+    @Column(name = "id")
     private Long id;
 
     @NotNull
-    @Column(name = "text")
+    @Column(name = "text", nullable = false)
     private String text;
 
     @NotNull
-    @Column(name = "textNormalized")
+    @Column(name = "text_normalized", nullable = false, unique = true)
     private String textNormalized;
 
     @OneToMany(mappedBy = "tag")
@@ -43,17 +44,18 @@ public class Tag implements Serializable {
     private Set<LedgerEntryTag> ledgerEntryTags = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
     public Long getId() {
-        return id;
+        return this.id;
+    }
+
+    public Tag id(Long id) {
+        this.setId(id);
+        return this;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Tag id(Long id) {
-        this.id = id;
-        return this;
     }
 
     public String getText() {
@@ -61,7 +63,7 @@ public class Tag implements Serializable {
     }
 
     public Tag text(String text) {
-        this.text = text;
+        this.setText(text);
         return this;
     }
 
@@ -74,7 +76,7 @@ public class Tag implements Serializable {
     }
 
     public Tag textNormalized(String textNormalized) {
-        this.textNormalized = textNormalized;
+        this.setTextNormalized(textNormalized);
         return this;
     }
 
@@ -84,6 +86,16 @@ public class Tag implements Serializable {
 
     public Set<LedgerEntryTag> getLedgerEntryTags() {
         return this.ledgerEntryTags;
+    }
+
+    public void setLedgerEntryTags(Set<LedgerEntryTag> ledgerEntryTags) {
+        if (this.ledgerEntryTags != null) {
+            this.ledgerEntryTags.forEach(i -> i.setTag(null));
+        }
+        if (ledgerEntryTags != null) {
+            ledgerEntryTags.forEach(i -> i.setTag(this));
+        }
+        this.ledgerEntryTags = ledgerEntryTags;
     }
 
     public Tag ledgerEntryTags(Set<LedgerEntryTag> ledgerEntryTags) {
@@ -101,16 +113,6 @@ public class Tag implements Serializable {
         this.ledgerEntryTags.remove(ledgerEntryTag);
         ledgerEntryTag.setTag(null);
         return this;
-    }
-
-    public void setLedgerEntryTags(Set<LedgerEntryTag> ledgerEntryTags) {
-        if (this.ledgerEntryTags != null) {
-            this.ledgerEntryTags.forEach(i -> i.setTag(null));
-        }
-        if (ledgerEntryTags != null) {
-            ledgerEntryTags.forEach(i -> i.setTag(this));
-        }
-        this.ledgerEntryTags = ledgerEntryTags;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -201,7 +203,7 @@ public class Tag implements Serializable {
         return "Tag{" +
             "id=" + getId() +
             ", text='" + getText() + "'" +
-            ", text='" + getTextNormalized() + "'" +
+            ", textNormalized='" + getTextNormalized() + "'" +
             "}";
     }
 

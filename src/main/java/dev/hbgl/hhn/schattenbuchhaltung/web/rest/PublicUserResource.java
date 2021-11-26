@@ -2,7 +2,6 @@ package dev.hbgl.hhn.schattenbuchhaltung.web.rest;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
-import dev.hbgl.hhn.schattenbuchhaltung.repository.search.UserSearchRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.service.UserService;
 import dev.hbgl.hhn.schattenbuchhaltung.service.dto.UserDTO;
 import java.util.*;
@@ -27,11 +26,8 @@ public class PublicUserResource {
 
     private final UserService userService;
 
-    private final UserSearchRepository userSearchRepository;
-
-    public PublicUserResource(UserService userService, UserSearchRepository userSearchRepository) {
+    public PublicUserResource(UserService userService) {
         this.userService = userService;
-        this.userSearchRepository = userSearchRepository;
     }
 
     /**
@@ -56,19 +52,5 @@ public class PublicUserResource {
     @GetMapping("/authorities")
     public List<String> getAuthorities() {
         return userService.getAuthorities();
-    }
-
-    /**
-     * {@code SEARCH /_search/users/:query} : search for the User corresponding to the query.
-     *
-     * @param query the query to search.
-     * @return the result of the search.
-     */
-    @GetMapping("/_search/users/{query}")
-    public List<UserDTO> search(@PathVariable String query) {
-        return StreamSupport
-            .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .map(UserDTO::new)
-            .collect(Collectors.toList());
     }
 }

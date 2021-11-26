@@ -1,5 +1,5 @@
 @import '../../../content/scss/bootstrap-prelude';
-@import '~node_modules/ngx-chips/core/styles/core/_core.scss';
+@import '~ngx-chips/core/styles/core/_core.scss';
 
 $custom-primary: $primary;
 $custom-primary-dark: darken($custom-primary, 7.5%);

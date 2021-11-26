@@ -25,6 +25,7 @@ public class HistoryEntry implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
+    @Column(name = "id")
     private Long id;
 
     @NotNull
@@ -49,7 +50,7 @@ public class HistoryEntry implements Serializable {
     private String recId2;
 
     @NotNull
-    @Column(name = "uuid", nullable = false)
+    @Column(name = "uuid", nullable = false, unique = true)
     private UUID uuid;
 
     @OneToMany(mappedBy = "entry")
@@ -61,17 +62,18 @@ public class HistoryEntry implements Serializable {
     private User author;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
     public Long getId() {
-        return id;
+        return this.id;
+    }
+
+    public HistoryEntry id(Long id) {
+        this.setId(id);
+        return this;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public HistoryEntry id(Long id) {
-        this.id = id;
-        return this;
     }
 
     public Instant getInstant() {
@@ -79,7 +81,7 @@ public class HistoryEntry implements Serializable {
     }
 
     public HistoryEntry instant(Instant instant) {
-        this.instant = instant;
+        this.setInstant(instant);
         return this;
     }
 
@@ -92,7 +94,7 @@ public class HistoryEntry implements Serializable {
     }
 
     public HistoryEntry action(HistoryAction action) {
-        this.action = action;
+        this.setAction(action);
         return this;
     }
 
@@ -105,7 +107,7 @@ public class HistoryEntry implements Serializable {
     }
 
     public HistoryEntry recType(HistoryEntryRecType recType) {
-        this.recType = recType;
+        this.setRecType(recType);
         return this;
     }
 
@@ -118,7 +120,7 @@ public class HistoryEntry implements Serializable {
     }
 
     public HistoryEntry recId1(String recId1) {
-        this.recId1 = recId1;
+        this.setRecId1(recId1);
         return this;
     }
 
@@ -131,7 +133,7 @@ public class HistoryEntry implements Serializable {
     }
 
     public HistoryEntry recId2(String recId2) {
-        this.recId2 = recId2;
+        this.setRecId2(recId2);
         return this;
     }
 
@@ -144,7 +146,7 @@ public class HistoryEntry implements Serializable {
     }
 
     public HistoryEntry uuid(UUID uuid) {
-        this.uuid = uuid;
+        this.setUuid(uuid);
         return this;
     }
 
@@ -154,6 +156,16 @@ public class HistoryEntry implements Serializable {
 
     public Set<HistoryEntryField> getFields() {
         return this.fields;
+    }
+
+    public void setFields(Set<HistoryEntryField> historyEntryFields) {
+        if (this.fields != null) {
+            this.fields.forEach(i -> i.setEntry(null));
+        }
+        if (historyEntryFields != null) {
+            historyEntryFields.forEach(i -> i.setEntry(this));
+        }
+        this.fields = historyEntryFields;
     }
 
     public HistoryEntry fields(Set<HistoryEntryField> historyEntryFields) {
@@ -173,27 +185,17 @@ public class HistoryEntry implements Serializable {
         return this;
     }
 
-    public void setFields(Set<HistoryEntryField> historyEntryFields) {
-        if (this.fields != null) {
-            this.fields.forEach(i -> i.setEntry(null));
-        }
-        if (historyEntryFields != null) {
-            historyEntryFields.forEach(i -> i.setEntry(this));
-        }
-        this.fields = historyEntryFields;
-    }
-
     public User getAuthor() {
         return this.author;
+    }
+
+    public void setAuthor(User user) {
+        this.author = user;
     }
 
     public HistoryEntry author(User user) {
         this.setAuthor(user);
         return this;
-    }
-
-    public void setAuthor(User user) {
-        this.author = user;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -223,9 +225,9 @@ public class HistoryEntry implements Serializable {
             ", instant='" + getInstant() + "'" +
             ", action='" + getAction() + "'" +
             ", recType='" + getRecType() + "'" +
-            ", recId1=" + getRecId1() +
-            ", recId2=" + getRecId2() +
-            ", uuid=" + getUuid() +
+            ", recId1='" + getRecId1() + "'" +
+            ", recId2='" + getRecId2() + "'" +
+            ", uuid='" + getUuid() + "'" +
             "}";
     }
 }

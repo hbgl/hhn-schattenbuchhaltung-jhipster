@@ -66,7 +66,9 @@ import tech.jhipster.web.util.ResponseUtil;
 @Transactional
 public class LedgerResource {
 
-    private final Logger log = LoggerFactory.getLogger(LedgerEntryResource.class);
+    public static final String LEDGER_ENTRY_ENTITY_NAME = "ledgerEntry";
+
+    private final Logger log = LoggerFactory.getLogger(LedgerResource.class);
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -124,7 +126,7 @@ public class LedgerResource {
     }
 
     @GetMapping("/ledger")
-    public List<LedgerEntryOut> listLedger() {
+    public List<LedgerEntryOut> listLedger() throws Exception {
         log.debug("REST request to get all LedgerEntries");
 
         var ledgerEntryGraph = entityManager.createEntityGraph(LedgerEntry.class);
@@ -196,7 +198,7 @@ public class LedgerResource {
 
         var maybeLedgerEntry = ledgerEntryRepository.findByNo(no);
         if (maybeLedgerEntry.isEmpty()) {
-            throw new BadRequestAlertException("Related ledger entry not found.", LedgerEntryResource.ENTITY_NAME, "notfound");
+            throw new BadRequestAlertException("Related ledger entry not found.", LEDGER_ENTRY_ENTITY_NAME, "notfound");
         }
         var ledgerEntry = maybeLedgerEntry.get();
 

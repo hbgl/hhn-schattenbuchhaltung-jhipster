@@ -17,7 +17,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "comment")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@org.springframework.data.elasticsearch.annotations.Document(indexName = "comment")
 public class Comment implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -27,6 +26,7 @@ public class Comment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
+    @Column(name = "id")
     private Long id;
 
     @NotNull
@@ -42,7 +42,7 @@ public class Comment implements Serializable {
     private Instant createdAt;
 
     @NotNull
-    @Column(name = "uuid", nullable = false)
+    @Column(name = "uuid", nullable = false, unique = true)
     private UUID uuid;
 
     @ManyToOne(optional = false)
@@ -66,17 +66,18 @@ public class Comment implements Serializable {
     private Comment parent;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
     public Long getId() {
-        return id;
+        return this.id;
+    }
+
+    public Comment id(Long id) {
+        this.setId(id);
+        return this;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Comment id(Long id) {
-        this.id = id;
-        return this;
     }
 
     public String getLedgerEntryNo() {
@@ -84,7 +85,7 @@ public class Comment implements Serializable {
     }
 
     public Comment ledgerEntryNo(String ledgerEntryNo) {
-        this.ledgerEntryNo = ledgerEntryNo;
+        this.setLedgerEntryNo(ledgerEntryNo);
         return this;
     }
 
@@ -97,7 +98,7 @@ public class Comment implements Serializable {
     }
 
     public Comment contentHtml(String contentHtml) {
-        this.contentHtml = contentHtml;
+        this.setContentHtml(contentHtml);
         return this;
     }
 
@@ -110,7 +111,7 @@ public class Comment implements Serializable {
     }
 
     public Comment createdAt(Instant createdAt) {
-        this.createdAt = createdAt;
+        this.setCreatedAt(createdAt);
         return this;
     }
 
@@ -123,7 +124,7 @@ public class Comment implements Serializable {
     }
 
     public Comment uuid(UUID uuid) {
-        this.uuid = uuid;
+        this.setUuid(uuid);
         return this;
     }
 
@@ -135,17 +136,21 @@ public class Comment implements Serializable {
         return this.author;
     }
 
+    public void setAuthor(User user) {
+        this.author = user;
+    }
+
     public Comment author(User user) {
         this.setAuthor(user);
         return this;
     }
 
-    public void setAuthor(User user) {
-        this.author = user;
-    }
-
     public LedgerEntry getLedgerEntry() {
         return this.ledgerEntry;
+    }
+
+    public void setLedgerEntry(LedgerEntry ledgerEntry) {
+        this.ledgerEntry = ledgerEntry;
     }
 
     public Comment ledgerEntry(LedgerEntry ledgerEntry) {
@@ -153,12 +158,18 @@ public class Comment implements Serializable {
         return this;
     }
 
-    public void setLedgerEntry(LedgerEntry ledgerEntry) {
-        this.ledgerEntry = ledgerEntry;
-    }
-
     public Set<Comment> getChildren() {
         return this.children;
+    }
+
+    public void setChildren(Set<Comment> comments) {
+        if (this.children != null) {
+            this.children.forEach(i -> i.setParent(null));
+        }
+        if (comments != null) {
+            comments.forEach(i -> i.setParent(this));
+        }
+        this.children = comments;
     }
 
     public Comment children(Set<Comment> comments) {
@@ -178,27 +189,17 @@ public class Comment implements Serializable {
         return this;
     }
 
-    public void setChildren(Set<Comment> comments) {
-        if (this.children != null) {
-            this.children.forEach(i -> i.setParent(null));
-        }
-        if (comments != null) {
-            comments.forEach(i -> i.setParent(this));
-        }
-        this.children = comments;
-    }
-
     public Comment getParent() {
         return this.parent;
+    }
+
+    public void setParent(Comment comment) {
+        this.parent = comment;
     }
 
     public Comment parent(Comment comment) {
         this.setParent(comment);
         return this;
-    }
-
-    public void setParent(Comment comment) {
-        this.parent = comment;
     }
 
     public boolean isOwnedBy(User user) {
@@ -232,6 +233,7 @@ public class Comment implements Serializable {
             ", ledgerEntryNo='" + getLedgerEntryNo() + "'" +
             ", contentHtml='" + getContentHtml() + "'" +
             ", createdAt='" + getCreatedAt() + "'" +
+            ", uuid='" + getUuid() + "'" +
             "}";
     }
 }

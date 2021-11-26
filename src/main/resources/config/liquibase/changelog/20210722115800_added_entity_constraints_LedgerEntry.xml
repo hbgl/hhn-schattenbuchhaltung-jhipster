@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+    <!--
+        Added the constraints for entity LedgerEntry.
+    -->
+    <changeSet id="20210722115800-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="cost_center1_id"
+                                 baseTableName="ledger_entry"
+                                 constraintName="fk_ledger_entry__cost_center1_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cost_center"/>
+
+        <addForeignKeyConstraint baseColumnNames="cost_center2_id"
+                                 baseTableName="ledger_entry"
+                                 constraintName="fk_ledger_entry__cost_center2_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cost_center"/>
+
+        <addForeignKeyConstraint baseColumnNames="cost_center3_id"
+                                 baseTableName="ledger_entry"
+                                 constraintName="fk_ledger_entry__cost_center3_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cost_center"/>
+
+        <addForeignKeyConstraint baseColumnNames="division_id"
+                                 baseTableName="ledger_entry"
+                                 constraintName="fk_ledger_entry__division_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="division"/>
+
+        <addForeignKeyConstraint baseColumnNames="cost_type_id"
+                                 baseTableName="ledger_entry"
+                                 constraintName="fk_ledger_entry__cost_type_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cost_type"/>
+    </changeSet>
+</databaseChangeLog>

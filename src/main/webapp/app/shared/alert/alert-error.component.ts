@@ -12,7 +12,6 @@ import { EventManager, EventWithContent } from 'app/core/util/event-manager.serv
   templateUrl: './alert-error.component.html',
 })
 export class AlertErrorComponent implements OnDestroy {
-  alerts: Alert[] = [];
   errorListener: Subscription;
   httpErrorListener: Subscription;
 
@@ -24,6 +23,7 @@ export class AlertErrorComponent implements OnDestroy {
 
     this.httpErrorListener = eventManager.subscribe('schattenbuchhaltungApp.httpError', (response: EventWithContent<unknown> | string) => {
       const httpErrorResponse = (response as EventWithContent<HttpErrorResponse>).content;
+
       switch (httpErrorResponse.status) {
         // connection refused, server not reachable
         case 0:
@@ -101,7 +101,7 @@ export class AlertErrorComponent implements OnDestroy {
   }
 
   close(alert: Alert): void {
-    alert.close?.(this.alerts);
+    alert.close?.(this.alertService.get());
   }
 
   private addErrorAlert(message?: string, translationKey?: string, translationParams?: { [key: string]: unknown }): void {

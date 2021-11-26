@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import tech.jhipster.config.JHipsterConstants;
 
 @Configuration
-@EnableJpaRepositories("dev.hbgl.hhn.schattenbuchhaltung.repository")
+@EnableJpaRepositories({ "dev.hbgl.hhn.schattenbuchhaltung.repository" })
 @EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware")
 @EnableTransactionManagement
 @EnableElasticsearchRepositories("dev.hbgl.hhn.schattenbuchhaltung.repository.search")

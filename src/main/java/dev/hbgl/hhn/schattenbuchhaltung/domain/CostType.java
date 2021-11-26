@@ -22,6 +22,7 @@ public class CostType implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
+    @Column(name = "id")
     private Long id;
 
     @NotNull
@@ -41,17 +42,18 @@ public class CostType implements Serializable {
     private Set<LedgerEntry> ledgerEntries = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
     public Long getId() {
-        return id;
+        return this.id;
+    }
+
+    public CostType id(Long id) {
+        this.setId(id);
+        return this;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public CostType id(Long id) {
-        this.id = id;
-        return this;
     }
 
     public String getNo() {
@@ -59,7 +61,7 @@ public class CostType implements Serializable {
     }
 
     public CostType no(String no) {
-        this.no = no;
+        this.setNo(no);
         return this;
     }
 
@@ -72,7 +74,7 @@ public class CostType implements Serializable {
     }
 
     public CostType name(String name) {
-        this.name = name;
+        this.setName(name);
         return this;
     }
 
@@ -82,6 +84,16 @@ public class CostType implements Serializable {
 
     public Set<LedgerEntry> getLedgerEntries() {
         return this.ledgerEntries;
+    }
+
+    public void setLedgerEntries(Set<LedgerEntry> ledgerEntries) {
+        if (this.ledgerEntries != null) {
+            this.ledgerEntries.forEach(i -> i.setCostType(null));
+        }
+        if (ledgerEntries != null) {
+            ledgerEntries.forEach(i -> i.setCostType(this));
+        }
+        this.ledgerEntries = ledgerEntries;
     }
 
     public CostType ledgerEntries(Set<LedgerEntry> ledgerEntries) {
@@ -99,16 +111,6 @@ public class CostType implements Serializable {
         this.ledgerEntries.remove(ledgerEntry);
         ledgerEntry.setCostType(null);
         return this;
-    }
-
-    public void setLedgerEntries(Set<LedgerEntry> ledgerEntries) {
-        if (this.ledgerEntries != null) {
-            this.ledgerEntries.forEach(i -> i.setCostType(null));
-        }
-        if (ledgerEntries != null) {
-            ledgerEntries.forEach(i -> i.setCostType(this));
-        }
-        this.ledgerEntries = ledgerEntries;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

@@ -4,7 +4,7 @@
     "otherModules": [],
     "applicationType": "monolith",
     "baseName": "schattenbuchhaltung",
-    "jhipsterVersion": "7.0.1",
+    "jhipsterVersion": "7.4.0",
     "skipClient": false,
     "skipServer": false,
     "skipUserManagement": true,
@@ -52,6 +52,8 @@
       "HistoryEntryField",
       "LedgerEntryTag"
     ],
-    "lastLiquibaseTimestamp": 1628381878000
+    "lastLiquibaseTimestamp": 1628381878000,
+    "enableGradleEnterprise": false,
+    "devServerPort": 4200
   }
 }

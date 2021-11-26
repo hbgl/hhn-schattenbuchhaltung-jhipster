@@ -14,11 +14,12 @@
     },
     {
       "fieldName": "recType",
-      "fieldType": "String",
+      "fieldType": "HistoryEntryRecType",
+      "fieldValues": "TAG,LEDGER_ENTRY_TAG",
       "fieldValidateRules": ["required"]
     },
     {
-      "fieldName": "recId",
+      "fieldName": "recId1",
       "fieldType": "String",
       "fieldValidateRules": ["required"]
     },

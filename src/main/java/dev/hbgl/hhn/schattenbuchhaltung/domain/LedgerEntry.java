@@ -17,7 +17,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "ledger_entry")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@org.springframework.data.elasticsearch.annotations.Document(indexName = "ledgerentry")
 public class LedgerEntry implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -25,6 +24,7 @@ public class LedgerEntry implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
+    @Column(name = "id")
     private Long id;
 
     @NotNull
@@ -87,17 +87,18 @@ public class LedgerEntry implements Serializable {
     private CostType costType;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
     public Long getId() {
-        return id;
+        return this.id;
+    }
+
+    public LedgerEntry id(Long id) {
+        this.setId(id);
+        return this;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public LedgerEntry id(Long id) {
-        this.id = id;
-        return this;
     }
 
     public String getNo() {
@@ -105,7 +106,7 @@ public class LedgerEntry implements Serializable {
     }
 
     public LedgerEntry no(String no) {
-        this.no = no;
+        this.setNo(no);
         return this;
     }
 
@@ -118,7 +119,7 @@ public class LedgerEntry implements Serializable {
     }
 
     public LedgerEntry description(String description) {
-        this.description = description;
+        this.setDescription(description);
         return this;
     }
 
@@ -131,7 +132,7 @@ public class LedgerEntry implements Serializable {
     }
 
     public LedgerEntry aNo(String aNo) {
-        this.aNo = aNo;
+        this.setaNo(aNo);
         return this;
     }
 
@@ -144,7 +145,7 @@ public class LedgerEntry implements Serializable {
     }
 
     public LedgerEntry bookingDate(Instant bookingDate) {
-        this.bookingDate = bookingDate;
+        this.setBookingDate(bookingDate);
         return this;
     }
 
@@ -157,7 +158,7 @@ public class LedgerEntry implements Serializable {
     }
 
     public LedgerEntry income(BigDecimal income) {
-        this.income = income;
+        this.setIncome(income);
         return this;
     }
 
@@ -170,7 +171,7 @@ public class LedgerEntry implements Serializable {
     }
 
     public LedgerEntry expenditure(BigDecimal expenditure) {
-        this.expenditure = expenditure;
+        this.setExpenditure(expenditure);
         return this;
     }
 
@@ -183,7 +184,7 @@ public class LedgerEntry implements Serializable {
     }
 
     public LedgerEntry liability(BigDecimal liability) {
-        this.liability = liability;
+        this.setLiability(liability);
         return this;
     }
 
@@ -193,6 +194,16 @@ public class LedgerEntry implements Serializable {
 
     public Set<Comment> getComments() {
         return this.comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        if (this.comments != null) {
+            this.comments.forEach(i -> i.setLedgerEntry(null));
+        }
+        if (comments != null) {
+            comments.forEach(i -> i.setLedgerEntry(this));
+        }
+        this.comments = comments;
     }
 
     public LedgerEntry comments(Set<Comment> comments) {
@@ -212,18 +223,18 @@ public class LedgerEntry implements Serializable {
         return this;
     }
 
-    public void setComments(Set<Comment> comments) {
-        if (this.comments != null) {
-            this.comments.forEach(i -> i.setLedgerEntry(null));
-        }
-        if (comments != null) {
-            comments.forEach(i -> i.setLedgerEntry(this));
-        }
-        this.comments = comments;
-    }
-
     public Set<LedgerEntryTag> getLedgerEntryTags() {
         return this.ledgerEntryTags;
+    }
+
+    public void setLedgerEntryTags(Set<LedgerEntryTag> ledgerEntryTags) {
+        if (this.ledgerEntryTags != null) {
+            this.ledgerEntryTags.forEach(i -> i.setLedgerEntry(null));
+        }
+        if (ledgerEntryTags != null) {
+            ledgerEntryTags.forEach(i -> i.setLedgerEntry(this));
+        }
+        this.ledgerEntryTags = ledgerEntryTags;
     }
 
     public LedgerEntry ledgerEntryTags(Set<LedgerEntryTag> ledgerEntryTags) {
@@ -243,18 +254,12 @@ public class LedgerEntry implements Serializable {
         return this;
     }
 
-    public void setLedgerEntryTags(Set<LedgerEntryTag> ledgerEntryTags) {
-        if (this.ledgerEntryTags != null) {
-            this.ledgerEntryTags.forEach(i -> i.setLedgerEntry(null));
-        }
-        if (ledgerEntryTags != null) {
-            ledgerEntryTags.forEach(i -> i.setLedgerEntry(this));
-        }
-        this.ledgerEntryTags = ledgerEntryTags;
-    }
-
     public CostCenter getCostCenter1() {
         return this.costCenter1;
+    }
+
+    public void setCostCenter1(CostCenter costCenter) {
+        this.costCenter1 = costCenter;
     }
 
     public LedgerEntry costCenter1(CostCenter costCenter) {
@@ -262,12 +267,12 @@ public class LedgerEntry implements Serializable {
         return this;
     }
 
-    public void setCostCenter1(CostCenter costCenter) {
-        this.costCenter1 = costCenter;
-    }
-
     public CostCenter getCostCenter2() {
         return this.costCenter2;
+    }
+
+    public void setCostCenter2(CostCenter costCenter) {
+        this.costCenter2 = costCenter;
     }
 
     public LedgerEntry costCenter2(CostCenter costCenter) {
@@ -275,12 +280,12 @@ public class LedgerEntry implements Serializable {
         return this;
     }
 
-    public void setCostCenter2(CostCenter costCenter) {
-        this.costCenter2 = costCenter;
-    }
-
     public CostCenter getCostCenter3() {
         return this.costCenter3;
+    }
+
+    public void setCostCenter3(CostCenter costCenter) {
+        this.costCenter3 = costCenter;
     }
 
     public LedgerEntry costCenter3(CostCenter costCenter) {
@@ -288,12 +293,12 @@ public class LedgerEntry implements Serializable {
         return this;
     }
 
-    public void setCostCenter3(CostCenter costCenter) {
-        this.costCenter3 = costCenter;
-    }
-
     public Division getDivision() {
         return this.division;
+    }
+
+    public void setDivision(Division division) {
+        this.division = division;
     }
 
     public LedgerEntry division(Division division) {
@@ -301,21 +306,17 @@ public class LedgerEntry implements Serializable {
         return this;
     }
 
-    public void setDivision(Division division) {
-        this.division = division;
-    }
-
     public CostType getCostType() {
         return this.costType;
+    }
+
+    public void setCostType(CostType costType) {
+        this.costType = costType;
     }
 
     public LedgerEntry costType(CostType costType) {
         this.setCostType(costType);
         return this;
-    }
-
-    public void setCostType(CostType costType) {
-        this.costType = costType;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

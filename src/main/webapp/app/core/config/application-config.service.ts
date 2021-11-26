@@ -4,25 +4,34 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class ApplicationConfigService {
-  private _endpointPrefix = '';
-  private _indexedDbName = '';
+  private endpointPrefix = '';
+  private indexedDbName = '';
+  private microfrontend = false;
 
-  public set indexedDbName(value: string) {
-    this._indexedDbName = value;
+  setEndpointPrefix(endpointPrefix: string): void {
+    this.endpointPrefix = endpointPrefix;
   }
 
-  public get indexedDbName(): string {
-    return this._indexedDbName;
+  setMicrofrontend(microfrontend = true): void {
+    this.microfrontend = microfrontend;
   }
 
-  public set endpointPrefix(value: string) {
-    this._endpointPrefix = value;
+  isMicrofrontend(): boolean {
+    return this.microfrontend;
   }
 
   getEndpointFor(api: string, microservice?: string): string {
     if (microservice) {
-      return `${this._endpointPrefix}services/${microservice}/${api}`;
+      return `${this.endpointPrefix}services/${microservice}/${api}`;
     }
-    return `${this._endpointPrefix}${api}`;
+    return `${this.endpointPrefix}${api}`;
+  }
+
+  setIndexedDbName(value: string): void {
+    this.indexedDbName = value;
+  }
+
+  getIndexedDbName(): string {
+    return this.indexedDbName;
   }
 }
