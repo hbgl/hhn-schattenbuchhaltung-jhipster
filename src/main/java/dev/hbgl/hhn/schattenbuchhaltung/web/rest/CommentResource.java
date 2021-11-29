@@ -5,6 +5,8 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.Comment;
 import dev.hbgl.hhn.schattenbuchhaltung.domain.User;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.CommentRepository;
+import dev.hbgl.hhn.schattenbuchhaltung.repository.HistoryEntryFieldRepository;
+import dev.hbgl.hhn.schattenbuchhaltung.repository.HistoryEntryRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.LedgerEntryRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.repository.UserRepository;
 import dev.hbgl.hhn.schattenbuchhaltung.security.AuthoritiesConstants;
@@ -57,16 +59,24 @@ public class CommentResource {
 
     private final UserRepository userRepository;
 
+    private final HistoryEntryRepository historyEntryRepository;
+
+    private final HistoryEntryFieldRepository historyEntryFieldRepository;
+
     public CommentResource(
         EntityManager entityManager,
         CommentRepository commentRepository,
         LedgerEntryRepository ledgerEntryRepository,
-        UserRepository userRepository
+        UserRepository userRepository,
+        HistoryEntryRepository historyEntryRepository,
+        HistoryEntryFieldRepository historyEntryFieldRepository
     ) {
         this.entityManager = entityManager;
         this.commentRepository = commentRepository;
         this.ledgerEntryRepository = ledgerEntryRepository;
         this.userRepository = userRepository;
+        this.historyEntryRepository = historyEntryRepository;
+        this.historyEntryFieldRepository = historyEntryFieldRepository;
     }
 
     /**
@@ -102,6 +112,11 @@ public class CommentResource {
         comment.setContentHtml(input.contentHtml);
         comment.setLedgerEntryNo(ledgerEntry.getNo());
         comment = commentRepository.save(comment);
+
+        var historyEntry = Comment.historyEntryCreate(comment, user);
+        historyEntryRepository.save(historyEntry);
+        historyEntryFieldRepository.saveAll(historyEntry.getFields());
+
         var output = CommentOut.fromEntity(comment);
         return ResponseEntity
             .created(new URI("/api/comments/" + comment.getId()))
@@ -139,8 +154,22 @@ public class CommentResource {
             throw new AccessDeniedException("Unauthorized");
         }
 
+        var oldComment = new Comment()
+            .id(comment.getId())
+            .ledgerEntryNo(comment.getLedgerEntryNo())
+            .createdAt(comment.getCreatedAt())
+            .author(user)
+            .uuid(comment.getUuid())
+            .contentHtml(comment.getContentHtml());
+
         comment.setContentHtml(input.contentHtml);
         comment = commentRepository.save(comment);
+
+        var historyEntry = Comment.historyEntryModify(oldComment, comment, user);
+        if (historyEntry != null) {
+            historyEntryRepository.save(historyEntry);
+            historyEntryFieldRepository.saveAll(historyEntry.getFields());
+        }
 
         var output = CommentOut.fromEntity(comment);
         return ResponseEntity
@@ -171,6 +200,9 @@ public class CommentResource {
         if (!isAuthorized) {
             throw new AccessDeniedException("Unauthorized");
         }
+
+        var historyEntry = Comment.historyEntryDelete(comment, user);
+        historyEntryRepository.save(historyEntry);
 
         commentRepository.delete(comment);
 

@@ -19,7 +19,7 @@
     ></jhi-comment-form>
     <div *ngIf="!isEditFormVisible" class="body" [ngClass]="{ collapse: collapsed }" [innerHTML]="comment.contentHtml | safeHtml"></div>
   </div>
-  <div class="dots">
+  <div class="dots" *ngIf="!isEditFormVisible">
     <div ngbDropdown *ngIf="actions.length > 0">
       <button
         ngbDropdownToggle

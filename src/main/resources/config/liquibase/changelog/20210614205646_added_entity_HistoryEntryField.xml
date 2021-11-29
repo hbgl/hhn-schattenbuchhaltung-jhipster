@@ -17,10 +17,10 @@
             <column name="name" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="old_value" type="varchar(255)">
+            <column name="old_value" type="varchar(10000)">
                 <constraints nullable="true" />
             </column>
-            <column name="new_value" type="varchar(255)">
+            <column name="new_value" type="varchar(10000)">
                 <constraints nullable="true" />
             </column>
             <column name="entry_id" type="bigint">

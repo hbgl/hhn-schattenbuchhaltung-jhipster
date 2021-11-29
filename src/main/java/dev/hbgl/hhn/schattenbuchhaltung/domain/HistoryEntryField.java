@@ -27,10 +27,10 @@ public class HistoryEntryField implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "old_value")
+    @Column(name = "old_value", length = 10000)
     private String oldValue;
 
-    @Column(name = "new_value")
+    @Column(name = "new_value", length = 10000)
     private String newValue;
 
     @ManyToOne(optional = false)
