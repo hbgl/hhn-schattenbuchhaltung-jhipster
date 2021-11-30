@@ -3,11 +3,11 @@ version: '3.8'
 services:
   schattenbuchhaltung-postgresql:
     image: postgres:13.5
-    # volumes:
-    #   - ~/volumes/jhipster/schattenbuchhaltung/postgresql/:/var/lib/postgresql/data/
+    volumes:
+      - ./pg-db:/var/lib/postgresql/data/
     environment:
       - POSTGRES_USER=schattenbuchhaltung
-      - POSTGRES_PASSWORD=
+      - POSTGRES_PASSWORD=12341234
       - POSTGRES_HOST_AUTH_METHOD=trust
     # If you want to expose these ports outside your dev PC,
     # remove the "127.0.0.1:" prefix
